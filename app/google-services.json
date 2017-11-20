@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "701407358330",
+    "firebase_url": "https://virgilback4app.firebaseio.com",
+    "project_id": "virgilback4app",
+    "storage_bucket": "virgilback4app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:701407358330:android:955aaef0ef5e4df1",
+        "android_client_info": {
+          "package_name": "com.android.virgilsecurity.virgilback4app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "701407358330-po6sgsquenaaq6o33khnn23uf2odnigc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.android.virgilsecurity.virgilback4app",
+            "certificate_hash": "1041c3750442c546fb2d4c470d9d209bcd0e7c52"
+          }
+        },
+        {
+          "client_id": "701407358330-jsjtue3snknctpj9o3un5jejbh2jh660.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGOwz0zz5dNh0U-PgIY-EWFIyoXNzqeIY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "701407358330-jsjtue3snknctpj9o3un5jejbh2jh660.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

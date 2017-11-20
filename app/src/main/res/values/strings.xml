@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">VirgilBack4App</string>
+
+    <!-- Login Screen -->
+    <string name="login">Log In</string>
+    <string name="signin">Sign In</string>
+    <string name="username">Username</string>
+    <string name="username_empty">Please, fill this filed first</string>
+    <string name="no_such_user">Entered username is invalid or not registered yet</string>
+    <string name="already_registered">Entered username has been already registered. Please try another one</string>
+</resources>

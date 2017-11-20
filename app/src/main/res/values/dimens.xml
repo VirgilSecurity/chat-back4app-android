@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="ddble_margin">32dp</dimen>
+    <dimen name="twenty_margin">24dp</dimen>
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="half_default_margin">8dp</dimen>
+
+</resources>
