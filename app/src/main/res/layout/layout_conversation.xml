@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:id="@+id/rl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/timberwolf"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/half_default_margin"
+        android:paddingEnd="@dimen/half_default_margin"
+        android:paddingStart="@dimen/default_margin"
+        android:paddingTop="@dimen/half_default_margin">
+
+        <EditText
+            android:id="@+id/etMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_white_rounded"
+            android:hint="@string/enter_your_message"
+            android:imeOptions="actionSend"
+            android:inputType="textCapSentences"
+            android:maxLines="3"
+            android:padding="@dimen/default_text"
+            android:paddingStart="@dimen/twenty_margin"
+            android:textColor="@color/oxford_blue"
+            android:textColorHint="@color/black_coral"
+            android:textSize="@dimen/default_text" />
+
+        <ImageButton
+            android:id="@+id/btnSend"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/half_default_margin"
+            android:background="@drawable/fragment_chat_thread"
+            android:gravity="center"
+            android:paddingStart="2dp"
+            android:src="@drawable/ic_send_white_24dp"
+            android:text="@string/send"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/default_text" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/rl_bottom"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:overScrollMode="never" />
+</RelativeLayout>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/fourty_margin"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="@dimen/default_margin">
+
+    <TextView
+        android:id="@+id/tv_chat_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/bg_chat_you"
+        android:padding="@dimen/default_margin"
+        android:textColor="@color/oxford_blue"
+        android:textSize="@dimen/increased_text"
+        tools:text="Hi, joe how are you, do you like to join our party in next week because you don't like party?" />
+</RelativeLayout>
