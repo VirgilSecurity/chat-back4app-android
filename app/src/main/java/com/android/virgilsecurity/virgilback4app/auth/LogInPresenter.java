@@ -3,7 +3,7 @@ package com.android.virgilsecurity.virgilback4app.auth;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.android.virgilsecurity.virgilback4app.api.RestApi;
+import com.android.virgilsecurity.virgilback4app.api.rest.RestApi;
 
 import javax.inject.Inject;
 

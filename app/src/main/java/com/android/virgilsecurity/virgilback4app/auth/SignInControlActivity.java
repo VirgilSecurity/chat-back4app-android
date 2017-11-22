@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentManager;
 
 import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.base.BaseActivity;
-import com.android.virgilsecurity.virgilback4app.utils.Util;
+import com.android.virgilsecurity.virgilback4app.util.Utils;
 
 /**
  * Created by danylooliinyk on 16.11.17.
@@ -64,6 +64,6 @@ public class SignInControlActivity extends BaseActivity {
                 break;
         }
 
-        Util.replaceFragmentNoTag(fm, fragment);
+        Utils.replaceFragmentNoTag(fm, fragment);
     }
 }

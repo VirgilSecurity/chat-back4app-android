@@ -1,7 +1,7 @@
 package com.android.virgilsecurity.virgilback4app.api.dagger;
 
-import com.android.virgilsecurity.virgilback4app.api.RestApi;
-import com.android.virgilsecurity.virgilback4app.api.RetrofitBuilder;
+import com.android.virgilsecurity.virgilback4app.api.rest.RestApi;
+import com.android.virgilsecurity.virgilback4app.api.rest.RetrofitBuilder;
 
 import dagger.Module;
 import dagger.Provides;

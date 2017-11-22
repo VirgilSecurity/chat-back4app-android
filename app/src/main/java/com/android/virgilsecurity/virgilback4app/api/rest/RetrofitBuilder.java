@@ -1,4 +1,4 @@
-package com.android.virgilsecurity.virgilback4app.api;
+package com.android.virgilsecurity.virgilback4app.api.rest;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;

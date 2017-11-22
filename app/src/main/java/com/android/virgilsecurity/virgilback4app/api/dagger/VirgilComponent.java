@@ -11,7 +11,7 @@ import dagger.Component;
  * -__o
  */
 
-@Component(modules = VirgilModule.class)
+@Component(modules = {VirgilModule.class, AppModule.class})
 @Singleton
 public interface VirgilComponent {
 

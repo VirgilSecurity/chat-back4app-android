@@ -2,21 +2,22 @@ package com.android.virgilsecurity.virgilback4app.auth;
 
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
+import com.android.virgilsecurity.virgilback4app.AppVirgil;
 import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.base.BaseFragmentWithPresenter;
-import com.android.virgilsecurity.virgilback4app.utils.UsernameInputFilter;
-import com.android.virgilsecurity.virgilback4app.utils.Util;
-import com.virgilsecurity.sdk.client.VirgilClient;
-import com.virgilsecurity.sdk.client.requests.PublishCardRequest;
-import com.virgilsecurity.sdk.highlevel.StringEncoding;
+import com.android.virgilsecurity.virgilback4app.util.UsernameInputFilter;
+import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
+import com.virgilsecurity.sdk.highlevel.VirgilCard;
 import com.virgilsecurity.sdk.highlevel.VirgilKey;
 import com.virgilsecurity.sdk.storage.KeyEntry;
-import com.virgilsecurity.sdk.storage.VirgilKeyStorage;
+import com.virgilsecurity.sdk.storage.KeyStorage;
 
 import javax.inject.Inject;
 
@@ -37,10 +38,8 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     @BindView(R.id.etUsername)
     protected EditText etUsername;
 
-    @Inject
-    protected VirgilApi virgilApi;
-    @Inject
-    protected VirgilClient virgilClient;
+    @Inject protected VirgilApi virgilApi;
+    @Inject protected KeyStorage virgilKeyStorage;
 
     public static LogInFragment newInstance() {
 
@@ -59,7 +58,25 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     @Override
     protected void postButterInit() {
 
+        AppVirgil.getVirgilComponent().inject(this);
+
         etUsername.setFilters(new InputFilter[]{new UsernameInputFilter()});
+        etUsername.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                tilUserName.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     @OnClick({R.id.btnLogin, R.id.btnSignin})
@@ -68,7 +85,6 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
             return;
 
         final String username = etUsername.getText().toString();
-        VirgilKeyStorage virgilKeyStorage = new VirgilKeyStorage();
         boolean keyExists = virgilKeyStorage.exists(username);
 
         switch (v.getId()) {
@@ -76,21 +92,27 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
                 if (keyExists) {
                     logIn(virgilKeyStorage.load(username));
                 } else {
-                    Util.toast(this, R.string.no_such_user);
+                    tilUserName.setError(getString(R.string.no_such_user));
                 }
                 break;
             case R.id.btnSignin:
                 if (keyExists) {
-                    Util.toast(this, R.string.already_registered);
+                    Utils.toast(this, R.string.already_registered);
                 } else {
-                    VirgilKey aliceKey = virgilApi.getKeys().generate();
+                    VirgilKey userKey = virgilApi.getKeys().generate();
+                    userKey.save(username);
 
-                    aliceKey.save(username);
+                    VirgilCard userCard = virgilApi.getCards().create(username, userKey);
+                    userCard.getIdentity();
 
-                    PublishCardRequest cardRequest =
-                            new PublishCardRequest(aliceKey.export()
-                                                           .toString(StringEncoding.Base64));
-                    virgilClient.publishCard(cardRequest);
+                    String exportedCard = userCard.export();
+
+                    String sha256edPass = Utils.generatePassword(userKey.export());
+                    Utils.log("Sha-256", "pass: " + sha256edPass);
+
+                    // TODO: 11/21/17 send to backend
+                    VirgilCard importedCard = virgilApi.getCards().importCard(exportedCard);
+                    virgilApi.getCards().publish(importedCard);
                 }
                 break;
             default:
@@ -110,6 +132,6 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     }
 
     private void logIn(KeyEntry userKey) {
-
+        Utils.toast(this, "Login Stub (" + userKey.getName() + ")");
     }
 }

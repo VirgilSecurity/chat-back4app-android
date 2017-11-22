@@ -1,4 +1,4 @@
-package com.android.virgilsecurity.virgilback4app.utils;
+package com.android.virgilsecurity.virgilback4app.util;
 
 import android.text.InputFilter;
 import android.text.Spanned;

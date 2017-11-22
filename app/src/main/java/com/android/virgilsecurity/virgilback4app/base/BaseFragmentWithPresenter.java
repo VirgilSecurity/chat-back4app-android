@@ -15,7 +15,7 @@ import nucleus5.view.NucleusSupportFragment;
  * Created by danylooliinyk on 16.11.17.
  */
 
-public abstract class BaseFragmentWithPresenter<A extends Activity, P extends RxPresenter> extends NucleusSupportFragment {
+public abstract class BaseFragmentWithPresenter<A extends Activity, P extends RxPresenter> extends NucleusSupportFragment<P> {
 
     protected A activity;
 
@@ -26,6 +26,7 @@ public abstract class BaseFragmentWithPresenter<A extends Activity, P extends Rx
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        activity = (A) getActivity();
         return inflater.inflate(getLayout(), container, false);
     }
 
