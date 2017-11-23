@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">VirgilBack4App</string>
 
+    <!-- Back4App -->
+    <string name="back4app_server_url">https://parseapi.back4app.com/</string>
+    <string name="back4app_app_id">nBH9WbsixMOK4VW4IPEiLJNXrrYWYnDCm4R8DIlr</string>
+    <string name="back4app_client_key">VCSMCg8MvgveCNV6NI15e68Dy6CBgXEdHDxLpfTh</string>
+
+
     <!-- Login Screen -->
     <string name="login">Log In</string>
     <string name="signin">Sign In</string>

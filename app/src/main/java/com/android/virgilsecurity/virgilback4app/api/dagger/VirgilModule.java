@@ -45,6 +45,4 @@ public class VirgilModule {
 
         return virgilApiContext;
     }
-
-
 }

@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.virgilsecurity.virgilback4app.R;
-import com.android.virgilsecurity.virgilback4app.model.User;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
 
 public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.ContactHolder> {
 
-    private List<User> items;
+    private List<ParseUser> items;
     private Context context;
     private ClickListener clickListener;
 
@@ -49,7 +49,7 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Co
         holder.bind(items.get(position));
     }
 
-    public void setItems(List<User> items) {
+    public void setItems(List<ParseUser> items) {
         if (items != null) {
             this.items = new ArrayList<>(items);
         } else {
@@ -82,8 +82,8 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Co
             this.listener = listener;
         }
 
-        public void bind(User user) {
-            tvUsername.setText(user.getName());
+        public void bind(ParseUser user) {
+            tvUsername.setText(user.getUsername());
             rlItemRoot.setOnClickListener((v) -> listener.onItemClicked(getAdapterPosition(), user));
 //            ivUserPhoto.setImageResource(user.getPhotoUrl().....);
         }
@@ -91,6 +91,6 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Co
 
     public interface ClickListener {
 
-        void onItemClicked(int position, User user);
+        void onItemClicked(int position, ParseUser user);
     }
 }

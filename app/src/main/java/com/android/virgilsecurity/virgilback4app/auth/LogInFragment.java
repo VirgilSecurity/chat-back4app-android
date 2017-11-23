@@ -13,9 +13,8 @@ import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.base.BaseFragmentWithPresenter;
 import com.android.virgilsecurity.virgilback4app.util.UsernameInputFilter;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
+import com.parse.ParseUser;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
-import com.virgilsecurity.sdk.highlevel.VirgilCard;
-import com.virgilsecurity.sdk.highlevel.VirgilKey;
 import com.virgilsecurity.sdk.storage.KeyEntry;
 import com.virgilsecurity.sdk.storage.KeyStorage;
 
@@ -41,6 +40,8 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     @Inject protected VirgilApi virgilApi;
     @Inject protected KeyStorage virgilKeyStorage;
 
+    private AuthStateListener authStateListener;
+
     public static LogInFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -59,6 +60,7 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     protected void postButterInit() {
 
         AppVirgil.getVirgilComponent().inject(this);
+        authStateListener = activity;
 
         etUsername.setFilters(new InputFilter[]{new UsernameInputFilter()});
         etUsername.addTextChangedListener(new TextWatcher() {
@@ -89,31 +91,33 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
 
         switch (v.getId()) {
             case R.id.btnLogin:
-                if (keyExists) {
-                    logIn(virgilKeyStorage.load(username));
-                } else {
-                    tilUserName.setError(getString(R.string.no_such_user));
-                }
+                getPresenter().requestLogIn(etUsername.getText().toString(), "VirgilPasswordsAreTheWorth");
+//                if (keyExists) {
+//                    logIn(virgilKeyStorage.load(username));
+//                } else {
+//                    tilUserName.setError(getString(R.string.no_such_user));
+//                }
                 break;
             case R.id.btnSignin:
-                if (keyExists) {
-                    Utils.toast(this, R.string.already_registered);
-                } else {
-                    VirgilKey userKey = virgilApi.getKeys().generate();
-                    userKey.save(username);
-
-                    VirgilCard userCard = virgilApi.getCards().create(username, userKey);
-                    userCard.getIdentity();
-
-                    String exportedCard = userCard.export();
-
-                    String sha256edPass = Utils.generatePassword(userKey.export());
-                    Utils.log("Sha-256", "pass: " + sha256edPass);
-
-                    // TODO: 11/21/17 send to backend
-                    VirgilCard importedCard = virgilApi.getCards().importCard(exportedCard);
-                    virgilApi.getCards().publish(importedCard);
-                }
+                getPresenter().requestRegister(etUsername.getText().toString(), "VirgilPasswordsAreTheWorth");
+//                if (keyExists) {
+//                    Utils.toast(this, R.string.already_registered);
+//                } else {
+//                    VirgilKey userKey = virgilApi.getKeys().generate();
+//                    userKey.save(username);
+//
+//                    VirgilCard userCard = virgilApi.getCards().create(username, userKey);
+//                    userCard.getIdentity();
+//
+//                    String exportedCard = userCard.export();
+//
+//                    String sha256edPass = Utils.generatePassword(userKey.export());
+//                    Utils.log("Sha-256", "pass: " + sha256edPass);
+//
+//                    // TODO: 11/21/17 send to backend
+//                    VirgilCard importedCard = virgilApi.getCards().importCard(exportedCard);
+//                    virgilApi.getCards().publish(importedCard);
+//                }
                 break;
             default:
                 break;
@@ -133,5 +137,27 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
 
     private void logIn(KeyEntry userKey) {
         Utils.toast(this, "Login Stub (" + userKey.getName() + ")");
+    }
+
+    public void onLoginSuccess(ParseUser o) {
+        authStateListener.onLoggedInSuccesfully();
+    }
+
+    public void onLoginError(Throwable throwable) {
+        Utils.toast(this, Utils.resolveError(throwable));
+    }
+
+    public void onRegisterSuccess(Object o) {
+        authStateListener.onRegisteredInSuccesfully();
+    }
+
+    public void onRegisterError(Throwable throwable) {
+        Utils.toast(this, Utils.resolveError(throwable));
+    }
+
+    interface AuthStateListener {
+        void onLoggedInSuccesfully();
+
+        void onRegisteredInSuccesfully();
     }
 }

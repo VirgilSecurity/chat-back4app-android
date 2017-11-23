@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.android.virgilsecurity.virgilback4app.api.rest.RestApi;
+import com.android.virgilsecurity.virgilback4app.util.RxParse;
 
 import javax.inject.Inject;
 
@@ -16,7 +17,12 @@ import nucleus5.presenter.RxPresenter;
 
 public class LogInPresenter extends RxPresenter<LogInFragment> {
 
-    private static final int HANDSHAKE = 0;
+    private static final int REGISTER = 0;
+    private static final int LOG_IN = 1;
+
+    private String username;
+    private String password;
+
 
     @Inject
     protected RestApi restApi;
@@ -25,12 +31,30 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
     protected void onCreate(@Nullable Bundle savedState) {
         super.onCreate(savedState);
 
-//        restartableFirst(HANDSHAKE, () ->
-//                );
+        restartableFirst(REGISTER, () ->
+                                 RxParse.register(username, password),
+                         LogInFragment::onRegisterSuccess,
+                         LogInFragment::onRegisterError
+                );
+
+        restartableFirst(LOG_IN, () ->
+                                 RxParse.logIn(username, password),
+                         LogInFragment::onLoginSuccess,
+                         LogInFragment::onLoginError
+                );
     }
 
-    public void requestHandshake() {
+    public void requestRegister(String username, String password) {
+        this.username = username;
+        this.password = password;
 
-        start(HANDSHAKE);
+        start(REGISTER);
+    }
+
+    public void requestLogIn(String username, String password) {
+        this.username = username;
+        this.password = password;
+
+        start(LOG_IN);
     }
 }

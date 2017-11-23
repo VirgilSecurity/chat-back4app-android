@@ -14,6 +14,8 @@ import com.virgilsecurity.sdk.highlevel.VirgilBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import retrofit2.HttpException;
+
 /**
  * Created by Danylo Oliinyk on 11/17/17 at Virgil Security.
  * -__o
@@ -79,5 +81,30 @@ public class Utils {
         }
 
         return Base64.encodeToString(hash, Base64.DEFAULT);
+    }
+
+    public static String resolveError(Throwable t) {
+        if (t instanceof HttpException) {
+            HttpException exception = (HttpException) t;
+
+            switch (exception.code()) {
+                case Const.Http.BAD_REQUEST:
+                    return "Bad Request";
+                case Const.Http.UNAUTHORIZED:
+                    return "Unauthorized";
+                case Const.Http.FORBIDDEN:
+                    return "Forbidden";
+                case Const.Http.NOT_ACCEPTABLE:
+                    return "Not acceptable";
+                case Const.Http.UNPROCESSABLE_ENTITY:
+                    return "Unprocessable entity";
+                case Const.Http.SERVER_ERROR:
+                    return "Server error";
+                default:
+                    return "Something went wrong";
+            }
+        } else {
+            return "Something went wrong";
+        }
     }
 }

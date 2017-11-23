@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.android.virgilsecurity.virgilback4app.auth.SignInControlActivity;
+import com.android.virgilsecurity.virgilback4app.chat.ChatControlActivity;
+import com.parse.ParseUser;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -11,6 +13,10 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SignInControlActivity.startWithFinish(this);
+        if (ParseUser.getCurrentUser() != null) {
+            ChatControlActivity.start(this);
+        } else {
+            SignInControlActivity.startWithFinish(this);
+        }
     }
 }

@@ -10,13 +10,15 @@ import android.support.v4.app.FragmentManager;
 
 import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.base.BaseActivity;
+import com.android.virgilsecurity.virgilback4app.chat.ChatControlActivity;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 
 /**
  * Created by danylooliinyk on 16.11.17.
  */
 
-public class SignInControlActivity extends BaseActivity {
+public class SignInControlActivity extends BaseActivity
+        implements LogInFragment.AuthStateListener {
 
     @StringDef({LoginSection.LOG_IN, LoginSection.SIGN_IN})
     public @interface LoginSection {
@@ -65,5 +67,15 @@ public class SignInControlActivity extends BaseActivity {
         }
 
         Utils.replaceFragmentNoTag(fm, fragment);
+    }
+
+    @Override
+    public void onLoggedInSuccesfully() {
+        ChatControlActivity.start(this);
+    }
+
+    @Override
+    public void onRegisteredInSuccesfully() {
+        ChatControlActivity.start(this);
     }
 }

@@ -3,6 +3,8 @@ package com.android.virgilsecurity.virgilback4app.api.dagger;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -26,5 +28,11 @@ public class AppModule {
     @Singleton
     Context provideContext() {
         return context;
+    }
+
+    @Provides
+    @Singleton
+    PrefsManager providePrefsManager(Context context) {
+        return new PrefsManager(context);
     }
 }
