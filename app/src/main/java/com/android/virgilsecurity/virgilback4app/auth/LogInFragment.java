@@ -2,6 +2,7 @@ package com.android.virgilsecurity.virgilback4app.auth;
 
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -15,8 +16,12 @@ import com.android.virgilsecurity.virgilback4app.util.UsernameInputFilter;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.parse.ParseUser;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
+import com.virgilsecurity.sdk.highlevel.VirgilCard;
+import com.virgilsecurity.sdk.highlevel.VirgilKey;
 import com.virgilsecurity.sdk.storage.KeyEntry;
 import com.virgilsecurity.sdk.storage.KeyStorage;
+
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -36,6 +41,12 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     protected TextInputLayout tilUserName;
     @BindView(R.id.etUsername)
     protected EditText etUsername;
+    @BindView(R.id.btnLogin)
+    protected View btnLogin;
+    @BindView(R.id.btnSignin)
+    protected View btnSignin;
+    @BindView(R.id.pbLoading)
+    protected View pbLoading;
 
     @Inject protected VirgilApi virgilApi;
     @Inject protected KeyStorage virgilKeyStorage;
@@ -81,78 +92,98 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         });
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        getPresenter().disposeAll();
+    }
+
     @OnClick({R.id.btnLogin, R.id.btnSignin})
     protected void onInterfaceClick(View v) {
-        if (!validateUi(tilUserName))
+        if (!Utils.validateUi(tilUserName))
             return;
 
-        final String username = etUsername.getText().toString();
+        final String username = etUsername.getText().toString().toLowerCase(Locale.getDefault());
         boolean keyExists = virgilKeyStorage.exists(username);
 
         switch (v.getId()) {
             case R.id.btnLogin:
-                getPresenter().requestLogIn(etUsername.getText().toString(), "VirgilPasswordsAreTheWorth");
-//                if (keyExists) {
-//                    logIn(virgilKeyStorage.load(username));
-//                } else {
-//                    tilUserName.setError(getString(R.string.no_such_user));
-//                }
+                tilUserName.setError(null);
+                showProgress(true);
+                if (keyExists) {
+                    logIn(virgilKeyStorage.load(username));
+                    VirgilKey userKey = virgilApi.getKeys().load(username);
+
+                    getPresenter().requestLogIn(username, Utils.generatePassword(userKey.export()));
+                } else {
+                    tilUserName.setError(getString(R.string.no_such_user));
+                    showProgress(false);
+                }
                 break;
             case R.id.btnSignin:
-                getPresenter().requestRegister(etUsername.getText().toString(), "VirgilPasswordsAreTheWorth");
-//                if (keyExists) {
-//                    Utils.toast(this, R.string.already_registered);
-//                } else {
-//                    VirgilKey userKey = virgilApi.getKeys().generate();
-//                    userKey.save(username);
-//
-//                    VirgilCard userCard = virgilApi.getCards().create(username, userKey);
-//                    userCard.getIdentity();
-//
-//                    String exportedCard = userCard.export();
-//
-//                    String sha256edPass = Utils.generatePassword(userKey.export());
-//                    Utils.log("Sha-256", "pass: " + sha256edPass);
-//
-//                    // TODO: 11/21/17 send to backend
-//                    VirgilCard importedCard = virgilApi.getCards().importCard(exportedCard);
-//                    virgilApi.getCards().publish(importedCard);
-//                }
+                tilUserName.setError(null);
+                showProgress(true);
+                if (keyExists) {
+                    Utils.toast(this, R.string.already_registered);
+                    showProgress(false);
+                } else {
+                    VirgilKey userKey = virgilApi.getKeys().generate();
+                    userKey.save(username);
+
+                    VirgilCard userCard = virgilApi.getCards().create(username, userKey);
+
+                    getPresenter().requestRegister(username,
+                                                   Utils.generatePassword(userKey.export()),
+                                                   userCard.export());
+                }
                 break;
             default:
                 break;
         }
     }
 
-    private boolean validateUi(TextInputLayout til) {
-        final String text = til.getEditText().getText().toString();
 
-        if (text.isEmpty()) {
-            til.setError(getString(R.string.username_empty));
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     private void logIn(KeyEntry userKey) {
         Utils.toast(this, "Login Stub (" + userKey.getName() + ")");
     }
 
     public void onLoginSuccess(ParseUser o) {
+        showProgress(false);
         authStateListener.onLoggedInSuccesfully();
     }
 
     public void onLoginError(Throwable throwable) {
+        showProgress(false);
         Utils.toast(this, Utils.resolveError(throwable));
     }
 
     public void onRegisterSuccess(Object o) {
+        showProgress(false);
         authStateListener.onRegisteredInSuccesfully();
     }
 
     public void onRegisterError(Throwable throwable) {
+        showProgress(false);
         Utils.toast(this, Utils.resolveError(throwable));
+    }
+
+    private void showProgress(boolean show) {
+        if (show) {
+            btnLogin.setEnabled(false);
+            btnLogin.setBackground(ContextCompat.getDrawable(activity, R.drawable.bg_rect_primary_pressed));
+            btnSignin.setEnabled(false);
+            btnSignin.setBackground(ContextCompat.getDrawable(activity, R.drawable.bg_rect_primary_pressed));
+
+            pbLoading.setVisibility(View.VISIBLE);
+        } else {
+            btnLogin.setEnabled(true);
+            btnLogin.setBackground(ContextCompat.getDrawable(activity, R.drawable.bg_rect_primary));
+            btnSignin.setEnabled(true);
+            btnSignin.setBackground(ContextCompat.getDrawable(activity, R.drawable.bg_rect_primary));
+            pbLoading.setVisibility(View.INVISIBLE);
+        }
     }
 
     interface AuthStateListener {

@@ -1,7 +1,7 @@
 package com.android.virgilsecurity.virgilback4app.api.dagger;
 
 import com.android.virgilsecurity.virgilback4app.auth.LogInFragment;
-import com.android.virgilsecurity.virgilback4app.chat.contactsList.ContactsFragment;
+import com.android.virgilsecurity.virgilback4app.chat.contactsList.ThreadsListFragment;
 
 import javax.inject.Singleton;
 
@@ -18,5 +18,5 @@ public interface VirgilComponent {
 
     void inject(LogInFragment logInFragment);
 
-    void inject(ContactsFragment contactsFragment);
+    void inject(ThreadsListFragment threadsListFragment);
 }

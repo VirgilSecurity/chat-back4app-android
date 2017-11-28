@@ -17,14 +17,20 @@
         app:contentInsetRight="0dp"
         app:contentInsetStart="0dp">
 
-        <TextView
-            android:id="@+id/tvToolbarTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:textSize="18dp"
-            tools:text="Chat list" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvToolbarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                tools:text="Chat list" />
+        </RelativeLayout>
+
     </android.support.v7.widget.Toolbar>
 </android.support.design.widget.AppBarLayout>

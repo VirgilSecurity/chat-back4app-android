@@ -2,13 +2,17 @@ package com.android.virgilsecurity.virgilback4app.util;
 
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.virgilsecurity.virgilback4app.R;
+import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.virgilsecurity.sdk.highlevel.VirgilBuffer;
 
 import java.security.MessageDigest;
@@ -47,28 +51,32 @@ public class Utils {
         Log.d(tag, text);
     }
 
-    public static void replaceFragmentNoTag(FragmentManager fm, Fragment fragment) {
+    public static void replaceFragmentNoTag(FragmentManager fm, int containerId, Fragment fragment) {
         fm.beginTransaction()
           .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-          .replace(R.id.flContainer, fragment)
+          .replace(containerId, fragment)
           .commit();
     }
 
-    public static void replaceFragmentNoBackStack(FragmentManager fm, Fragment fragment, String tag) {
+    public static void replaceFragmentNoBackStack(FragmentManager fm, int containerId, Fragment fragment, String tag) {
         fm.beginTransaction()
           .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-          .replace(R.id.flContainer, fragment, tag)
+          .replace(containerId, fragment, tag)
           .commit();
     }
 
-    public static void replaceFragment(FragmentManager fm, Fragment fragment, String tag) {
+    public static void replaceFragment(FragmentManager fm, int containerId, Fragment fragment, String tag) {
         fm.beginTransaction()
           .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-          .replace(R.id.flContainer, fragment, tag)
+          .replace(containerId, fragment, tag)
           .addToBackStack(tag)
           .commit();
     }
 
+    /*
+     * Generates SHA-256 password from base64 string
+     *
+     */
     public static String generatePassword(VirgilBuffer virgilBuffer) {
         MessageDigest sha;
         byte[] hash = new byte[0];
@@ -101,10 +109,59 @@ public class Utils {
                 case Const.Http.SERVER_ERROR:
                     return "Server error";
                 default:
-                    return "Something went wrong";
+                    return "Oops.. Something went wrong ):";
+            }
+        } else if (t instanceof ParseException) {
+            ParseException exception = (ParseException) t;
+
+            switch (exception.getCode()) {
+                case ParseException.USERNAME_TAKEN:
+                    return "Username is already registered.\nPlease, try another one.";
+                case ParseException.OBJECT_NOT_FOUND:
+                    return "Username is not registered yet";
+                case 60042: // Custom exception in RxParse.class
+                    return exception.getMessage();
+                default:
+                    return "Oops.. Something went wrong ):";
             }
         } else {
             return "Something went wrong";
         }
+    }
+
+    public static boolean validateUi(TextInputLayout til) {
+        final String text = til.getEditText().getText().toString();
+        Context context = til.getContext();
+
+        if (text.isEmpty()) {
+            til.setError(context.getString(R.string.username_empty));
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static boolean validateUi(EditText et) {
+        final String text = et.getText().toString();
+        Context context = et.getContext();
+
+        if (text.isEmpty()) {
+            et.setError(context.getString(R.string.username_empty));
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static void testParse() {
+        ParseObject object = new ParseObject("GoodObject");
+        object.put("keeeeyyyy", "valllllue");
+        object.saveInBackground(e -> {
+            if (e == null) {
+                Utils.log("Log", "dog");
+            } else {
+                Utils.log("Log", "cat");
+            }
+        });
     }
 }

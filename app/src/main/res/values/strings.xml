@@ -3,9 +3,16 @@
 
     <!-- Back4App -->
     <string name="back4app_server_url">https://parseapi.back4app.com/</string>
-    <string name="back4app_app_id">nBH9WbsixMOK4VW4IPEiLJNXrrYWYnDCm4R8DIlr</string>
-    <string name="back4app_client_key">VCSMCg8MvgveCNV6NI15e68Dy6CBgXEdHDxLpfTh</string>
+    <string name="back4app_live_query_url">wss://virgilmsgrandroid.back4app.io/</string>
+    <string name="back4app_app_id">0YP4zSHDOZy5v50BvGe2ttGRkGbuXaaBTUnr6wfH</string>
+    <string name="back4app_client_key">Wu1T8l9AriZVqDbMoZQbz2AXKvh3sPnEqYabPez7</string>
 
+    <!-- General -->
+    <string name="no_internet">Please, check your internet state</string>
+    <string name="error_loading">Please, swipe from top to retry</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="create">Create</string>
 
     <!-- Login Screen -->
     <string name="login">Log In</string>
@@ -16,4 +23,20 @@
     <string name="already_registered">Entered username has been already registered. Please try another one</string>
     <string name="enter_your_message">Enter your message</string>
     <string name="send">Send</string>
+
+    <!-- Threads List Screen -->
+    <string name="contacts">Contacts</string>
+    <string name="no_threads">No conversations yet.\nYou can start new conversation\nfrom navigation drawer.</string>
+    <string name="drawer_open">Open drawer</string>
+    <string name="drawer_close">Close drawer</string>
+    <string name="create_thread">Create thread</string>
+    <string name="enter_username">Enter username to start chat with</string>
+    <string name="creating_thread">Creating thread…</string>
+    <string name="thread_exists">Current thread already exists</string>
+
+    <!-- Drawer -->
+    <string name="new_chat">New Conversation</string>
+    <string name="log_out">Log out</string>
+    <string name="no_messages">No messages yet.\nBut You can fix it (:</string>
+
 </resources>

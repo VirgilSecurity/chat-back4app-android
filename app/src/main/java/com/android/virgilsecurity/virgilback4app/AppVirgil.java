@@ -6,9 +6,9 @@ import com.android.virgilsecurity.virgilback4app.api.dagger.AppModule;
 import com.android.virgilsecurity.virgilback4app.api.dagger.DaggerVirgilComponent;
 import com.android.virgilsecurity.virgilback4app.api.dagger.VirgilComponent;
 import com.android.virgilsecurity.virgilback4app.api.dagger.VirgilModule;
+import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.model.Message;
 import com.parse.Parse;
-import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 
 
@@ -26,8 +26,13 @@ public class AppVirgil extends Application {
 
         virgilComponent = buildVirgilComponent();
         ParseObject.registerSubclass(Message.class);
-        Parse.initialize(this);
-        ParseInstallation.getCurrentInstallation().saveInBackground(); // TODO: 11/23/17 remove after test
+        ParseObject.registerSubclass(ChatThread.class);
+
+        Parse.initialize(new Parse.Configuration.Builder(this)
+                                 .applicationId(getString(R.string.back4app_app_id))
+                                 .clientKey(getString(R.string.back4app_client_key))
+                                 .server(getString(R.string.back4app_server_url))
+                                 .build());
     }
 
     public static VirgilComponent getVirgilComponent() {

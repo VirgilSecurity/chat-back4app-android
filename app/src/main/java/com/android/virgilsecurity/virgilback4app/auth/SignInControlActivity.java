@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentManager;
 
 import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.base.BaseActivity;
-import com.android.virgilsecurity.virgilback4app.chat.ChatControlActivity;
+import com.android.virgilsecurity.virgilback4app.chat.contactsList.ThreadsListActivity;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 
 /**
@@ -20,14 +20,20 @@ import com.android.virgilsecurity.virgilback4app.util.Utils;
 public class SignInControlActivity extends BaseActivity
         implements LogInFragment.AuthStateListener {
 
-    @StringDef({LoginSection.LOG_IN, LoginSection.SIGN_IN})
-    public @interface LoginSection {
+    @StringDef({Section.LOG_IN, Section.SIGN_IN})
+    public @interface Section {
         String LOG_IN = "LOG_IN";
         String SIGN_IN = "SIGN_IN";
     }
 
     public static void start(Activity from) {
         from.startActivity(new Intent(from, SignInControlActivity.class));
+    }
+
+    public static void startClearTop(Activity from) {
+        from.startActivity(new Intent(from, SignInControlActivity.class)
+                                   .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                                     | Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     public static void startWithFinish(Activity from) {
@@ -50,32 +56,32 @@ public class SignInControlActivity extends BaseActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        changeSection(LoginSection.LOG_IN);
+        changeSection(Section.LOG_IN);
     }
 
-    public void changeSection(@LoginSection String tag) {
+    public void changeSection(@Section String tag) {
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = null;
 
         switch (tag) {
-            case LoginSection.LOG_IN:
+            case Section.LOG_IN:
                 fragment = LogInFragment.newInstance();
                 break;
-            case LoginSection.SIGN_IN:
+            case Section.SIGN_IN:
                 fragment = SignInFragment.newInstance();
                 break;
         }
 
-        Utils.replaceFragmentNoTag(fm, fragment);
+        Utils.replaceFragmentNoTag(fm, R.id.flContainer, fragment);
     }
 
     @Override
     public void onLoggedInSuccesfully() {
-        ChatControlActivity.start(this);
+        ThreadsListActivity.start(this);
     }
 
     @Override
     public void onRegisteredInSuccesfully() {
-        ChatControlActivity.start(this);
+        ThreadsListActivity.start(this);
     }
 }

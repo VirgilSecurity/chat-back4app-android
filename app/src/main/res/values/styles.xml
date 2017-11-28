@@ -15,4 +15,12 @@
     <style name="TextInputBlack">
         <item name="colorAccent">@color/black</item>
     </style>
+
+    <style name="ProgressBarBlack">
+        <item name="colorAccent">@color/black</item>
+    </style>
+
+    <style name="NotTransBtnsDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/colorAccent</item>
+    </style>
 </resources>

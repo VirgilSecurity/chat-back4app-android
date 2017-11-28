@@ -2,14 +2,17 @@
 <resources>
     <color name="colorPrimary">#a31619</color>
     <color name="colorPrimaryDark">#8b0f11</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#0366f2</color>
 
     <color name="snow">#ffffffff</color>
     <color name="black">#ff000000</color>
     <color name="timberwolf">#dbd7d2</color>
     <color name="oxford_blue">#002147</color>
     <color name="black_coral">#54626F</color>
+    <color name="russke_chugun">#9c9fa1</color>
     <color name="chinese_silver">#CCCCCC</color>
     <color name="black_olive">#3B3C36</color>
+    <color name="baby_pink_trans">#e0f1e2e2</color>
+    <color name="virgil_light">#ae4244</color>
 
 </resources>

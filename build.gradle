@@ -54,4 +54,6 @@ ext {
     firebase = "11.6.0"
     crashlytics = "2.7.1@aar"
     nucleus = "7.0.0"
+    back4appCore = "1.16.3"
+    back4appLiveQuery = "1.0.3"
 }

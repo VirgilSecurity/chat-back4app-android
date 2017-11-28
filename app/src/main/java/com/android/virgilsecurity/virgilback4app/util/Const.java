@@ -15,4 +15,21 @@ public class Const {
         public static final int UNPROCESSABLE_ENTITY = 422;
         public static final int SERVER_ERROR = 500;
     }
+
+    public static class TableNames {
+        public static final String USER_NAME = "username";
+        public static final String OBJECT_ID = "objectId";
+        public static final String SENDER_USERNAME = "senderUsername";
+        public static final String SENDER_ID = "senderId";
+        public static final String RECIPIENT_USERNAME = "recipientUsername";
+        public static final String RECIPIENT_ID = "recipientId";
+        public static final String THREAD_ID = "threadId";
+        public static final String LIVE_QUERY_CLASS = "Message";
+        public static final String CREATED_AT_CRITERIA = "createdAt";
+        public static final String CREATED_AT_DATE = "createdAtDate";
+    }
+
+    public static class Request {
+        public static final String CRETE_CARD = "csr";
+    }
 }

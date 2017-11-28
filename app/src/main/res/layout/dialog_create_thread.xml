@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/flRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/llContentRoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/half_default_margin"
+        android:paddingTop="@dimen/half_default_margin"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/half_default_margin"
+            android:paddingStart="@dimen/default_margin"
+            android:textColor="@color/oxford_blue"
+            android:textSize="@dimen/increased_text"
+            tools:text="Title" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/timberwolf" />
+
+        <TextView
+            android:id="@+id/tvMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
+            android:paddingStart="@dimen/default_margin"
+            android:textColor="@color/oxford_blue"
+            android:textSize="@dimen/increased_text"
+            tools:text="Body message text" />
+
+        <EditText
+            android:id="@+id/etUsername"
+            style="@style/TextInputBlack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/default_text"
+            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginTop="@dimen/half_default_margin"
+            android:hint="@string/username"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColorHint="@color/black_coral"
+            android:textSize="@dimen/increased_text"
+            tools:text="Username" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end">
+
+            <Button
+                android:id="@+id/btnCancel"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/default_margin"
+                android:background="@android:color/transparent"
+                android:text="@string/cancel"
+                android:textAllCaps="true"
+                android:textColor="@color/colorAccent" />
+
+            <Button
+                android:id="@+id/btnOk"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/default_margin"
+                android:background="@android:color/transparent"
+                android:text="@string/ok"
+                android:textAllCaps="true"
+                android:textColor="@color/colorAccent" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llLoadingRoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:layout_marginTop="@dimen/default_margin"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/half_default_margin"
+            android:gravity="center"
+            android:text="@string/creating_thread" />
+    </LinearLayout>
+</FrameLayout>

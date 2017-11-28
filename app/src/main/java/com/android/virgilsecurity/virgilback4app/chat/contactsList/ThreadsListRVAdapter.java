@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.virgilsecurity.virgilback4app.R;
+import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -23,23 +24,23 @@ import butterknife.ButterKnife;
  * -__o
  */
 
-public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.ContactHolder> {
+public class ThreadsListRVAdapter extends RecyclerView.Adapter<ThreadsListRVAdapter.ContactHolder> {
 
-    private List<ParseUser> items;
+    private List<ChatThread> items;
     private Context context;
     private ClickListener clickListener;
 
-    public ContactsRVAdapter(Context context) {
+    public ThreadsListRVAdapter(Context context) {
         this.items = Collections.emptyList();
         this.context = context;
     }
 
     @Override
-    public ContactsRVAdapter.ContactHolder onCreateViewHolder(ViewGroup parent,
-                                                              int viewType) {
+    public ThreadsListRVAdapter.ContactHolder onCreateViewHolder(ViewGroup parent,
+                                                                 int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext())
-                                            .inflate(R.layout.item_list_contacts, parent);
+        View view = LayoutInflater.from(context)
+                                  .inflate(R.layout.item_list_contacts, parent, false);
 
         return new ContactHolder(view, clickListener);
     }
@@ -49,7 +50,7 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Co
         holder.bind(items.get(position));
     }
 
-    public void setItems(List<ParseUser> items) {
+    void setItems(List<ChatThread> items) {
         if (items != null) {
             this.items = new ArrayList<>(items);
         } else {
@@ -58,7 +59,7 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Co
         notifyDataSetChanged();
     }
 
-    public void setClickListener(ClickListener clickListener) {
+    void setClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
     }
 
@@ -71,9 +72,12 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Co
 
         private ClickListener listener;
 
-        @BindView(R.id.rlItemRoot) View rlItemRoot;
-        @BindView(R.id.ivUserPhoto) ImageView ivUserPhoto;
-        @BindView(R.id.tvUsername) TextView tvUsername;
+        @BindView(R.id.rlItemRoot)
+        View rlItemRoot;
+        @BindView(R.id.ivUserPhoto)
+        ImageView ivUserPhoto;
+        @BindView(R.id.tvUsername)
+        TextView tvUsername;
 
         ContactHolder(View view, ClickListener listener) {
             super(view);
@@ -82,15 +86,19 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Co
             this.listener = listener;
         }
 
-        public void bind(ParseUser user) {
-            tvUsername.setText(user.getUsername());
-            rlItemRoot.setOnClickListener((v) -> listener.onItemClicked(getAdapterPosition(), user));
+        void bind(ChatThread thread) {
+            if (thread.getSenderUsername().equals(ParseUser.getCurrentUser().getUsername()))
+                tvUsername.setText(thread.getRecipientUsername());
+            else
+                tvUsername.setText(thread.getSenderUsername());
+
+            rlItemRoot.setOnClickListener((v) -> listener.onItemClicked(getAdapterPosition(), thread));
 //            ivUserPhoto.setImageResource(user.getPhotoUrl().....);
         }
     }
 
     public interface ClickListener {
 
-        void onItemClicked(int position, ParseUser user);
+        void onItemClicked(int position, ChatThread user);
     }
 }

@@ -3,10 +3,7 @@ package com.android.virgilsecurity.virgilback4app.auth;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.android.virgilsecurity.virgilback4app.api.rest.RestApi;
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
-
-import javax.inject.Inject;
 
 import nucleus5.presenter.RxPresenter;
 
@@ -22,17 +19,15 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
 
     private String username;
     private String password;
+    private String csr;
 
-
-    @Inject
-    protected RestApi restApi;
 
     @Override
     protected void onCreate(@Nullable Bundle savedState) {
         super.onCreate(savedState);
 
         restartableFirst(REGISTER, () ->
-                                 RxParse.register(username, password),
+                                 RxParse.register(username, password, csr),
                          LogInFragment::onRegisterSuccess,
                          LogInFragment::onRegisterError
                 );
@@ -44,17 +39,23 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
                 );
     }
 
-    public void requestRegister(String username, String password) {
+    void requestRegister(String username, String password, String csr) {
         this.username = username;
         this.password = password;
+        this.csr = csr;
 
         start(REGISTER);
     }
 
-    public void requestLogIn(String username, String password) {
+    void requestLogIn(String username, String password) {
         this.username = username;
         this.password = password;
 
         start(LOG_IN);
+    }
+
+    void disposeAll() {
+        stop(REGISTER);
+        stop(LOG_IN);
     }
 }
