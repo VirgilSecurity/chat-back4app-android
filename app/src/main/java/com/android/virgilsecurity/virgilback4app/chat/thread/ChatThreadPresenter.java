@@ -4,10 +4,10 @@ import android.os.Bundle;
 
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
-import com.android.virgilsecurity.virgilback4app.util.RxVirgil;
+import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
+import com.virgilsecurity.sdk.highlevel.VirgilApi;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import nucleus5.presenter.RxPresenter;
 
 /**
@@ -25,6 +25,8 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
     private int page;
     private String sortCriteria;
     private String text;
+    private VirgilApi virgilApi;
+    private VirgilHelper virgilHelper;
 
     @Override protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
@@ -35,20 +37,21 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
                          ChatThreadFragment::onGetMessagesError);
 
         restartableFirst(SEND_MESSAGE, () ->
-                                 RxVirgil.encodeMessage(text)
-                                         .subscribeOn(Schedulers.io())
-                                         .flatMap(s -> {
-                                             return RxParse.sendMessage(s, thread);})
-                                         .observeOn(AndroidSchedulers.mainThread()),
+                                 RxParse.sendMessage(virgilHelper.encrypt(text), thread)
+                                        .observeOn(AndroidSchedulers.mainThread()),
                          ChatThreadFragment::onSendMessageSuccess,
                          ChatThreadFragment::onSendMessageError);
     }
 
-    void requestMessages(ChatThread thread, int limit, int page, String sortCriteria) {
+    void requestMessages(ChatThread thread, int limit,
+                         int page, String sortCriteria,
+                         VirgilApi virgilApi, VirgilHelper virgilHelper) {
         this.thread = thread;
         this.limit = limit;
         this.page = page;
         this.sortCriteria = sortCriteria;
+        this.virgilApi = virgilApi;
+        this.virgilHelper = virgilHelper;
 
         start(GET_MESSAGES);
     }

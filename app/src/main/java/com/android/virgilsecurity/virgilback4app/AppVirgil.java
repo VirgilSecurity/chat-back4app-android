@@ -8,8 +8,11 @@ import com.android.virgilsecurity.virgilback4app.api.dagger.VirgilComponent;
 import com.android.virgilsecurity.virgilback4app.api.dagger.VirgilModule;
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.model.Message;
+import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.parse.Parse;
 import com.parse.ParseObject;
+
+import javax.inject.Inject;
 
 
 /**
@@ -19,6 +22,8 @@ import com.parse.ParseObject;
 public class AppVirgil extends Application {
 
     private static VirgilComponent virgilComponent;
+
+    @Inject protected PrefsManager prefsManager;
 
     @Override
     public void onCreate() {
@@ -33,6 +38,8 @@ public class AppVirgil extends Application {
                                  .clientKey(getString(R.string.back4app_client_key))
                                  .server(getString(R.string.back4app_server_url))
                                  .build());
+
+        virgilComponent.inject(this);
     }
 
     public static VirgilComponent getVirgilComponent() {
@@ -45,4 +52,12 @@ public class AppVirgil extends Application {
                                     .virgilModule(new VirgilModule())
                                     .build();
     }
+
+//    public static KeyStorage getKeyStorage() {
+//        return keyStorage;
+//    }
+//
+//    public static VirgilApi getVirgilApi() {
+//        return virgilApi;
+//    }
 }

@@ -106,6 +106,9 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public void addItem(int position, Message item) {
+        if (items == null)
+            items = new ArrayList<>();
+
         items.add(position, item);
         notifyDataSetChanged();
     }

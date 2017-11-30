@@ -40,5 +40,14 @@ public class ChatThreadActivity extends BaseActivity {
                                    R.id.flContainer,
                                    ChatThreadFragment.newInstance(getIntent().getParcelableExtra(CHAT_THREAD)));
 
+        showBackButton(true, view -> {
+            onBackPressed();
+        });
+    }
+
+    @Override public void onBackPressed() {
+        super.onBackPressed();
+
+        hideKeyboard();
     }
 }

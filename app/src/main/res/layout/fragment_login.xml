@@ -75,19 +75,19 @@
             android:background="@drawable/bg_log_in_buttons"
             android:text="@string/login"
             android:textColor="@color/snow"
-            app:layout_constraintEnd_toStartOf="@+id/btnSignin"
+            app:layout_constraintEnd_toStartOf="@+id/btnSignup"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/flBtnContainer" />
 
         <Button
-            android:id="@+id/btnSignin"
+            android:id="@+id/btnSignup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/default_margin"
             android:layout_marginStart="2sp"
             android:layout_marginTop="@dimen/default_margin"
             android:background="@drawable/bg_log_in_buttons"
-            android:text="@string/signin"
+            android:text="@string/signup"
             android:textColor="@color/snow"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btnLogin"

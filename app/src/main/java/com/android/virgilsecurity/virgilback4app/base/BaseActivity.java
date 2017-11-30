@@ -1,13 +1,14 @@
 package com.android.virgilsecurity.virgilback4app.base;
 
+import android.content.Context;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -27,8 +28,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 public abstract class BaseActivity extends AppCompatActivity {
 
     private TextView tvToolbarTitle;
-    @Nullable
-    private Toolbar toolbar;
+    private View ibToolbarBack;
+    private View ibToolbarHamburger;
+    @Nullable private Toolbar toolbar;
     private View llBaseLoading;
 
     protected abstract int getLayout();
@@ -67,6 +69,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected final void initToolbar(Toolbar toolbar, String titlePage) {
         this.toolbar = toolbar;
         this.tvToolbarTitle = toolbar.findViewById(R.id.tvToolbarTitle);
+        this.ibToolbarBack = toolbar.findViewById(R.id.ibToolbarBack);
+        this.ibToolbarHamburger = toolbar.findViewById(R.id.ibToolbarHamburger);
 
         setSupportActionBar(toolbar);
 
@@ -76,18 +80,46 @@ public abstract class BaseActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("");
     }
 
-    protected void setupToolbarWithUpNav(Toolbar toolbar, String titlePage, @DrawableRes int res) {
-        setSupportActionBar(toolbar);
-
-        tvToolbarTitle = toolbar.findViewById(R.id.tvToolbarTitle);
-        tvToolbarTitle.setText(titlePage);
-
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        getSupportActionBar().setHomeAsUpIndicator(res);
-        getSupportActionBar().setTitle("");
+    protected final void showBackButton(boolean show, @Nullable View.OnClickListener listener) {
+        if (show) {
+            ibToolbarBack.setVisibility(View.VISIBLE);
+            ibToolbarBack.setOnClickListener(listener);
+        } else {
+            ibToolbarBack.setVisibility(View.INVISIBLE);
+        }
     }
+
+    protected final void showHamburger(boolean show, @Nullable View.OnClickListener listener) {
+        if (show) {
+            ibToolbarHamburger.setVisibility(View.VISIBLE);
+            ibToolbarHamburger.setOnClickListener(listener);
+        } else {
+            ibToolbarHamburger.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    protected final void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            if (imm != null)
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+//    protected void setupToolbarWithUpNav(Toolbar toolbar, String titlePage, @DrawableRes int res) {
+//        setSupportActionBar(toolbar);
+//
+//        tvToolbarTitle = toolbar.findViewById(R.id.tvToolbarTitle);
+//        tvToolbarTitle.setText(titlePage);
+//
+//        if (getSupportActionBar() != null)
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//
+//        getSupportActionBar().setHomeAsUpIndicator(res);
+//        getSupportActionBar().setTitle("");
+//    }
 
     @Override
     protected void onResume() {

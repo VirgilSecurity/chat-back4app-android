@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:drawable="@color/snow" />
+    <item android:drawable="@color/snow" />
 
-    <item
-        android:left="90dp"
-        android:right="90dp">
+    <item>
         <bitmap
             android:gravity="center"
             android:src="@drawable/ic_logo_virgil_vertical" />

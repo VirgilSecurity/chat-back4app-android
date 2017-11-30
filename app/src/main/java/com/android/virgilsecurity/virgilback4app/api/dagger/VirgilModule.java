@@ -2,6 +2,8 @@ package com.android.virgilsecurity.virgilback4app.api.dagger;
 
 import android.content.Context;
 
+import com.android.virgilsecurity.virgilback4app.R;
+import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
 import com.virgilsecurity.sdk.highlevel.VirgilApiContext;
 import com.virgilsecurity.sdk.highlevel.VirgilApiImpl;
@@ -19,22 +21,25 @@ import dagger.Provides;
 @Module
 public class VirgilModule {
 
-    @Provides
-    VirgilApi provideVirgilApi(VirgilApiContext virgilApiContext) {
+    @Provides VirgilApi provideVirgilApi(VirgilApiContext virgilApiContext) {
         return new VirgilApiImpl(virgilApiContext);
     }
 
-    @Provides
-    KeyStorage provideKeyStorage(Context context) {
+    @Provides KeyStorage provideKeyStorage(Context context) {
         return new VirgilKeyStorage(context.getFilesDir().getAbsolutePath());
     }
 
-    @Provides
-    VirgilApiContext provideVirgilApiContext(KeyStorage keyStorage) {
+    @Provides VirgilApiContext provideVirgilApiContext(KeyStorage keyStorage, Context context) {
         VirgilApiContext virgilApiContext =
-                new VirgilApiContext("AT.1b6cac21529a7aa6b4c4ee9881c42706f5c4a382326eb7270150f7b8c9e369e1");
+                new VirgilApiContext(context.getString(R.string.virgil_token));
         virgilApiContext.setKeyStorage(keyStorage);
 
         return virgilApiContext;
+    }
+
+    @Provides VirgilHelper provideVirgilHelper(Context context, VirgilApi virgilApi,
+                                               KeyStorage keyStorage,
+                                               VirgilApiContext virgilApiContext) {
+        return new VirgilHelper(context, virgilApi, keyStorage, virgilApiContext);
     }
 }

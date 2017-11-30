@@ -4,7 +4,16 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
+import com.android.virgilsecurity.virgilback4app.util.Utils;
+import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
+import com.parse.ParseUser;
+import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
+import com.virgilsecurity.sdk.crypto.PrivateKey;
+import com.virgilsecurity.sdk.highlevel.VirgilCard;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import nucleus5.presenter.RxPresenter;
 
 /**
@@ -14,48 +23,91 @@ import nucleus5.presenter.RxPresenter;
 
 public class LogInPresenter extends RxPresenter<LogInFragment> {
 
-    private static final int REGISTER = 0;
+    private static final int SIGN_UP = 0;
     private static final int LOG_IN = 1;
 
-    private String username;
-    private String password;
-    private String csr;
+    private VirgilHelper virgilHelper;
+    private String identity;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedState) {
         super.onCreate(savedState);
 
-        restartableFirst(REGISTER, () ->
-                                 RxParse.register(username, password, csr),
-                         LogInFragment::onRegisterSuccess,
-                         LogInFragment::onRegisterError
-                );
+        restartableFirst(SIGN_UP, () ->
+                                 virgilHelper.createCard(identity)
+                                             .flatMap(virgilCard -> {
+                                                 PrivateKey privateKey = virgilHelper.loadPrivateKey(virgilCard.getIdentity());
+                                                 if (privateKey == null)
+                                                     return Observable.error(VirgilKeyIsNotFoundException::new);
+
+                                                 String password =
+                                                         Utils.generatePassword(virgilHelper.loadPrivateKey(virgilCard.getIdentity())
+                                                                                            .getValue());
+
+                                                 return RxParse.signUp(virgilCard.getIdentity(),
+                                                                       password,
+                                                                       virgilCard);
+                                             })
+                                             .flatMap(virgilCard -> {
+                                                 PrivateKey privateKey = virgilHelper.loadPrivateKey(virgilCard.getIdentity());
+                                                 if (privateKey == null)
+                                                     return Observable.error(VirgilKeyIsNotFoundException::new);
+
+                                                 return virgilHelper.initializePfs(virgilCard, privateKey)
+                                                                    .subscribeOn(Schedulers.io());
+                                             })
+                                             .subscribeOn(Schedulers.io())
+                                             .observeOn(AndroidSchedulers.mainThread()),
+                         LogInFragment::onSignUpSuccess,
+                         LogInFragment::onSignUpError
+        );
 
         restartableFirst(LOG_IN, () ->
-                                 RxParse.logIn(username, password),
+                                 virgilHelper.logIn(identity)
+                                             .flatMap(virgilCard -> {
+                                                 String password =
+                                                         Utils.generatePassword(virgilHelper.loadPrivateKey(virgilCard.getIdentity())
+                                                                                            .getValue());
+                                                 Observable<ParseUser> parseUserObservable =
+                                                         RxParse.logIn(virgilCard.getIdentity(),
+                                                                       password);
+
+                                                 Observable<VirgilCard> virgilCardObservable =
+                                                         Observable.just(virgilCard);
+
+                                                 return Observable.zip(parseUserObservable,
+                                                                       virgilCardObservable, (user, card) -> {
+                                                             PrivateKey privateKey = virgilHelper.loadPrivateKey(virgilCard.getIdentity());
+                                                             if (privateKey == null)
+                                                                 return Observable.error(VirgilKeyIsNotFoundException::new);
+                                                             return virgilHelper.initializePfs(card, privateKey)
+                                                                                .subscribeOn(Schedulers.io());
+                                                         });
+                                             })
+                                             .subscribeOn(Schedulers.io())
+                                             .observeOn(AndroidSchedulers.mainThread()),
                          LogInFragment::onLoginSuccess,
                          LogInFragment::onLoginError
-                );
+        );
     }
 
-    void requestRegister(String username, String password, String csr) {
-        this.username = username;
-        this.password = password;
-        this.csr = csr;
+    void requestSignUp(String identity, VirgilHelper virgilHelper) {
+        this.identity = identity;
+        this.virgilHelper = virgilHelper;
 
-        start(REGISTER);
+        start(SIGN_UP);
     }
 
-    void requestLogIn(String username, String password) {
-        this.username = username;
-        this.password = password;
+    void requestLogIn(String identity, VirgilHelper virgilHelper) {
+        this.identity = identity;
+        this.virgilHelper = virgilHelper;
 
         start(LOG_IN);
     }
 
     void disposeAll() {
-        stop(REGISTER);
+        stop(SIGN_UP);
         stop(LOG_IN);
     }
 }

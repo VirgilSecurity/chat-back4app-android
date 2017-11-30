@@ -14,9 +14,13 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         if (ParseUser.getCurrentUser() != null) {
-            ThreadsListActivity.start(this);
+            ThreadsListActivity.startWithFinish(this);
         } else {
             SignInControlActivity.startWithFinish(this);
         }
+    }
+
+    @Override public void onBackPressed() {
+
     }
 }

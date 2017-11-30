@@ -12,6 +12,7 @@ import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.base.BaseActivity;
 import com.android.virgilsecurity.virgilback4app.chat.contactsList.ThreadsListActivity;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
+import com.android.virgilsecurity.virgilback4app.util.customElements.OnFinishTimer;
 
 /**
  * Created by danylooliinyk on 16.11.17.
@@ -25,6 +26,8 @@ public class SignInControlActivity extends BaseActivity
         String LOG_IN = "LOG_IN";
         String SIGN_IN = "SIGN_IN";
     }
+
+    private boolean secondPress;
 
     public static void start(Activity from) {
         from.startActivity(new Intent(from, SignInControlActivity.class));
@@ -83,5 +86,22 @@ public class SignInControlActivity extends BaseActivity
     @Override
     public void onRegisteredInSuccesfully() {
         ThreadsListActivity.start(this);
+    }
+
+    @Override public void onBackPressed() {
+
+        if (secondPress)
+            super.onBackPressed();
+        else
+            Utils.toast(this, getString(R.string.press_exit_once_more));
+
+        secondPress = true;
+
+        new OnFinishTimer(2000, 100) {
+
+            @Override public void onFinish() {
+                secondPress = false;
+            }
+        }.start();
     }
 }

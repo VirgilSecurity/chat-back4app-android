@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">VirgilBack4App</string>
 
+    <!-- Virgil -->
+    <string name="virgil_token">AT.8641c450a983a3435aebe7994fd4c0f60babea997d29b3e8eed7b35beab72be3</string>
+    <string name="virgil_app_id">bd7bf7e832f16e2b3f61fa47682cbfc6b3d31f90778ab0e15515aa775e7b7db3</string>
+    <string name="virgil_app_public_key">MCowBQYDK2VwAyEAyY/Lo4u1st9lveTnsNp7rmAo0aa5y2VihTJrj/wPbCU=</string>
+
     <!-- Back4App -->
     <string name="back4app_server_url">https://parseapi.back4app.com/</string>
     <string name="back4app_live_query_url">wss://virgilmsgrandroid.back4app.io/</string>
@@ -13,10 +18,11 @@
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="create">Create</string>
+    <string name="press_exit_once_more">Press back once more to exit</string>
 
     <!-- Login Screen -->
     <string name="login">Log In</string>
-    <string name="signin">Sign In</string>
+    <string name="signup">Sign Up</string>
     <string name="username">Username</string>
     <string name="username_empty">Please, enter username</string>
     <string name="no_such_user">Entered username is invalid or not registered yet</string>

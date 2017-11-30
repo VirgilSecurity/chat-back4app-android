@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.android.virgilsecurity.virgilback4app.R;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsAlreadyExistsException;
+import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
 import com.virgilsecurity.sdk.highlevel.VirgilBuffer;
 
 import java.security.MessageDigest;
@@ -91,6 +93,24 @@ public class Utils {
         return Base64.encodeToString(hash, Base64.DEFAULT);
     }
 
+    /*
+     * Generates SHA-256 password from base[]
+     *
+     */
+    public static String generatePassword(byte[] privateKey) {
+        MessageDigest sha;
+        byte[] hash = new byte[0];
+
+        try {
+            sha = MessageDigest.getInstance("SHA-256");
+            hash = sha.digest(privateKey);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return Base64.encodeToString(hash, Base64.DEFAULT);
+    }
+
     public static String resolveError(Throwable t) {
         if (t instanceof HttpException) {
             HttpException exception = (HttpException) t;
@@ -124,6 +144,10 @@ public class Utils {
                 default:
                     return "Oops.. Something went wrong ):";
             }
+        } else if (t instanceof VirgilKeyIsNotFoundException) {
+            return "Username is not registered yet";
+        } else if (t instanceof VirgilKeyIsAlreadyExistsException) {
+            return "Username is already registered.\nPlease, try another one.";
         } else {
             return "Something went wrong";
         }

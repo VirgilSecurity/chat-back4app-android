@@ -7,6 +7,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.util.Const;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.android.virgilsecurity.virgilback4app.util.customElements.CreateThreadDialog;
+import com.android.virgilsecurity.virgilback4app.util.customElements.OnFinishTimer;
 import com.parse.ParseUser;
 
 import java.util.List;
@@ -38,10 +40,10 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
 
     private static final String THREADS_FRAGMENT = "THREADS_FRAGMENT";
 
-    private ActionBarDrawerToggle mDrawerToggle;
+    private ActionBarDrawerToggle drawerToggle;
     private CreateThreadDialog createThreadDialog;
     private ParseUser userNewThread;
-//    private boolean threadCreated;
+    private boolean secondPress;
 
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
@@ -72,31 +74,33 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
                                          R.id.flContainer,
                                          ThreadsListFragment.newInstance(),
                                          THREADS_FRAGMENT);
+        hideKeyboard();
+        showHamburger(true, view -> {
+            if (!dlDrawer.isDrawerOpen(Gravity.START))
+                dlDrawer.openDrawer(Gravity.START);
+            else
+                dlDrawer.closeDrawer(Gravity.START);
+        });
     }
 
     private void initDrawer() {
-
         TextView tvUsernameDrawer =
                 nvNavigation.getHeaderView(0).findViewById(R.id.tvUsernameDrawer);
         tvUsernameDrawer.setText(ParseUser.getCurrentUser().getUsername());
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, dlDrawer,
-                                                  R.string.drawer_open, R.string.drawer_close) {
+        drawerToggle = new ActionBarDrawerToggle(this, dlDrawer,
+                                                 R.string.drawer_open, R.string.drawer_close) {
 
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-//                getActionBar().setTitle(mTitle);
-//                invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-//                getActionBar().setTitle(mDrawerTitle);
-//                invalidateOptionsMenu();
             }
         };
 
-        dlDrawer.addDrawerListener(mDrawerToggle);
+        dlDrawer.addDrawerListener(drawerToggle);
 
         if (getActionBar() != null) {
             getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -155,11 +159,6 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
     }
 
     public void onGetThreadsSuccess(@NonNull List<ChatThread> threads) {
-//        if (threadCreated) {
-//            createThreadDialog.dismiss();
-//            return;
-//        }
-
         boolean threadExists = false;
         ChatThread chatThread = null;
 
@@ -189,11 +188,27 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
                                       1000,
                                       0,
                                       Const.TableNames.CREATED_AT_CRITERIA); // TODO: 11/27/17 add pagination
-//        threadCreated = true; // for no recursion
     }
 
     public void onCreateThreadError(Throwable t) {
         createThreadDialog.dismiss();
         Utils.toast(this, Utils.resolveError(t));
+    }
+
+    @Override public void onBackPressed() {
+
+        if (secondPress)
+            super.onBackPressed();
+        else
+            Utils.toast(this, getString(R.string.press_exit_once_more));
+
+        secondPress = true;
+
+        new OnFinishTimer(2000, 100) {
+
+            @Override public void onFinish() {
+                secondPress = false;
+            }
+        }.start();
     }
 }
