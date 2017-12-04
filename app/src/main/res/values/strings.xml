@@ -39,6 +39,7 @@
     <string name="enter_username">Enter username to start chat with</string>
     <string name="creating_thread">Creating thread…</string>
     <string name="thread_exists">Current thread already exists</string>
+    <string name="no_chat_with_yourself">No chats with yourself, please</string>
 
     <!-- Drawer -->
     <string name="new_chat">New Conversation</string>

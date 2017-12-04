@@ -15,6 +15,8 @@ import com.android.virgilsecurity.virgilback4app.base.BaseFragmentWithPresenter;
 import com.android.virgilsecurity.virgilback4app.util.UsernameInputFilter;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
+import com.parse.ParseUser;
+import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
 import com.virgilsecurity.sdk.storage.KeyEntry;
 
 import java.util.Locale;
@@ -47,6 +49,7 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     @Inject protected VirgilHelper virgilHelper;
 
     private AuthStateListener authStateListener;
+    private String identity;
 
     public static LogInFragment newInstance() {
 
@@ -78,6 +81,7 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 tilUserName.setError(null);
+                tilUserName.setErrorEnabled(false);
             }
 
             @Override
@@ -94,23 +98,31 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         getPresenter().disposeAll();
     }
 
+    @Override public void onResume() {
+        super.onResume();
+
+        showProgress(!getPresenter().isDisposed());
+    }
+
     @OnClick({R.id.btnLogin, R.id.btnSignup})
     protected void onInterfaceClick(View v) {
         if (!Utils.validateUi(tilUserName))
             return;
 
-        final String identity = etUsername.getText().toString().toLowerCase(Locale.getDefault());
+        identity = etUsername.getText().toString().toLowerCase(Locale.getDefault());
 //        VirgilHelper virgilHelper = new VirgilHelper(activity, virgilApi,
 //                                                     virgilKeyStorage, virgilApiContext);
 
         switch (v.getId()) {
             case R.id.btnLogin:
                 tilUserName.setError(null);
+                tilUserName.setErrorEnabled(false);
                 showProgress(true);
                 getPresenter().requestLogIn(identity, virgilHelper);
                 break;
             case R.id.btnSignup:
                 tilUserName.setError(null);
+                tilUserName.setErrorEnabled(false);
                 showProgress(true);
                 getPresenter().requestSignUp(identity, virgilHelper);
                 break;
@@ -123,7 +135,7 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         Utils.toast(this, "Login Stub (" + userKey.getName() + ")");
     }
 
-    public void onLoginSuccess(Object o) {
+    public void onLoginSuccess(ParseUser user) {
         showProgress(false);
         authStateListener.onLoggedInSuccesfully();
     }
@@ -141,6 +153,13 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     public void onSignUpError(Throwable throwable) {
         showProgress(false);
         Utils.toast(this, Utils.resolveError(throwable));
+
+        try {
+            if (virgilHelper.loadPrivateKey(identity) != null)
+                virgilHelper.removePrivateKey(identity);
+        } catch (CryptoException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showProgress(boolean show) {

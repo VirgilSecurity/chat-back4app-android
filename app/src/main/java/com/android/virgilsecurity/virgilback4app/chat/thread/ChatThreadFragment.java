@@ -19,12 +19,16 @@ import com.android.virgilsecurity.virgilback4app.base.BaseFragmentWithPresenter;
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.model.Message;
 import com.android.virgilsecurity.virgilback4app.util.Const;
+import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
 import com.parse.ParseLiveQueryClient;
 import com.parse.ParseQuery;
 import com.parse.SubscriptionHandling;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
+import com.virgilsecurity.sdk.highlevel.VirgilApiContext;
+import com.virgilsecurity.sdk.highlevel.VirgilCard;
+import com.virgilsecurity.sdk.highlevel.VirgilCards;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -49,12 +53,15 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
     private static final int VISIBLE_THRESHOLD = 5;
 
     private ChatThread thread;
+    private VirgilCard meCard;
+    private VirgilCard youCard;
     private ChatThreadRVAdapter adapter;
     private List<Message> messages;
     private int page;
     private boolean isLoading;
     @Inject protected VirgilHelper virgilHelper;
     @Inject protected VirgilApi virgilApi;
+    @Inject protected VirgilApiContext virgilApiContext;
 
     @BindView(R.id.rvChat) RecyclerView rvChat;
     @BindView(R.id.etMessage) EditText etMessage;
@@ -89,29 +96,21 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
         btnSend.setBackground(ContextCompat.getDrawable(activity,
                                                         R.drawable.bg_btn_chat_send_pressed));
 
-        if (messages == null) {
-            pbLoading.setVisibility(View.VISIBLE);
-            isLoading = true;
-            getPresenter().requestMessages(thread, 50, page,
-                                           Const.TableNames.CREATED_AT_CRITERIA,
-                                           virgilApi, virgilHelper);
-        }
-
         srlRefresh.setOnRefreshListener(() -> {
-            tvEmpty.setVisibility(View.INVISIBLE);
-            tvError.setVisibility(View.INVISIBLE);
-            page = 0;
-            pbLoading.setVisibility(View.VISIBLE);
-            isLoading = true;
-            getPresenter().requestMessages(thread, 50, page,
-                                           Const.TableNames.CREATED_AT_CRITERIA,
-                                           virgilApi, virgilHelper);
+            if (messages == null || messages.size() == 0) {
+                tvEmpty.setVisibility(View.INVISIBLE);
+                tvError.setVisibility(View.INVISIBLE);
+                page = 0;
+//            pbLoading.setVisibility(View.VISIBLE);
+                isLoading = true;
+                getMessages();
+            }
+            srlRefresh.setRefreshing(false);
         });
 
-        initLiveQuery();
         initMessageInput();
 
-        adapter = new ChatThreadRVAdapter(activity);
+        adapter = new ChatThreadRVAdapter(activity, virgilHelper);
         LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
         layoutManager.setReverseLayout(true);
         rvChat.setLayoutManager(layoutManager);
@@ -125,13 +124,35 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
                 int totalItemCount = layoutManager.getItemCount();
                 int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
-                if ((messages != null && messages.size() > 50) && (!isLoading && totalItemCount <= (lastVisibleItem + VISIBLE_THRESHOLD))) {
+                if ((messages != null && messages.size() > 40) && (!isLoading && totalItemCount <= (lastVisibleItem + VISIBLE_THRESHOLD))) {
                     page++;
+                    showProgress(true);
                     getPresenter().requestMessagesPagination(page);
-                    isLoading = true;
                 }
             }
         });
+    }
+
+    private void getMessages() {
+        if (meCard == null || youCard == null) {
+            initCards();
+        } else if (messages == null || messages.size() == 0) {
+            showProgress(true);
+            getPresenter().requestMessages(thread, 50, page,
+                                           Const.TableNames.CREATED_AT_CRITERIA,
+                                           virgilApi, virgilHelper);
+        }
+    }
+
+    private void initCards() {
+        showProgress(true);
+
+        meCard = new VirgilCard(virgilApiContext, PrefsManager.VirgilPreferences.getCardModel());
+
+        if (thread.getSenderUsername().equals(meCard.getIdentity()))
+            getPresenter().requestGetCard(thread.getRecipientUsername(), virgilHelper);
+        else
+            getPresenter().requestGetCard(thread.getSenderUsername(), virgilHelper);
     }
 
     private void initMessageInput() {
@@ -175,11 +196,11 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
                                          (query, message) -> {
                                              Utils.log("SubscriptionHandling", message.getBody());
                                              activity.runOnUiThread(() -> {
-                                                 if (messages.size() > 0)
-                                                     tvEmpty.setVisibility(View.INVISIBLE);
-
                                                  adapter.addItem(0, message);
                                                  rvChat.smoothScrollToPosition(0);
+
+                                                 if (adapter.getItemCount() > 0)
+                                                     tvEmpty.setVisibility(View.INVISIBLE);
                                              });
                                          });
     }
@@ -188,9 +209,20 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
         switch (v.getId()) {
             case R.id.btnSend:
 //                etMessage.requestFocus();
-                lockSendUi(true, true);
-                getPresenter().requestSendMessage(etMessage.getText().toString(), thread);
-                isLoading = true;
+                if (meCard != null && youCard != null) {
+                    VirgilCards cards = new VirgilCards(virgilApiContext);
+                    cards.add(meCard);
+                    cards.add(youCard);
+                    lockSendUi(true, true);
+                    getPresenter().requestSendMessage(etMessage.getText().toString(),
+                                                      thread,
+                                                      cards);
+                    isLoading = true;
+                } else {
+                    showProgress(true);
+                    getMessages();
+                    lockSendUi(true, false);
+                }
 //                etMessage.requestFocus();
                 break;
         }
@@ -220,22 +252,28 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
     }
 
     public void onGetMessagesSuccess(List<Message> messages) {
-        pbLoading.setVisibility(View.INVISIBLE);
-        isLoading = false;
+        showProgress(false);
         srlRefresh.setRefreshing(false);
+        lockSendUi(false, false);
 
         if (messages.size() != 0) {
-            this.messages = new ArrayList<>(messages);
-            adapter.setItems(messages);
-        } else {
+            tvEmpty.setVisibility(View.INVISIBLE);
+            if (this.messages != null && this.messages.size() > 0) {
+                this.messages.addAll(messages);
+                adapter.addItems(messages);
+            } else {
+                this.messages = new ArrayList<>(messages);
+                adapter.setItems(messages);
+            }
+        } else if (adapter.getItemCount() == 0) {
             tvEmpty.setVisibility(View.VISIBLE);
         }
     }
 
     public void onGetMessagesError(Throwable t) {
-        pbLoading.setVisibility(View.INVISIBLE);
-        isLoading = false;
+        showProgress(false);
         srlRefresh.setRefreshing(false);
+        lockSendUi(false, false);
 
         if (messages == null || messages.size() == 0)
             tvError.setVisibility(View.VISIBLE);
@@ -270,57 +308,55 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
                                          InputMethodManager.HIDE_NOT_ALWAYS);
 
         hideKeyboard();
+
+        getPresenter().disposeAll();
     }
 
-//    private void receiveMessage(SecureChat chat, CardModel senderCard, String message) {
-//        try {
-//            // load an existing session or establish new one
-//            SecureSession session = chat.loadUpSession(senderCard, message, null);
-//
-//            // decrypt message using established session
-//            String plaintext = session.decrypt(message);
-//
-//            // handle a message
-//            handleMessage(plaintext);
-//        } catch (Exception e) {
-//            // Error handling
-//        }
-//    }
-//
-//    private void sendMessage(SecureChat chat, CardModel receiverCard, String message) {
-//        // get an active session by recipient's card id
-//        SecureSession session = chat.activeSession(receiverCard.getId());
-//
-//        if (session == null) {
-//            // start new session with recipient if session wasn't initialized yet
-//            try {
-//                session = chat.startNewSession(receiverCard, null);
-//            } catch (SecureChatException e) {
-//                e.printStackTrace();
-//            } catch (CardValidationException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        sendMessage(session, receiverCard, message);
-//    }
-//
-//    private void sendMessage(SecureSession session,
-//                             CardModel receiverCard,
-//                             String message) {
-//
-//        String ciphertext = null;
-//
-//        try {
-//            // encrypt the message using previously initialized session
-//            ciphertext = session.encrypt(message);
-//        } catch (Exception e) {
-//            // error handling
-//            return;
-//        }
-//
-//        // send a cipher message to recipient using your messaging service
-//        sendMessageToRecipient(receiverCard.getSnapshotModel().getIdentity(),
-//                               ciphertext);
-//    }
+    @Override public void onResume() {
+        super.onResume();
+
+        getMessages();
+
+        if (messages == null || messages.isEmpty())
+            tvEmpty.setVisibility(View.VISIBLE);
+
+        if (getPresenter().isDisposed()) {
+            showProgress(false);
+            isLoading = false;
+            lockSendUi(true, false);
+            lockSendUi(false, false);
+            srlRefresh.setRefreshing(false);
+        }
+    }
+
+    public void onGetCardSuccess(VirgilCard virgilCard) {
+        youCard = virgilCard;
+
+        adapter.setCards(meCard, youCard);
+        initLiveQuery();
+
+        if (messages == null) {
+            showProgress(false);
+            getPresenter().requestMessages(thread, 50, page,
+                                           Const.TableNames.CREATED_AT_CRITERIA,
+                                           virgilApi, virgilHelper);
+        } else {
+            showProgress(false);
+            srlRefresh.setRefreshing(false);
+            lockSendUi(false, false);
+        }
+    }
+
+    public void onGetCardError(Throwable t) {
+        showProgress(false);
+        srlRefresh.setRefreshing(false);
+        lockSendUi(false, false);
+
+        Utils.toast(this, Utils.resolveError(t));
+    }
+
+    private void showProgress(boolean show) {
+        pbLoading.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+        isLoading = show;
+    }
 }

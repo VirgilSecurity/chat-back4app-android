@@ -17,6 +17,7 @@ import com.android.virgilsecurity.virgilback4app.base.BaseActivityWithPresenter;
 import com.android.virgilsecurity.virgilback4app.chat.thread.ChatThreadActivity;
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.util.Const;
+import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.android.virgilsecurity.virgilback4app.util.customElements.CreateThreadDialog;
 import com.android.virgilsecurity.virgilback4app.util.customElements.OnFinishTimer;
@@ -110,12 +111,17 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
         nvNavigation.setNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.itemNewChat:
+                    dlDrawer.closeDrawer(Gravity.START);
                     createThreadDialog =
                             new CreateThreadDialog(this, R.style.NotTransBtnsDialogTheme,
                                                    getString(R.string.create_thread),
                                                    getString(R.string.enter_username));
 
                     createThreadDialog.setOnCreateThreadDialogListener((username -> {
+                        if (ParseUser.getCurrentUser().getUsername().equals(username)) {
+                            Utils.toast(this, R.string.no_chat_with_yourself);
+                        }
+
                         getPresenter().requestUser(username);
                     }));
 
@@ -123,8 +129,12 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
 
                     return true;
                 case R.id.itemLogOut:
+                    dlDrawer.closeDrawer(Gravity.START);
+                    showBaseLoading(true);
                     ParseUser.logOutInBackground(e -> {
+                        runOnUiThread(() -> showBaseLoading(false));
                         if (e == null) {
+                            PrefsManager.VirgilPreferences.clearCardModel();
                             SignInControlActivity.startClearTop(this);
                         } else {
                             Utils.toast(this, Utils.resolveError(e));

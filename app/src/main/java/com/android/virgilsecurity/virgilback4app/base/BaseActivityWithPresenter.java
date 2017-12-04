@@ -34,6 +34,7 @@ public abstract class BaseActivityWithPresenter<P extends RxPresenter> extends N
     private View ibToolbarHamburger;
     @Nullable private Toolbar toolbar;
     private View llBaseLoading;
+    private View llBaseLoadingTextNoNetwork;
 
     protected abstract int getLayout();
 
@@ -48,6 +49,7 @@ public abstract class BaseActivityWithPresenter<P extends RxPresenter> extends N
 
         FrameLayout flBaseContainer = baseView.findViewById(R.id.flBaseContainer);
         llBaseLoading = baseView.findViewById(R.id.llBaseLoading);
+        llBaseLoadingTextNoNetwork = baseView.findViewById(R.id.tvBaseNoNetwork);
 
         View childView = inflater.inflate(getLayout(), null);
         flBaseContainer.removeAllViews();
@@ -101,9 +103,12 @@ public abstract class BaseActivityWithPresenter<P extends RxPresenter> extends N
 
         ReactiveNetwork.observeNetworkConnectivity(getApplicationContext())
                        .debounce(1000, TimeUnit.MILLISECONDS)
+                       .distinctUntilChanged()
                        .observeOn(AndroidSchedulers.mainThread())
                        .subscribe((connectivity) -> {
                            showNoNetwork(!(connectivity.getState() == NetworkInfo.State.CONNECTED));
+                           llBaseLoading.requestFocus();
+                           hideKeyboard();
                        });
     }
 
@@ -113,7 +118,14 @@ public abstract class BaseActivityWithPresenter<P extends RxPresenter> extends N
     }
 
     private void showNoNetwork(boolean show) {
+        showBaseLoading(show);
+        llBaseLoadingTextNoNetwork.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    public void showBaseLoading(boolean show) {
         llBaseLoading.setVisibility(show ? View.VISIBLE : View.GONE);
+        llBaseLoading.requestFocus();
+        hideKeyboard();
     }
 
     protected final void hideKeyboard() {

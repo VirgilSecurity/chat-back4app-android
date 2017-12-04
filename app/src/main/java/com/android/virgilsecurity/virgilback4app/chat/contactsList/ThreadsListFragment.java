@@ -13,9 +13,15 @@ import com.android.virgilsecurity.virgilback4app.base.BaseFragmentWithPresenter;
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.util.Const;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
+import com.parse.ParseLiveQueryClient;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SubscriptionHandling;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -30,7 +36,7 @@ import nucleus5.factory.RequiresPresenter;
 public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListActivity, ThreadsListFragmentPresenter> {
 
     @IntDef({State.THREADS_NOT_LOADED, State.IS_LOADING,
-            State.THREAD_FOUND, State.THREAD_NOT_FOUND})
+                    State.THREAD_FOUND, State.THREAD_NOT_FOUND})
     public @interface State {
         int THREADS_NOT_LOADED = 15;
         int IS_LOADING = 17;
@@ -74,10 +80,14 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
 
     @Override
     protected void postButterInit() {
-        setRetainInstance(true);
+//        setRetainInstance(true);
         onStartThreadListener = activity;
 
         adapter = new ThreadsListRVAdapter(activity);
+        adapter.setClickListener((position, user) -> {
+            onStartThreadListener.onStartThread(user);
+        });
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
         rvContacts.setLayoutManager(layoutManager);
         rvContacts.setAdapter(adapter);
@@ -90,55 +100,114 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
                 int totalItemCount = layoutManager.getItemCount();
                 int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
-                if ((users != null && users.size() > 20) && (!isLoading && totalItemCount <= (lastVisibleItem + VISIBLE_THRESHOLD))) {
+                if ((users != null && users.size() > 13) && (!isLoading && totalItemCount <= (lastVisibleItem + VISIBLE_THRESHOLD))) {
                     page++;
                     getPresenter().requestThreadsPagination(page);
-                    isLoading = true;
+                    showProgress(true);
                 }
             }
         });
 
-        if (users == null) {
-            pbLoading.setVisibility(View.VISIBLE);
-            getPresenter().requestThreads(ParseUser.getCurrentUser(),
-                                          20, page, Const.TableNames.CREATED_AT_CRITERIA);
-            isLoading = true;
-        }
-
         srlRefresh.setOnRefreshListener(() -> {
+//            if (threads == null || threads.size() == 0) {
             tvEmpty.setVisibility(View.INVISIBLE);
             tvError.setVisibility(View.INVISIBLE);
             page = 0;
-            pbLoading.setVisibility(View.VISIBLE);
+//            pbLoading.setVisibility(View.VISIBLE);
+            threads.clear();
             getPresenter().requestThreads(ParseUser.getCurrentUser(),
                                           20, page, Const.TableNames.CREATED_AT_CRITERIA);
             isLoading = true;
+//            } else {
+//                srlRefresh.setRefreshing(false);
+//            }
         });
     }
 
+    @Override public void onPause() {
+        super.onPause();
+
+        getPresenter().disposeAll();
+    }
+
+    @Override public void onResume() {
+        super.onResume();
+
+        if (threads == null || threads.isEmpty()) {
+            getPresenter().requestThreads(ParseUser.getCurrentUser(),
+                                          20, page, Const.TableNames.CREATED_AT_CRITERIA);
+            showProgress(true);
+        }
+
+        initLiveQuery();
+
+        if (getPresenter().isDisposed()) {
+            showProgress(false);
+            isLoading = false;
+            srlRefresh.setRefreshing(false);
+        }
+    }
+
+    private void initLiveQuery() {
+        ParseLiveQueryClient parseLiveQueryClient = null;
+        try {
+            parseLiveQueryClient = ParseLiveQueryClient.Factory
+                    .getClient(new URI(getString(R.string.back4app_live_query_url)));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        ParseQuery<ChatThread> parseThreadSender = ParseQuery.getQuery(ChatThread.class);
+        parseThreadSender.whereEqualTo(Const.TableNames.SENDER_ID,
+                                       ParseUser.getCurrentUser().getObjectId());
+        ParseQuery<ChatThread> parseThreadRecipient = ParseQuery.getQuery(ChatThread.class);
+        parseThreadRecipient.whereEqualTo(Const.TableNames.RECIPIENT_ID,
+                                          ParseUser.getCurrentUser().getObjectId());
+        ParseQuery<ChatThread> parseQueryResult = ParseQuery.or(Arrays.asList(parseThreadSender,
+                                                                              parseThreadRecipient));
+
+        SubscriptionHandling<ChatThread> subscriptionHandling = parseLiveQueryClient.subscribe(parseQueryResult);
+
+        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE,
+                                         (query, thread) -> {
+                                             Utils.log("Log", query.toString() + thread.toString());
+                                             activity.runOnUiThread(() -> {
+                                                 adapter.addItem(0, thread);
+                                                 rvContacts.smoothScrollToPosition(0);
+
+                                                 if (adapter.getItemCount() > 0)
+                                                     tvEmpty.setVisibility(View.INVISIBLE);
+                                             });
+                                         });
+    }
+
     public void onGetThreadsSuccess(@NonNull List<ChatThread> threads) {
-        pbLoading.setVisibility(View.INVISIBLE);
-        isLoading = false;
+        showProgress(false);
         srlRefresh.setRefreshing(false);
 
         if (threads.size() != 0) {
-            this.threads = new ArrayList<>(threads);
-            adapter.setItems(threads);
-            adapter.setClickListener((position, user) -> {
-                onStartThreadListener.onStartThread(user);
-            });
-        } else {
+            if (this.threads != null && this.threads.size() > 0) {
+                this.threads.addAll(threads);
+                adapter.addItems(threads);
+            } else {
+                this.threads = new ArrayList<>(threads);
+                adapter.setItems(threads);
+            }
+        } else if (adapter.getItemCount() == 0) {
             tvEmpty.setVisibility(View.VISIBLE);
         }
     }
 
     public void onGetThreadsError(Throwable throwable) {
-        isLoading = false;
-        pbLoading.setVisibility(View.INVISIBLE);
+        showProgress(false);
         if (users == null || users.size() == 0)
             tvError.setVisibility(View.VISIBLE);
 
         Utils.toast(activity, Utils.resolveError(throwable));
+    }
+
+    private void showProgress(boolean show) {
+        pbLoading.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+        isLoading = show;
     }
 
     interface OnStartThreadListener {

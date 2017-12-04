@@ -5,6 +5,7 @@
     <color name="colorAccent">#0366f2</color>
 
     <color name="snow">#ffffffff</color>
+    <color name="yesterday_snow">#c6ffffff</color>
     <color name="black">#ff000000</color>
     <color name="timberwolf">#dbd7d2</color>
     <color name="oxford_blue">#002147</color>

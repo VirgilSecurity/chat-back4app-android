@@ -13,6 +13,7 @@ import com.android.virgilsecurity.virgilback4app.base.BaseActivity;
 import com.android.virgilsecurity.virgilback4app.chat.contactsList.ThreadsListActivity;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.android.virgilsecurity.virgilback4app.util.customElements.OnFinishTimer;
+import com.parse.ParseUser;
 
 /**
  * Created by danylooliinyk on 16.11.17.
@@ -53,6 +54,14 @@ public class SignInControlActivity extends BaseActivity
     @Override
     protected void postButterInit() {
 
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+
+        if (ParseUser.getCurrentUser() != null) {
+            ThreadsListActivity.startWithFinish(this);
+        }
     }
 
     @Override

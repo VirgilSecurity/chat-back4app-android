@@ -70,6 +70,12 @@ public class PrefsManager {
             else
                 return new Gson().fromJson(prefs.getString(VIRGIL_CARD, null), CardModel.class);
         }
+
+        public static void clearCardModel() {
+            prefs.edit()
+                 .remove(VIRGIL_CARD)
+                 .apply();
+        }
     }
 
 }

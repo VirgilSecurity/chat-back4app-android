@@ -31,6 +31,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private View ibToolbarBack;
     private View ibToolbarHamburger;
     @Nullable private Toolbar toolbar;
+    private View llBaseLoadingTextNoNetwork;
     private View llBaseLoading;
 
     protected abstract int getLayout();
@@ -46,6 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         FrameLayout flBaseContainer = baseView.findViewById(R.id.flBaseContainer);
         llBaseLoading = baseView.findViewById(R.id.llBaseLoading);
+        llBaseLoadingTextNoNetwork = baseView.findViewById(R.id.tvBaseNoNetwork);
 
         View childView = inflater.inflate(getLayout(), null);
         flBaseContainer.removeAllViews();
@@ -127,6 +129,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         ReactiveNetwork.observeNetworkConnectivity(getApplicationContext())
                        .debounce(1000, TimeUnit.MILLISECONDS)
+                       .distinctUntilChanged()
                        .observeOn(AndroidSchedulers.mainThread())
                        .subscribe((connectivity) -> {
                            showNoNetwork(!(connectivity.getState() == NetworkInfo.State.CONNECTED));
@@ -139,6 +142,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void showNoNetwork(boolean show) {
+        showBaseLoading(show);
+        llBaseLoadingTextNoNetwork.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    public void showBaseLoading(boolean show) {
         llBaseLoading.setVisibility(show ? View.VISIBLE : View.GONE);
+        llBaseLoading.requestFocus();
+        hideKeyboard();
     }
 }

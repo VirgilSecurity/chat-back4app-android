@@ -28,9 +28,11 @@
             android:theme="@style/ProgressBarBlack" />
 
         <TextView
+            android:id="@+id/tvBaseNoNetwork"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/ddble_margin"
+            android:visibility="gone"
             android:text="@string/no_internet"
             android:textColor="@color/oxford_blue" />
     </LinearLayout>

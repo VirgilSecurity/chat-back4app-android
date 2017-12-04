@@ -40,7 +40,7 @@ public class ThreadsListRVAdapter extends RecyclerView.Adapter<ThreadsListRVAdap
                                                                  int viewType) {
 
         View view = LayoutInflater.from(context)
-                                  .inflate(R.layout.item_list_contacts, parent, false);
+                                  .inflate(R.layout.item_list_threads, parent, false);
 
         return new ContactHolder(view, clickListener);
     }
@@ -66,6 +66,22 @@ public class ThreadsListRVAdapter extends RecyclerView.Adapter<ThreadsListRVAdap
     @Override
     public int getItemCount() {
         return items != null ? items.size() : -1;
+    }
+
+    public void addItems(List<ChatThread> items) {
+        if (items == null)
+            items = new ArrayList<>();
+
+        this.items.addAll(items);
+        notifyDataSetChanged();
+    }
+
+    public void addItem(int i, ChatThread thread) {
+        if (items == null || items.isEmpty())
+            items = new ArrayList<>();
+
+        items.add(i, thread);
+        notifyDataSetChanged();
     }
 
     static class ContactHolder extends RecyclerView.ViewHolder {

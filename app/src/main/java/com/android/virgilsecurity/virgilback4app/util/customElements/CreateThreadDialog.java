@@ -11,6 +11,7 @@ import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -78,6 +79,11 @@ public class CreateThreadDialog extends Dialog {
             @Override
             public void afterTextChanged(Editable editable) {
 
+            }
+        });
+        etUsername.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             }
         });
 

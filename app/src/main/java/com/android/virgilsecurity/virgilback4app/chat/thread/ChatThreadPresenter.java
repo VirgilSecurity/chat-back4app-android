@@ -6,8 +6,10 @@ import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
 import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
+import com.virgilsecurity.sdk.highlevel.VirgilCards;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import nucleus5.presenter.RxPresenter;
 
 /**
@@ -19,6 +21,7 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
 
     private static final int GET_MESSAGES = 0;
     private static final int SEND_MESSAGE = 1;
+    private static final int GET_CARD = 2;
 
     private ChatThread thread;
     private int limit;
@@ -27,6 +30,8 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
     private String text;
     private VirgilApi virgilApi;
     private VirgilHelper virgilHelper;
+    private String identity;
+    private VirgilCards cards;
 
     @Override protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
@@ -37,10 +42,18 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
                          ChatThreadFragment::onGetMessagesError);
 
         restartableFirst(SEND_MESSAGE, () ->
-                                 RxParse.sendMessage(virgilHelper.encrypt(text), thread)
+                                 RxParse.sendMessage(virgilHelper.encrypt(text, cards),
+                                                     thread)
                                         .observeOn(AndroidSchedulers.mainThread()),
                          ChatThreadFragment::onSendMessageSuccess,
                          ChatThreadFragment::onSendMessageError);
+
+        restartableFirst(GET_CARD, () ->
+        virgilHelper.findCard(identity)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()),
+                         ChatThreadFragment::onGetCardSuccess,
+                         ChatThreadFragment::onGetCardError);
     }
 
     void requestMessages(ChatThread thread, int limit,
@@ -62,10 +75,30 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
         start(GET_MESSAGES);
     }
 
-    void requestSendMessage(String text, ChatThread thread) {
+    void requestSendMessage(String text, ChatThread thread, VirgilCards cards) {
         this.text = text;
         this.thread = thread;
+        this.cards = cards;
 
         start(SEND_MESSAGE);
+    }
+
+    void requestGetCard(String identity, VirgilHelper virgilHelper) {
+        this.identity = identity;
+        this.virgilHelper = virgilHelper;
+
+        start(GET_CARD);
+    }
+
+    void disposeAll() {
+        stop(GET_MESSAGES);
+        stop(SEND_MESSAGE);
+        stop(GET_CARD);
+    }
+
+    boolean isDisposed() {
+        return isDisposed(GET_MESSAGES)
+                || isDisposed(SEND_MESSAGE)
+                || isDisposed(GET_CARD);
     }
 }

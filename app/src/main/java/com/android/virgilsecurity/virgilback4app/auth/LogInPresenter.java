@@ -3,13 +3,12 @@ package com.android.virgilsecurity.virgilback4app.auth;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
-import com.parse.ParseUser;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
 import com.virgilsecurity.sdk.crypto.PrivateKey;
-import com.virgilsecurity.sdk.highlevel.VirgilCard;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -49,14 +48,6 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
                                                                        password,
                                                                        virgilCard);
                                              })
-                                             .flatMap(virgilCard -> {
-                                                 PrivateKey privateKey = virgilHelper.loadPrivateKey(virgilCard.getIdentity());
-                                                 if (privateKey == null)
-                                                     return Observable.error(VirgilKeyIsNotFoundException::new);
-
-                                                 return virgilHelper.initializePfs(virgilCard, privateKey)
-                                                                    .subscribeOn(Schedulers.io());
-                                             })
                                              .subscribeOn(Schedulers.io())
                                              .observeOn(AndroidSchedulers.mainThread()),
                          LogInFragment::onSignUpSuccess,
@@ -64,26 +55,16 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
         );
 
         restartableFirst(LOG_IN, () ->
-                                 virgilHelper.logIn(identity)
+                                 virgilHelper.getDeviceOnlyVirgilCard(identity)
                                              .flatMap(virgilCard -> {
                                                  String password =
                                                          Utils.generatePassword(virgilHelper.loadPrivateKey(virgilCard.getIdentity())
                                                                                             .getValue());
-                                                 Observable<ParseUser> parseUserObservable =
-                                                         RxParse.logIn(virgilCard.getIdentity(),
+
+                                                 PrefsManager.VirgilPreferences.saveCardModel(virgilCard.getModel());
+
+                                                 return RxParse.logIn(virgilCard.getIdentity(),
                                                                        password);
-
-                                                 Observable<VirgilCard> virgilCardObservable =
-                                                         Observable.just(virgilCard);
-
-                                                 return Observable.zip(parseUserObservable,
-                                                                       virgilCardObservable, (user, card) -> {
-                                                             PrivateKey privateKey = virgilHelper.loadPrivateKey(virgilCard.getIdentity());
-                                                             if (privateKey == null)
-                                                                 return Observable.error(VirgilKeyIsNotFoundException::new);
-                                                             return virgilHelper.initializePfs(card, privateKey)
-                                                                                .subscribeOn(Schedulers.io());
-                                                         });
                                              })
                                              .subscribeOn(Schedulers.io())
                                              .observeOn(AndroidSchedulers.mainThread()),
@@ -109,5 +90,10 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
     void disposeAll() {
         stop(SIGN_UP);
         stop(LOG_IN);
+    }
+
+    boolean isDisposed() {
+        return isDisposed(SIGN_UP)
+                || isDisposed(LOG_IN);
     }
 }

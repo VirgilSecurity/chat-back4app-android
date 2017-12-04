@@ -57,9 +57,13 @@ public class ThreadsListFragmentPresenter extends RxPresenter<ThreadsListFragmen
         start(GET_THREADS);
     }
 
-//    void requestUsersByIds(List<String> userIds) {
-//        this.userIds = userIds;
-//
-//        start(GET_USERS_BY_IDS);
-//    }
+    void disposeAll() {
+        stop(GET_THREADS);
+        stop(GET_USERS_BY_IDS);
+    }
+
+    boolean isDisposed() {
+        return isDisposed(GET_THREADS)
+                || isDisposed(GET_USERS_BY_IDS);
+    }
 }

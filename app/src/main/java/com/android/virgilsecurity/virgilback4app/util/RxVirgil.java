@@ -48,12 +48,11 @@ public class RxVirgil {
         });
     }
 
-    public Observable<VirgilCard> findCard(String identity) {
-        return Observable.create(e -> {
+    public Single<VirgilCard> findCard(String identity) {
+        return Single.create(e -> {
             VirgilCards cards = virgilApi.getCards().find(identity);
             if (cards.size() > 0) {
-                e.onNext(cards.get(0));
-                e.onComplete();
+                e.onSuccess(cards.get(0));
             } else {
                 e.onError(new VirgilCardIsNotFoundException());
             }
