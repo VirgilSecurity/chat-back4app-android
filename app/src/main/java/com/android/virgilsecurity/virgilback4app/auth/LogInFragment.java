@@ -16,7 +16,6 @@ import com.android.virgilsecurity.virgilback4app.util.UsernameInputFilter;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
 import com.parse.ParseUser;
-import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
 import com.virgilsecurity.sdk.storage.KeyEntry;
 
 import java.util.Locale;
@@ -110,8 +109,6 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
             return;
 
         identity = etUsername.getText().toString().toLowerCase(Locale.getDefault());
-//        VirgilHelper virgilHelper = new VirgilHelper(activity, virgilApi,
-//                                                     virgilKeyStorage, virgilApiContext);
 
         switch (v.getId()) {
             case R.id.btnLogin:
@@ -154,12 +151,19 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         showProgress(false);
         Utils.toast(this, Utils.resolveError(throwable));
 
-        try {
-            if (virgilHelper.loadPrivateKey(identity) != null)
-                virgilHelper.removePrivateKey(identity);
-        } catch (CryptoException e) {
-            e.printStackTrace();
-        }
+//        if (throwable instanceof ParseException
+//                || ((ParseException) throwable).getCode() != ParseException.USERNAME_TAKEN) {
+//            return;
+//        } else {
+//            try {
+//                if (virgilHelper.loadPrivateKey(identity) != null)
+//                    virgilHelper.removePrivateKey(identity);
+//            } catch (CryptoException e) {
+//                e.printStackTrace();
+//            } catch (VirgilKeyIsNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     private void showProgress(boolean show) {

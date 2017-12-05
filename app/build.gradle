@@ -57,9 +57,6 @@ dependencies {
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofit"
     implementation "com.google.code.gson:gson:$rootProject.ext.gson"
-    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.ext.loggingInterceptor"
-    implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.gsonConverter"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.ext.rxJavaConverter"
 
     // ButterKnife
     implementation "com.jakewharton:butterknife:$rootProject.ext.butterKnife"

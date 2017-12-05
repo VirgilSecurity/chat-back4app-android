@@ -8,6 +8,7 @@ import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.base.BaseActivity;
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
+import com.parse.ParseUser;
 
 import butterknife.BindView;
 
@@ -35,10 +36,15 @@ public class ChatThreadActivity extends BaseActivity {
 
     @Override
     protected void postButterInit() {
-        initToolbar(toolbar, getString(R.string.contacts));
+        ChatThread chatThread = getIntent().getParcelableExtra(CHAT_THREAD);
+        if (ParseUser.getCurrentUser().getUsername().equals(chatThread.getSenderUsername()))
+            initToolbar(toolbar, chatThread.getRecipientUsername());
+        else
+            initToolbar(toolbar, chatThread.getSenderUsername());
+
         Utils.replaceFragmentNoTag(getSupportFragmentManager(),
                                    R.id.flContainer,
-                                   ChatThreadFragment.newInstance(getIntent().getParcelableExtra(CHAT_THREAD)));
+                                   ChatThreadFragment.newInstance(chatThread));
 
         showBackButton(true, view -> {
             onBackPressed();

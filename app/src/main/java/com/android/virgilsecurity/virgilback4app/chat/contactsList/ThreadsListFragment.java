@@ -52,6 +52,10 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
     private int page;
     private OnStartThreadListener onStartThreadListener;
     private boolean isLoading;
+    private ParseLiveQueryClient parseLiveQueryClient;
+    private ParseQuery<ChatThread> parseThreadSender;
+    private ParseQuery<ChatThread> parseThreadRecipient;
+    private ParseQuery<ChatThread> parseQueryResult;
 
     @BindView(R.id.rvContacts)
     protected RecyclerView rvContacts;
@@ -109,18 +113,24 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
         });
 
         srlRefresh.setOnRefreshListener(() -> {
+            if (!isLoading) {
 //            if (threads == null || threads.size() == 0) {
-            tvEmpty.setVisibility(View.INVISIBLE);
-            tvError.setVisibility(View.INVISIBLE);
-            page = 0;
+                tvEmpty.setVisibility(View.INVISIBLE);
+                tvError.setVisibility(View.INVISIBLE);
+                page = 0;
 //            pbLoading.setVisibility(View.VISIBLE);
-            threads.clear();
-            getPresenter().requestThreads(ParseUser.getCurrentUser(),
-                                          20, page, Const.TableNames.CREATED_AT_CRITERIA);
-            isLoading = true;
+                if (threads != null)
+                    threads.clear();
+
+                getPresenter().requestThreads(ParseUser.getCurrentUser(),
+                                              20, page, Const.TableNames.CREATED_AT_CRITERIA);
+                isLoading = true;
 //            } else {
 //                srlRefresh.setRefreshing(false);
 //            }
+            } else {
+                srlRefresh.setRefreshing(false);
+            }
         });
     }
 
@@ -128,10 +138,18 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
         super.onPause();
 
         getPresenter().disposeAll();
+        if (parseLiveQueryClient != null && parseQueryResult != null)
+            parseLiveQueryClient.unsubscribe(parseQueryResult);
     }
 
     @Override public void onResume() {
         super.onResume();
+
+        if (getPresenter().isDisposed()) {
+            showProgress(false);
+            isLoading = false;
+            srlRefresh.setRefreshing(false);
+        }
 
         if (threads == null || threads.isEmpty()) {
             getPresenter().requestThreads(ParseUser.getCurrentUser(),
@@ -140,30 +158,23 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
         }
 
         initLiveQuery();
-
-        if (getPresenter().isDisposed()) {
-            showProgress(false);
-            isLoading = false;
-            srlRefresh.setRefreshing(false);
-        }
     }
 
     private void initLiveQuery() {
-        ParseLiveQueryClient parseLiveQueryClient = null;
         try {
             parseLiveQueryClient = ParseLiveQueryClient.Factory
                     .getClient(new URI(getString(R.string.back4app_live_query_url)));
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        ParseQuery<ChatThread> parseThreadSender = ParseQuery.getQuery(ChatThread.class);
+        parseThreadSender = ParseQuery.getQuery(ChatThread.class);
         parseThreadSender.whereEqualTo(Const.TableNames.SENDER_ID,
                                        ParseUser.getCurrentUser().getObjectId());
-        ParseQuery<ChatThread> parseThreadRecipient = ParseQuery.getQuery(ChatThread.class);
+        parseThreadRecipient = ParseQuery.getQuery(ChatThread.class);
         parseThreadRecipient.whereEqualTo(Const.TableNames.RECIPIENT_ID,
                                           ParseUser.getCurrentUser().getObjectId());
-        ParseQuery<ChatThread> parseQueryResult = ParseQuery.or(Arrays.asList(parseThreadSender,
-                                                                              parseThreadRecipient));
+        parseQueryResult = ParseQuery.or(Arrays.asList(parseThreadSender,
+                                                       parseThreadRecipient));
 
         SubscriptionHandling<ChatThread> subscriptionHandling = parseLiveQueryClient.subscribe(parseQueryResult);
 
@@ -171,11 +182,15 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
                                          (query, thread) -> {
                                              Utils.log("Log", query.toString() + thread.toString());
                                              activity.runOnUiThread(() -> {
-                                                 adapter.addItem(0, thread);
-                                                 rvContacts.smoothScrollToPosition(0);
+                                                 if (threads == null || !threads.contains(thread)) {
+                                                     threads = new ArrayList<>();
+                                                     threads.add(0, thread);
+                                                     adapter.addItem(0, thread);
+                                                     rvContacts.smoothScrollToPosition(0);
 
-                                                 if (adapter.getItemCount() > 0)
-                                                     tvEmpty.setVisibility(View.INVISIBLE);
+                                                     if (adapter.getItemCount() > 0)
+                                                         tvEmpty.setVisibility(View.INVISIBLE);
+                                                 }
                                              });
                                          });
     }
@@ -185,6 +200,7 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
         srlRefresh.setRefreshing(false);
 
         if (threads.size() != 0) {
+            tvEmpty.setVisibility(View.INVISIBLE);
             if (this.threads != null && this.threads.size() > 0) {
                 this.threads.addAll(threads);
                 adapter.addItems(threads);

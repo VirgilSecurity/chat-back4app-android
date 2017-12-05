@@ -101,7 +101,6 @@ public class CreateThreadDialog extends Dialog {
                 break;
             case R.id.btnOk:
                 if (Utils.validateUi(etUsername)) {
-                    showLoading(true);
                     onCreateThreadDialogListener.onCreateThread(etUsername.getText().toString());
                 }
                 break;
@@ -112,7 +111,7 @@ public class CreateThreadDialog extends Dialog {
         this.onCreateThreadDialogListener = onCreateThreadDialogListener;
     }
 
-    public void showLoading(boolean show) {
+    public void showProgress(boolean show) {
         if (show) {
             setCancelable(false);
             llContentRoot.setVisibility(View.GONE);

@@ -15,6 +15,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsAlreadyExistsException;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
+import com.virgilsecurity.sdk.crypto.exceptions.KeyEntryNotFoundException;
 import com.virgilsecurity.sdk.highlevel.VirgilBuffer;
 
 import java.security.MessageDigest;
@@ -147,7 +148,9 @@ public class Utils {
         } else if (t instanceof VirgilKeyIsNotFoundException) {
             return "Username is not registered yet";
         } else if (t instanceof VirgilKeyIsAlreadyExistsException) {
-            return "Username is already registered.\nPlease, try another one.";
+            return "Username is already registered. Please, try another one.";
+        } else if (t instanceof KeyEntryNotFoundException) {
+            return "Username is not found on this device. Maybe you deleted your private key";
         } else {
             return "Something went wrong";
         }

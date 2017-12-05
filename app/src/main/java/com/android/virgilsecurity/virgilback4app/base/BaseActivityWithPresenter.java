@@ -62,7 +62,7 @@ public abstract class BaseActivityWithPresenter<P extends RxPresenter> extends N
         postButterInit();
     }
 
-    protected final void changeTitle(String titlePage) {
+    protected final void changeToolbarTitle(String titlePage) {
         if (toolbar != null) {
             tvToolbarTitle.setText(titlePage);
         } else {

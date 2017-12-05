@@ -22,20 +22,18 @@
 
             <ImageButton
                 android:id="@+id/ibToolbarBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/default_text"
                 android:background="@drawable/bg_toolbar_icon_ripple"
                 android:visibility="invisible"
                 app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
 
             <ImageButton
                 android:id="@+id/ibToolbarHamburger"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/default_text"
                 android:background="@drawable/bg_toolbar_icon_ripple"
                 android:visibility="invisible"
                 app:srcCompat="@drawable/ic_hamburger_white_24dp" />

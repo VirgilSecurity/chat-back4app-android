@@ -265,7 +265,7 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
                 this.messages = new ArrayList<>(messages);
                 adapter.setItems(messages);
             }
-        } else if (adapter.getItemCount() == 0) {
+        } else if (adapter.getItemCount() == -1) {
             tvEmpty.setVisibility(View.VISIBLE);
         }
     }
@@ -315,11 +315,6 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
     @Override public void onResume() {
         super.onResume();
 
-        getMessages();
-
-        if (messages == null || messages.isEmpty())
-            tvEmpty.setVisibility(View.VISIBLE);
-
         if (getPresenter().isDisposed()) {
             showProgress(false);
             isLoading = false;
@@ -327,6 +322,11 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
             lockSendUi(false, false);
             srlRefresh.setRefreshing(false);
         }
+
+        getMessages();
+
+//        if (messages == null || messages.isEmpty())
+//            tvEmpty.setVisibility(View.VISIBLE);
     }
 
     public void onGetCardSuccess(VirgilCard virgilCard) {

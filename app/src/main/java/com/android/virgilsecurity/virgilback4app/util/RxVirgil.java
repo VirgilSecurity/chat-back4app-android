@@ -8,7 +8,6 @@ import com.virgilsecurity.sdk.highlevel.VirgilCard;
 import com.virgilsecurity.sdk.highlevel.VirgilCards;
 import com.virgilsecurity.sdk.highlevel.VirgilKey;
 
-import io.reactivex.Observable;
 import io.reactivex.Single;
 
 /**
@@ -20,15 +19,11 @@ public class RxVirgil {
 
     private VirgilApi virgilApi;
 
-    public RxVirgil(VirgilApi virgilApi) {
+    RxVirgil(VirgilApi virgilApi) {
         this.virgilApi = virgilApi;
     }
 
-    public Observable<String> encodeMessage(String text) {
-        return Observable.just(text); // TODO: 11/27/17 just a stub
-    }
-
-    public Single<VirgilCard> createCard(String identity) {
+    Single<VirgilCard> createCard(String identity) {
         return Single.create(e -> {
             VirgilKey userKey = virgilApi.getKeys().generate();
 
@@ -48,7 +43,7 @@ public class RxVirgil {
         });
     }
 
-    public Single<VirgilCard> findCard(String identity) {
+    Single<VirgilCard> findCard(String identity) {
         return Single.create(e -> {
             VirgilCards cards = virgilApi.getCards().find(identity);
             if (cards.size() > 0) {

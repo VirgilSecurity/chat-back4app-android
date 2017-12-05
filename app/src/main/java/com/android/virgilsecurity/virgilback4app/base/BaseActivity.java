@@ -60,7 +60,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         postButterInit();
     }
 
-    protected final void changeTitle(String titlePage) {
+    protected final void changeToolbarTitle(String titlePage) {
         if (toolbar != null) {
             tvToolbarTitle.setText(titlePage);
         } else {

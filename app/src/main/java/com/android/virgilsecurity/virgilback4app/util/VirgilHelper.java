@@ -9,6 +9,7 @@ import com.virgilsecurity.sdk.crypto.Crypto;
 import com.virgilsecurity.sdk.crypto.PrivateKey;
 import com.virgilsecurity.sdk.crypto.VirgilCrypto;
 import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
+import com.virgilsecurity.sdk.crypto.exceptions.KeyEntryNotFoundException;
 import com.virgilsecurity.sdk.highlevel.StringEncoding;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
 import com.virgilsecurity.sdk.highlevel.VirgilApiContext;
@@ -16,7 +17,6 @@ import com.virgilsecurity.sdk.highlevel.VirgilCard;
 import com.virgilsecurity.sdk.highlevel.VirgilCards;
 import com.virgilsecurity.sdk.highlevel.VirgilKey;
 import com.virgilsecurity.sdk.securechat.SecureChat;
-import com.virgilsecurity.sdk.storage.KeyEntry;
 import com.virgilsecurity.sdk.storage.KeyStorage;
 import com.virgilsecurity.sdk.utils.ConvertionUtils;
 import com.virgilsecurity.sdk.utils.VirgilCardValidator;
@@ -67,7 +67,7 @@ public class VirgilHelper {
      */
     public Observable<VirgilCard> getDeviceOnlyVirgilCard(String identity) {
         if (!keyStorage.exists(identity))
-            return Observable.error(VirgilKeyIsNotFoundException::new);
+            return Observable.error(KeyEntryNotFoundException::new);
 
         Observable<VirgilCard> cardObservable;
 
@@ -90,25 +90,23 @@ public class VirgilHelper {
         return rxVirgil.createCard(identity).toObservable();
     }
 
-    public PrivateKey loadPrivateKey(String identity) throws CryptoException {
-            KeyEntry keyEntry = keyStorage.load(identity);
-            return crypto.importPrivateKey(keyEntry.getValue());
+    public PrivateKey loadPrivateKey(String identity) throws VirgilKeyIsNotFoundException, CryptoException {
+        return virgilApi.getKeys().load(identity).getPrivateKey();
     }
 
     public void removePrivateKey(String identity) {
-            keyStorage.delete(identity);
+        virgilApi.getKeys().destroy(identity);
     }
 
     public VirgilKey loadKey(String identity) throws VirgilKeyIsNotFoundException, CryptoException {
-            return virgilApi.getKeys().load(identity);
+        return virgilApi.getKeys().load(identity);
     }
 
     /**
      * Encrypt data
      *
-     * @param text to decrypt
+     * @param text  to decrypt
      * @param cards of recipients
-     *
      * @return encrypted data
      */
     public String encrypt(String text, VirgilCards cards) {
@@ -131,7 +129,6 @@ public class VirgilHelper {
      *
      * @param text to encrypt
      * @param card senders card to verify data
-     *
      * @return decrypted data
      */
     public String decrypt(String text, VirgilCard card) {

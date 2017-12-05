@@ -33,8 +33,6 @@ import nucleus5.factory.RequiresPresenter;
  * -__o
  */
 
-// TODO: 11/27/17 add double back exit
-
 @RequiresPresenter(ThreadsListActivityPresenter.class)
 public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListActivityPresenter>
         implements ThreadsListFragment.OnStartThreadListener {
@@ -43,7 +41,7 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
 
     private ActionBarDrawerToggle drawerToggle;
     private CreateThreadDialog createThreadDialog;
-    private ParseUser userNewThread;
+    private ParseUser newThreadUser;
     private boolean secondPress;
 
     @BindView(R.id.toolbar)
@@ -121,8 +119,10 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
                         if (ParseUser.getCurrentUser().getUsername().equals(username)) {
                             Utils.toast(this, R.string.no_chat_with_yourself);
                         }
-
-                        getPresenter().requestUser(username);
+                        else {
+                            createThreadDialog.showProgress(true);
+                            getPresenter().requestUser(username);
+                        }
                     }));
 
                     createThreadDialog.show();
@@ -153,18 +153,18 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
 
     public void onGetUserSuccess(ParseUser user) {
         if (user != null) {
-            userNewThread = user;
+            newThreadUser = user;
             getPresenter().requestThreads(ParseUser.getCurrentUser(),
                                           1000,
                                           0,
-                                          Const.TableNames.CREATED_AT_CRITERIA); // TODO: 11/27/17 add pagination
+                                          Const.TableNames.CREATED_AT_CRITERIA);
         } else {
             createThreadDialog.dismiss();
         }
     }
 
     public void onGetUserError(Throwable t) {
-        createThreadDialog.showLoading(false);
+        createThreadDialog.showProgress(false);
         Utils.toast(this, Utils.resolveError(t));
     }
 
@@ -173,15 +173,15 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
         ChatThread chatThread = null;
 
         for (ChatThread thread : threads) {
-            if (thread.getSenderUsername().equals(userNewThread.getUsername())
-                    || thread.getRecipientUsername().equals(userNewThread.getUsername())) {
+            if (thread.getSenderUsername().equals(newThreadUser.getUsername())
+                    || thread.getRecipientUsername().equals(newThreadUser.getUsername())) {
                 threadExists = true;
                 chatThread = thread;
             }
         }
 
         if (!threadExists) {
-            getPresenter().requestCreateThread(ParseUser.getCurrentUser(), userNewThread);
+            getPresenter().requestCreateThread(ParseUser.getCurrentUser(), newThreadUser);
         } else {
             createThreadDialog.dismiss();
             ChatThreadActivity.start(this, chatThread);
@@ -197,7 +197,7 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
         getPresenter().requestThreads(ParseUser.getCurrentUser(),
                                       1000,
                                       0,
-                                      Const.TableNames.CREATED_AT_CRITERIA); // TODO: 11/27/17 add pagination
+                                      Const.TableNames.CREATED_AT_CRITERIA);
     }
 
     public void onCreateThreadError(Throwable t) {
