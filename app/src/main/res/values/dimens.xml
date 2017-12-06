@@ -10,6 +10,5 @@
     <dimen name="default_text">14sp</dimen>
     <dimen name="increased_text">16sp</dimen>
     <dimen name="big_text">18sp</dimen>
-    <dimen name="very_big_text">20sp</dimen>
 
 </resources>

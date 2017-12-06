@@ -30,7 +30,7 @@ public class ThreadsListRVAdapter extends RecyclerView.Adapter<ThreadsListRVAdap
     private Context context;
     private ClickListener clickListener;
 
-    public ThreadsListRVAdapter(Context context) {
+    ThreadsListRVAdapter(Context context) {
         this.items = Collections.emptyList();
         this.context = context;
     }
@@ -68,7 +68,7 @@ public class ThreadsListRVAdapter extends RecyclerView.Adapter<ThreadsListRVAdap
         return items != null ? items.size() : -1;
     }
 
-    public void addItems(List<ChatThread> items) {
+    void addItems(List<ChatThread> items) {
         if (items == null)
             items = new ArrayList<>();
 
@@ -76,7 +76,7 @@ public class ThreadsListRVAdapter extends RecyclerView.Adapter<ThreadsListRVAdap
         notifyDataSetChanged();
     }
 
-    public void addItem(int i, ChatThread thread) {
+    void addItem(int i, ChatThread thread) {
         if (items == null || items.isEmpty())
             items = new ArrayList<>();
 
@@ -109,7 +109,6 @@ public class ThreadsListRVAdapter extends RecyclerView.Adapter<ThreadsListRVAdap
                 tvUsername.setText(thread.getSenderUsername());
 
             rlItemRoot.setOnClickListener((v) -> listener.onItemClicked(getAdapterPosition(), thread));
-//            ivUserPhoto.setImageResource(user.getPhotoUrl().....);
         }
     }
 

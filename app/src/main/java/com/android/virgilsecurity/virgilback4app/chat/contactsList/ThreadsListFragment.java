@@ -1,7 +1,6 @@
 package com.android.virgilsecurity.virgilback4app.chat.contactsList;
 
 import android.os.Bundle;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,26 +34,14 @@ import nucleus5.factory.RequiresPresenter;
 @RequiresPresenter(ThreadsListFragmentPresenter.class)
 public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListActivity, ThreadsListFragmentPresenter> {
 
-    @IntDef({State.THREADS_NOT_LOADED, State.IS_LOADING,
-                    State.THREAD_FOUND, State.THREAD_NOT_FOUND})
-    public @interface State {
-        int THREADS_NOT_LOADED = 15;
-        int IS_LOADING = 17;
-        int THREAD_FOUND = -1;
-        int THREAD_NOT_FOUND = 42;
-    }
-
     private static final int VISIBLE_THRESHOLD = 5;
 
     private ThreadsListRVAdapter adapter;
-    private List<ParseUser> users;
     private List<ChatThread> threads;
     private int page;
     private OnStartThreadListener onStartThreadListener;
     private boolean isLoading;
     private ParseLiveQueryClient parseLiveQueryClient;
-    private ParseQuery<ChatThread> parseThreadSender;
-    private ParseQuery<ChatThread> parseThreadRecipient;
     private ParseQuery<ChatThread> parseQueryResult;
 
     @BindView(R.id.rvContacts)
@@ -84,7 +71,6 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
 
     @Override
     protected void postButterInit() {
-//        setRetainInstance(true);
         onStartThreadListener = activity;
 
         adapter = new ThreadsListRVAdapter(activity);
@@ -104,7 +90,7 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
                 int totalItemCount = layoutManager.getItemCount();
                 int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
-                if ((users != null && users.size() > 13) && (!isLoading && totalItemCount <= (lastVisibleItem + VISIBLE_THRESHOLD))) {
+                if ((threads != null && threads.size() > 13) && (!isLoading && totalItemCount <= (lastVisibleItem + VISIBLE_THRESHOLD))) {
                     page++;
                     getPresenter().requestThreadsPagination(page);
                     showProgress(true);
@@ -114,20 +100,15 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
 
         srlRefresh.setOnRefreshListener(() -> {
             if (!isLoading) {
-//            if (threads == null || threads.size() == 0) {
                 tvEmpty.setVisibility(View.INVISIBLE);
                 tvError.setVisibility(View.INVISIBLE);
                 page = 0;
-//            pbLoading.setVisibility(View.VISIBLE);
                 if (threads != null)
                     threads.clear();
 
                 getPresenter().requestThreads(ParseUser.getCurrentUser(),
                                               20, page, Const.TableNames.CREATED_AT_CRITERIA);
                 isLoading = true;
-//            } else {
-//                srlRefresh.setRefreshing(false);
-//            }
             } else {
                 srlRefresh.setRefreshing(false);
             }
@@ -167,10 +148,10 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        parseThreadSender = ParseQuery.getQuery(ChatThread.class);
+        ParseQuery<ChatThread> parseThreadSender = ParseQuery.getQuery(ChatThread.class);
         parseThreadSender.whereEqualTo(Const.TableNames.SENDER_ID,
                                        ParseUser.getCurrentUser().getObjectId());
-        parseThreadRecipient = ParseQuery.getQuery(ChatThread.class);
+        ParseQuery<ChatThread> parseThreadRecipient = ParseQuery.getQuery(ChatThread.class);
         parseThreadRecipient.whereEqualTo(Const.TableNames.RECIPIENT_ID,
                                           ParseUser.getCurrentUser().getObjectId());
         parseQueryResult = ParseQuery.or(Arrays.asList(parseThreadSender,
@@ -215,7 +196,7 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
 
     public void onGetThreadsError(Throwable throwable) {
         showProgress(false);
-        if (users == null || users.size() == 0)
+        if (threads == null || threads.size() == 0)
             tvError.setVisibility(View.VISIBLE);
 
         Utils.toast(activity, Utils.resolveError(throwable));

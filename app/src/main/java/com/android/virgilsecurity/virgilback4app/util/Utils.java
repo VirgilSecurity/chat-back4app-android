@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.android.virgilsecurity.virgilback4app.R;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsAlreadyExistsException;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
 import com.virgilsecurity.sdk.crypto.exceptions.KeyEntryNotFoundException;
@@ -178,17 +177,5 @@ public class Utils {
         } else {
             return true;
         }
-    }
-
-    public static void testParse() {
-        ParseObject object = new ParseObject("GoodObject");
-        object.put("keeeeyyyy", "valllllue");
-        object.saveInBackground(e -> {
-            if (e == null) {
-                Utils.log("Log", "dog");
-            } else {
-                Utils.log("Log", "cat");
-            }
-        });
     }
 }

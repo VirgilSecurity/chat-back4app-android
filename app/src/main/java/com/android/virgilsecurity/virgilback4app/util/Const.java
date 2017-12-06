@@ -24,9 +24,10 @@ public class Const {
         public static final String RECIPIENT_USERNAME = "recipientUsername";
         public static final String RECIPIENT_ID = "recipientId";
         public static final String THREAD_ID = "threadId";
-        public static final String LIVE_QUERY_CLASS = "Message";
+        public static final String MESSAGE_BODY = "body";
         public static final String CREATED_AT_CRITERIA = "createdAt";
         public static final String CREATED_AT_DATE = "createdAtDate";
+        public static final String TIMESTAMP = "timestamp";
     }
 
     public static class Request {

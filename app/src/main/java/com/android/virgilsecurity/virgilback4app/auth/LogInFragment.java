@@ -16,7 +16,6 @@ import com.android.virgilsecurity.virgilback4app.util.UsernameInputFilter;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
 import com.parse.ParseUser;
-import com.virgilsecurity.sdk.storage.KeyEntry;
 
 import java.util.Locale;
 
@@ -128,10 +127,6 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         }
     }
 
-    private void logIn(KeyEntry userKey) {
-        Utils.toast(this, "Login Stub (" + userKey.getName() + ")");
-    }
-
     public void onLoginSuccess(ParseUser user) {
         showProgress(false);
         authStateListener.onLoggedInSuccesfully();
@@ -150,20 +145,6 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     public void onSignUpError(Throwable throwable) {
         showProgress(false);
         Utils.toast(this, Utils.resolveError(throwable));
-
-//        if (throwable instanceof ParseException
-//                || ((ParseException) throwable).getCode() != ParseException.USERNAME_TAKEN) {
-//            return;
-//        } else {
-//            try {
-//                if (virgilHelper.loadPrivateKey(identity) != null)
-//                    virgilHelper.removePrivateKey(identity);
-//            } catch (CryptoException e) {
-//                e.printStackTrace();
-//            } catch (VirgilKeyIsNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
     private void showProgress(boolean show) {

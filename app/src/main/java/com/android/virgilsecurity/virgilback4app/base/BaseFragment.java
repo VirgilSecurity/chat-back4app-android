@@ -13,7 +13,8 @@ import butterknife.ButterKnife;
 import nucleus5.view.NucleusSupportFragment;
 
 /**
- * Created by danylooliinyk on 16.11.17.
+ * Created by Danylo Oliinyk on 16.11.17 at Virgil Security.
+ * -__o
  */
 
 public abstract class BaseFragment<A extends Activity> extends NucleusSupportFragment {

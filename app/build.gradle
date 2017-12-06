@@ -43,7 +43,6 @@ dependencies {
     // Virgil Security
     implementation "com.virgilsecurity.sdk:crypto-android:$rootProject.ext.virgilSecurity"
     implementation "com.virgilsecurity.sdk:sdk-android:$rootProject.ext.virgilSecurity"
-    implementation "com.virgilsecurity.pfs:pfs-android:$rootProject.ext.virgilPfs"
 
     // Room
     implementation "android.arch.persistence.room:runtime:$rootProject.ext.room"

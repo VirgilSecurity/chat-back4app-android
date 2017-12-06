@@ -14,7 +14,8 @@ import nucleus5.presenter.RxPresenter;
 import nucleus5.view.NucleusSupportFragment;
 
 /**
- * Created by danylooliinyk on 16.11.17.
+ * Created by Danylo Oliinyk on 16.11.17 at Virgil Security.
+ * -__o
  */
 
 public abstract class BaseFragmentWithPresenter<A extends Activity, P extends RxPresenter> extends NucleusSupportFragment<P> {

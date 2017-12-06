@@ -17,7 +17,6 @@
     <string name="error_loading">Please, swipe from top to retry</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
-    <string name="create">Create</string>
     <string name="press_exit_once_more">Press back once more to exit</string>
 
     <!-- Login Screen -->
@@ -25,20 +24,15 @@
     <string name="signup">Sign Up</string>
     <string name="username">Username</string>
     <string name="username_empty">Please, enter username</string>
-    <string name="no_such_user">Entered username is invalid or not registered yet</string>
-    <string name="already_registered">Entered username has been already registered. Please try another one</string>
     <string name="enter_your_message">Enter your message</string>
     <string name="send">Send</string>
 
     <!-- Threads List Screen -->
     <string name="contacts">Contacts</string>
     <string name="no_threads">No conversations yet.\nYou can start new conversation\nfrom navigation drawer.</string>
-    <string name="drawer_open">Open drawer</string>
-    <string name="drawer_close">Close drawer</string>
     <string name="create_thread">Create thread</string>
     <string name="enter_username">Enter username to start chat with</string>
     <string name="creating_thread">Creating thread…</string>
-    <string name="thread_exists">Current thread already exists</string>
     <string name="no_chat_with_yourself">No chats with yourself, please</string>
 
     <!-- Drawer -->

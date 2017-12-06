@@ -36,7 +36,6 @@ public class RxParse {
                 } else {
                     e.onError(exception);
                 }
-
             });
         });
     }

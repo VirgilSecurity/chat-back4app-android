@@ -16,7 +16,6 @@ import com.virgilsecurity.sdk.highlevel.VirgilApiContext;
 import com.virgilsecurity.sdk.highlevel.VirgilCard;
 import com.virgilsecurity.sdk.highlevel.VirgilCards;
 import com.virgilsecurity.sdk.highlevel.VirgilKey;
-import com.virgilsecurity.sdk.securechat.SecureChat;
 import com.virgilsecurity.sdk.storage.KeyStorage;
 import com.virgilsecurity.sdk.utils.ConvertionUtils;
 import com.virgilsecurity.sdk.utils.VirgilCardValidator;
@@ -38,11 +37,8 @@ public class VirgilHelper {
     private VirgilApi virgilApi;
     private Context context;
     private VirgilApiContext virgilApiContext;
-    private SecureChat secureChat;
     private VirgilCardValidator validator;
     private RxVirgil rxVirgil;
-
-    private VirgilCard card;
 
     @Inject
     public VirgilHelper(Context context, VirgilApi virgilApi,

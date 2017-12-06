@@ -16,7 +16,8 @@ import com.android.virgilsecurity.virgilback4app.util.customElements.OnFinishTim
 import com.parse.ParseUser;
 
 /**
- * Created by danylooliinyk on 16.11.17.
+ * Created by Danylo Oliinyk on 16.11.17 at Virgil Security.
+ * -__o
  */
 
 public class SignInControlActivity extends BaseActivity

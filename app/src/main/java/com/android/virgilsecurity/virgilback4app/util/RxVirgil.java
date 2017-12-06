@@ -51,6 +51,6 @@ public class RxVirgil {
             } else {
                 e.onError(new VirgilCardIsNotFoundException());
             }
-    });
-}
+        });
+    }
 }

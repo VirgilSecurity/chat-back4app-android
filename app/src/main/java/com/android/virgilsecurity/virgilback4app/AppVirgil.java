@@ -16,7 +16,8 @@ import javax.inject.Inject;
 
 
 /**
- * Created by danylooliinyk on 16.11.17.
+ * Created by Danylo Oliinyk on 16.11.17 at Virgil Security.
+ * -__o
  */
 
 public class AppVirgil extends Application {
@@ -52,12 +53,4 @@ public class AppVirgil extends Application {
                                     .virgilModule(new VirgilModule())
                                     .build();
     }
-
-//    public static KeyStorage getKeyStorage() {
-//        return keyStorage;
-//    }
-//
-//    public static VirgilApi getVirgilApi() {
-//        return virgilApi;
-//    }
 }

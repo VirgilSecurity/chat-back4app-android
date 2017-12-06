@@ -101,7 +101,6 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
                 tvEmpty.setVisibility(View.INVISIBLE);
                 tvError.setVisibility(View.INVISIBLE);
                 page = 0;
-//            pbLoading.setVisibility(View.VISIBLE);
                 isLoading = true;
                 getMessages();
             }
@@ -110,7 +109,7 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
 
         initMessageInput();
 
-        adapter = new ChatThreadRVAdapter(activity, virgilHelper);
+        adapter = new ChatThreadRVAdapter(virgilHelper);
         LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
         layoutManager.setReverseLayout(true);
         rvChat.setLayoutManager(layoutManager);
@@ -170,14 +169,6 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
 
             }
         });
-
-        etMessage.setOnFocusChangeListener((view, hasFocus) -> {
-            if (hasFocus) {
-                Utils.log("etMessage.setOnFocusChangeListene", " -> hasFocus");
-            } else {
-                Utils.log("etMessage.setOnFocusChangeListene", " -> lostFocus");
-            }
-        });
     }
 
     private void initLiveQuery() {
@@ -208,7 +199,6 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
     @OnClick({R.id.btnSend}) void onInterfaceClick(View v) {
         switch (v.getId()) {
             case R.id.btnSend:
-//                etMessage.requestFocus();
                 if (meCard != null && youCard != null) {
                     VirgilCards cards = new VirgilCards(virgilApiContext);
                     cards.add(meCard);
@@ -223,7 +213,6 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
                     getMessages();
                     lockSendUi(true, false);
                 }
-//                etMessage.requestFocus();
                 break;
         }
     }
@@ -324,9 +313,6 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
         }
 
         getMessages();
-
-//        if (messages == null || messages.isEmpty())
-//            tvEmpty.setVisibility(View.VISIBLE);
     }
 
     public void onGetCardSuccess(VirgilCard virgilCard) {

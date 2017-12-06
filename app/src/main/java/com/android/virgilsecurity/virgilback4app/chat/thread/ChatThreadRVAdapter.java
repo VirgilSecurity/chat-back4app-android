@@ -1,6 +1,5 @@
 package com.android.virgilsecurity.virgilback4app.chat.thread;
 
-import android.content.Context;
 import android.support.annotation.IntDef;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,13 +34,11 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private List<Message> items;
-    private Context context;
     private VirgilHelper virgilHelper;
     private VirgilCard youCard;
     private VirgilCard meCard;
 
-    ChatThreadRVAdapter(Context context, VirgilHelper virgilHelper) {
-        this.context = context;
+    ChatThreadRVAdapter(VirgilHelper virgilHelper) {
         this.virgilHelper = virgilHelper;
     }
 
@@ -117,7 +114,7 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.youCard = youCard;
     }
 
-    public void addItems(List<Message> items) {
+    void addItems(List<Message> items) {
         this.items.addAll(items);
         notifyDataSetChanged();
     }
@@ -169,5 +166,4 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             tvMessage.setText(virgilHelper.decrypt(message.getBody(), card));
         }
     }
-
 }

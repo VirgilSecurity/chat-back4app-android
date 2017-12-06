@@ -49,7 +49,7 @@ public class CreateThreadDialog extends Dialog {
     }
 
     public CreateThreadDialog(@NonNull Context context, int themeResId,
-                              String title, @NonNull String message) {
+                              @Nullable String title, @NonNull String message) {
         super(context, themeResId);
 
         this.title = title;

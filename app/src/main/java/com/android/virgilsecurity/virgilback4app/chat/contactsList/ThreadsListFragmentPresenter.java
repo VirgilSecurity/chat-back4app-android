@@ -5,8 +5,6 @@ import android.os.Bundle;
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
 import com.parse.ParseUser;
 
-import java.util.List;
-
 import nucleus5.presenter.RxPresenter;
 
 /**
@@ -23,7 +21,6 @@ public class ThreadsListFragmentPresenter extends RxPresenter<ThreadsListFragmen
     private int limit;
     private int page;
     private String sortCriteria;
-    private List<String> userIds;
 
     @Override
     protected void onCreate(Bundle savedState) {
@@ -34,12 +31,6 @@ public class ThreadsListFragmentPresenter extends RxPresenter<ThreadsListFragmen
                          ThreadsListFragment::onGetThreadsSuccess,
                          ThreadsListFragment::onGetThreadsError
         );
-
-//        restartableFirst(GET_USERS_BY_IDS, () ->
-//                                 RxParse.getUsersByIds(userIds),
-//                         ThreadsListFragment::onGetUsersSuccess,
-//                         ThreadsListFragment::onGetUsersError
-//        );
     }
 
     void requestThreads(ParseUser currentUser, int limit, int page, String sortCriteria) {

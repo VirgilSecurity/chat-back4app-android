@@ -21,6 +21,6 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     @Override public void onBackPressed() {
-
+        // Must be empty, so we can't press back from the splash screen
     }
 }

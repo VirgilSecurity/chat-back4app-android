@@ -110,19 +110,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-//    protected void setupToolbarWithUpNav(Toolbar toolbar, String titlePage, @DrawableRes int res) {
-//        setSupportActionBar(toolbar);
-//
-//        tvToolbarTitle = toolbar.findViewById(R.id.tvToolbarTitle);
-//        tvToolbarTitle.setText(titlePage);
-//
-//        if (getSupportActionBar() != null)
-//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//
-//        getSupportActionBar().setHomeAsUpIndicator(res);
-//        getSupportActionBar().setTitle("");
-//    }
-
     @Override
     protected void onResume() {
         super.onResume();
