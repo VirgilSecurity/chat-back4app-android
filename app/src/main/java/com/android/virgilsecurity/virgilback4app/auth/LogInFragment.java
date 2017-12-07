@@ -12,10 +12,12 @@ import android.widget.EditText;
 import com.android.virgilsecurity.virgilback4app.AppVirgil;
 import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.base.BaseFragmentWithPresenter;
+import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.UsernameInputFilter;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
 import com.parse.ParseUser;
+import com.virgilsecurity.sdk.highlevel.VirgilCard;
 
 import java.util.Locale;
 
@@ -93,13 +95,16 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     public void onPause() {
         super.onPause();
 
-        getPresenter().disposeAll();
+//        getPresenter().disposeAll();
     }
 
     @Override public void onResume() {
         super.onResume();
 
         showProgress(!getPresenter().isDisposed());
+
+        if (PrefsManager.VirgilPreferences.getCardModel() != null)
+            authStateListener.onRegisteredInSuccesfully();
     }
 
     @OnClick({R.id.btnLogin, R.id.btnSignup})
@@ -137,7 +142,7 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         Utils.toast(this, Utils.resolveError(throwable));
     }
 
-    public void onSignUpSuccess(Object o) {
+    public void onSignUpSuccess(VirgilCard card) {
         showProgress(false);
         authStateListener.onRegisteredInSuccesfully();
     }

@@ -7,8 +7,10 @@ import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
+import com.parse.ParseUser;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
 import com.virgilsecurity.sdk.crypto.PrivateKey;
+import com.virgilsecurity.sdk.highlevel.VirgilCard;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -28,25 +30,28 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
     private VirgilHelper virgilHelper;
     private String identity;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedState) {
         super.onCreate(savedState);
 
         restartableFirst(SIGN_UP, () ->
                                  virgilHelper.createCard(identity)
-                                             .flatMap(virgilCard -> {
-                                                 PrivateKey privateKey = virgilHelper.loadPrivateKey(virgilCard.getIdentity());
+                                             .flatMap(pair -> {
+                                                 PrivateKey privateKey = pair.second.getPrivateKey();
                                                  if (privateKey == null)
                                                      return Observable.error(VirgilKeyIsNotFoundException::new);
 
                                                  String password =
-                                                         Utils.generatePassword(virgilHelper.loadPrivateKey(virgilCard.getIdentity())
-                                                                                            .getValue());
+                                                         Utils.generatePassword(privateKey.getValue());
 
-                                                 return RxParse.signUp(virgilCard.getIdentity(),
+                                                 return RxParse.signUp(pair.first.getIdentity(),
                                                                        password,
-                                                                       virgilCard);
+                                                                       pair.first);
+                                             })
+                                             .flatMap(card -> {
+                                                 virgilHelper.saveLastGeneratedPrivateKey();
+                                                 PrefsManager.VirgilPreferences.saveCardModel(card.getModel());
+                                                 return Observable.just(card);
                                              })
                                              .subscribeOn(Schedulers.io())
                                              .observeOn(AndroidSchedulers.mainThread()),
@@ -61,10 +66,16 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
                                                          Utils.generatePassword(virgilHelper.loadPrivateKey(virgilCard.getIdentity())
                                                                                             .getValue());
 
-                                                 PrefsManager.VirgilPreferences.saveCardModel(virgilCard.getModel());
-
-                                                 return RxParse.logIn(virgilCard.getIdentity(),
-                                                                       password);
+                                                 Observable<ParseUser> observableLogIn = RxParse.logIn(virgilCard.getIdentity(),
+                                                                                                       password);
+                                                 Observable<VirgilCard> observableVirgilCard = Observable.just(virgilCard);
+//
+                                                 return Observable.zip(observableLogIn,
+                                                                       observableVirgilCard,
+                                                                       (user, card) -> {
+                                                                           PrefsManager.VirgilPreferences.saveCardModel(card.getModel());
+                                                                           return user;
+                                                                       });
                                              })
                                              .subscribeOn(Schedulers.io())
                                              .observeOn(AndroidSchedulers.mainThread()),

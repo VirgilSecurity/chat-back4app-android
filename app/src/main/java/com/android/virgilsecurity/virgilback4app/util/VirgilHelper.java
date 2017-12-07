@@ -1,8 +1,10 @@
 package com.android.virgilsecurity.virgilback4app.util;
 
 import android.content.Context;
+import android.util.Pair;
 
 import com.android.virgilsecurity.virgilback4app.R;
+import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsAlreadyExistsException;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
 import com.virgilsecurity.sdk.client.model.CardModel;
 import com.virgilsecurity.sdk.crypto.Crypto;
@@ -40,6 +42,9 @@ public class VirgilHelper {
     private VirgilCardValidator validator;
     private RxVirgil rxVirgil;
 
+    private VirgilKey privateKey;
+    private VirgilCard myVirgilCard;
+
     @Inject
     public VirgilHelper(Context context, VirgilApi virgilApi,
                         KeyStorage keyStorage, VirgilApiContext virgilApiContext) {
@@ -66,13 +71,24 @@ public class VirgilHelper {
             return Observable.error(KeyEntryNotFoundException::new);
 
         Observable<VirgilCard> cardObservable;
+        try {
+            privateKey = loadKey(identity);
+        } catch (VirgilKeyIsNotFoundException e) {
+            e.printStackTrace();
+        } catch (CryptoException e) {
+            e.printStackTrace();
+        }
 
         if (PrefsManager.VirgilPreferences.getCardModel() != null) {
             cardObservable =
                     Observable.just(new VirgilCard(virgilApiContext,
                                                    PrefsManager.VirgilPreferences.getCardModel()));
         } else {
-            cardObservable = findCard(identity).subscribeOn(Schedulers.io());
+            cardObservable = findCard(identity).subscribeOn(Schedulers.io())
+                                               .flatMap(card -> {
+                                                   myVirgilCard = card;
+                                                   return Observable.just(card);
+                                               });
         }
 
         return cardObservable;
@@ -82,8 +98,18 @@ public class VirgilHelper {
         return rxVirgil.findCard(identity).toObservable();
     }
 
-    public Observable<VirgilCard> createCard(String identity) {
-        return rxVirgil.createCard(identity).toObservable();
+    public Observable<Pair<VirgilCard, VirgilKey>> createCard(String identity) {
+        if (!keyStorage.exists(identity)) {
+            return rxVirgil.createCard(identity)
+                           .toObservable()
+                           .flatMap(pair -> {
+                               myVirgilCard = pair.first;
+                               privateKey = pair.second;
+                               return Observable.just(pair);
+                           });
+        } else {
+            return Observable.error(VirgilKeyIsAlreadyExistsException::new);
+        }
     }
 
     public PrivateKey loadPrivateKey(String identity) throws VirgilKeyIsNotFoundException, CryptoException {
@@ -96,6 +122,20 @@ public class VirgilHelper {
 
     public VirgilKey loadKey(String identity) throws VirgilKeyIsNotFoundException, CryptoException {
         return virgilApi.getKeys().load(identity);
+    }
+
+    /**
+     * Use after createCard method - last generated private key
+     * will be saved in secure storage
+     */
+    public void saveLastGeneratedPrivateKey() {
+        if (privateKey != null) {
+            try {
+                privateKey.save(myVirgilCard.getIdentity());
+            } catch (VirgilKeyIsAlreadyExistsException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -145,5 +185,10 @@ public class VirgilHelper {
     private VirgilCard getMyCard() {
         CardModel cardModel = PrefsManager.VirgilPreferences.getCardModel();
         return new VirgilCard(virgilApiContext, cardModel);
+    }
+
+    public void clearAfterLogout() {
+        myVirgilCard = null;
+        privateKey = null;
     }
 }

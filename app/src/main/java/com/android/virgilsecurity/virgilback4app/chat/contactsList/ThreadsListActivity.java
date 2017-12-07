@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.widget.TextView;
 
+import com.android.virgilsecurity.virgilback4app.AppVirgil;
 import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.auth.SignInControlActivity;
 import com.android.virgilsecurity.virgilback4app.base.BaseActivityWithPresenter;
@@ -17,11 +18,14 @@ import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.util.Const;
 import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
+import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
 import com.android.virgilsecurity.virgilback4app.util.customElements.CreateThreadDialog;
 import com.android.virgilsecurity.virgilback4app.util.customElements.OnFinishTimer;
 import com.parse.ParseUser;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import nucleus5.factory.RequiresPresenter;
@@ -40,6 +44,8 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
     private CreateThreadDialog createThreadDialog;
     private ParseUser newThreadUser;
     private boolean secondPress;
+
+    @Inject VirgilHelper virgilHelper;
 
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
@@ -64,6 +70,7 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
 
     @Override
     protected void postButterInit() {
+        AppVirgil.getVirgilComponent().inject(this);
         initToolbar(toolbar, getString(R.string.contacts));
         initDrawer();
         Utils.replaceFragmentNoBackStack(getSupportFragmentManager(),
@@ -119,6 +126,7 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
                         runOnUiThread(() -> showBaseLoading(false));
                         if (e == null) {
                             PrefsManager.VirgilPreferences.clearCardModel();
+                            virgilHelper.clearAfterLogout();
                             SignInControlActivity.startClearTop(this);
                         } else {
                             Utils.toast(this, Utils.resolveError(e));

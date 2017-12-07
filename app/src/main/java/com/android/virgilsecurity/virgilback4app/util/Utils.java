@@ -136,7 +136,7 @@ public class Utils {
 
             switch (exception.getCode()) {
                 case ParseException.USERNAME_TAKEN:
-                    return "Username is already registered.\nPlease, try another one.";
+                    return "Username is already registered.\nPlease, try another one. (Parse)";
                 case ParseException.OBJECT_NOT_FOUND:
                     return "Username is not registered yet";
                 case 60042: // Custom exception in RxParse.class

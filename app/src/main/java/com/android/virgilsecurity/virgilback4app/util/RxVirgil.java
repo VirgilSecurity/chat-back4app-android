@@ -1,8 +1,9 @@
 package com.android.virgilsecurity.virgilback4app.util;
 
+import android.util.Pair;
+
 import com.android.virgilsecurity.virgilback4app.model.exception.VirgilCardNotCreatedException;
 import com.virgilsecurity.sdk.client.exceptions.VirgilCardIsNotFoundException;
-import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsAlreadyExistsException;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
 import com.virgilsecurity.sdk.highlevel.VirgilCard;
 import com.virgilsecurity.sdk.highlevel.VirgilCards;
@@ -23,23 +24,15 @@ public class RxVirgil {
         this.virgilApi = virgilApi;
     }
 
-    Single<VirgilCard> createCard(String identity) {
+    Single<Pair<VirgilCard, VirgilKey>> createCard(String identity) {
         return Single.create(e -> {
-            VirgilKey userKey = virgilApi.getKeys().generate();
+            VirgilKey privateKey = virgilApi.getKeys().generate();
 
-            try {
-                userKey.save(identity);
-            } catch (VirgilKeyIsAlreadyExistsException exception) {
-                e.onError(exception);
-            }
-
-            VirgilCard userCard = virgilApi.getCards().create(identity, userKey);
+            VirgilCard userCard = virgilApi.getCards().create(identity, privateKey);
             if (userCard == null)
                 e.onError(new VirgilCardNotCreatedException());
 
-            PrefsManager.VirgilPreferences.saveCardModel(userCard.getModel());
-
-            e.onSuccess(userCard);
+            e.onSuccess(new Pair<>(userCard, privateKey));
         });
     }
 
