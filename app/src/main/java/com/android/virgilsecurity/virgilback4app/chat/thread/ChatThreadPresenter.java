@@ -4,12 +4,8 @@ import android.os.Bundle;
 
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
-import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
-import com.virgilsecurity.sdk.highlevel.VirgilApi;
-import com.virgilsecurity.sdk.highlevel.VirgilCards;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import nucleus5.presenter.RxPresenter;
 
 /**
@@ -28,10 +24,6 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
     private int page;
     private String sortCriteria;
     private String text;
-    private VirgilApi virgilApi;
-    private VirgilHelper virgilHelper;
-    private String identity;
-    private VirgilCards cards;
 
     @Override protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
@@ -42,29 +34,19 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
                          ChatThreadFragment::onGetMessagesError);
 
         restartableFirst(SEND_MESSAGE, () ->
-                                 RxParse.sendMessage(virgilHelper.encrypt(text, cards),
+                                 RxParse.sendMessage(text,
                                                      thread)
                                         .observeOn(AndroidSchedulers.mainThread()),
                          ChatThreadFragment::onSendMessageSuccess,
                          ChatThreadFragment::onSendMessageError);
-
-        restartableFirst(GET_CARD, () ->
-        virgilHelper.findCard(identity)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()),
-                         ChatThreadFragment::onGetCardSuccess,
-                         ChatThreadFragment::onGetCardError);
     }
 
     void requestMessages(ChatThread thread, int limit,
-                         int page, String sortCriteria,
-                         VirgilApi virgilApi, VirgilHelper virgilHelper) {
+                         int page, String sortCriteria) {
         this.thread = thread;
         this.limit = limit;
         this.page = page;
         this.sortCriteria = sortCriteria;
-        this.virgilApi = virgilApi;
-        this.virgilHelper = virgilHelper;
 
         start(GET_MESSAGES);
     }
@@ -75,19 +57,11 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
         start(GET_MESSAGES);
     }
 
-    void requestSendMessage(String text, ChatThread thread, VirgilCards cards) {
+    void requestSendMessage(String text, ChatThread thread) {
         this.text = text;
         this.thread = thread;
-        this.cards = cards;
 
         start(SEND_MESSAGE);
-    }
-
-    void requestGetCard(String identity, VirgilHelper virgilHelper) {
-        this.identity = identity;
-        this.virgilHelper = virgilHelper;
-
-        start(GET_CARD);
     }
 
     void disposeAll() {

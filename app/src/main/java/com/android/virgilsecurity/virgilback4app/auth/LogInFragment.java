@@ -9,19 +9,13 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
-import com.android.virgilsecurity.virgilback4app.AppVirgil;
 import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.base.BaseFragmentWithPresenter;
-import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.UsernameInputFilter;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
-import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
 import com.parse.ParseUser;
-import com.virgilsecurity.sdk.highlevel.VirgilCard;
 
 import java.util.Locale;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -46,8 +40,6 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     @BindView(R.id.pbLoading)
     protected View pbLoading;
 
-    @Inject protected VirgilHelper virgilHelper;
-
     private AuthStateListener authStateListener;
     private String identity;
 
@@ -68,7 +60,6 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     @Override
     protected void postButterInit() {
 
-        AppVirgil.getVirgilComponent().inject(this);
         authStateListener = activity;
 
         etUsername.setFilters(new InputFilter[]{new UsernameInputFilter()});
@@ -102,9 +93,6 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         super.onResume();
 
         showProgress(!getPresenter().isDisposed());
-
-        if (PrefsManager.VirgilPreferences.getCardModel() != null)
-            authStateListener.onRegisteredInSuccesfully();
     }
 
     @OnClick({R.id.btnLogin, R.id.btnSignup})
@@ -119,13 +107,13 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
                 tilUserName.setError(null);
                 tilUserName.setErrorEnabled(false);
                 showProgress(true);
-                getPresenter().requestLogIn(identity, virgilHelper);
+                getPresenter().requestLogIn(identity);
                 break;
             case R.id.btnSignup:
                 tilUserName.setError(null);
                 tilUserName.setErrorEnabled(false);
                 showProgress(true);
-                getPresenter().requestSignUp(identity, virgilHelper);
+                getPresenter().requestSignUp(identity);
                 break;
             default:
                 break;
@@ -142,7 +130,7 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         Utils.toast(this, Utils.resolveError(throwable));
     }
 
-    public void onSignUpSuccess(VirgilCard card) {
+    public void onSignUpSuccess(Object card) {
         showProgress(false);
         authStateListener.onRegisteredInSuccesfully();
     }

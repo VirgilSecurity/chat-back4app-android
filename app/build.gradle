@@ -11,7 +11,6 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-//        multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -33,21 +32,6 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$rootProject.ext.supportLibrary"
     implementation "com.android.support.constraint:constraint-layout:$rootProject.ext.constraintLayout"
     implementation "com.android.support:design:$rootProject.ext.supportLibrary"
-//    implementation "com.android.support:multidex:$rootProject.ext.multideiDex"
-
-    // Tests
-//    testImplementation 'junit:junit:4.12'
-//    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-//    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
-    // Virgil Security
-    implementation "com.virgilsecurity.sdk:crypto-android:$rootProject.ext.virgilSecurity"
-    implementation "com.virgilsecurity.sdk:sdk-android:$rootProject.ext.virgilSecurity"
-
-    // Room
-    implementation "android.arch.persistence.room:runtime:$rootProject.ext.room"
-    annotationProcessor "android.arch.persistence.room:compiler:$rootProject.ext.room"
-    implementation "android.arch.persistence.room:rxjava2:$rootProject.ext.room"
 
     // RxJava
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.ext.rxJava"
@@ -82,7 +66,6 @@ dependencies {
 
     // Back4App
     implementation "com.parse:parse-android:$rootProject.ext.back4appCore"
-//    implementation "com.github.tgio:parse-livequery:$rootProject.ext.back4appLiveQuery"
     implementation 'com.parse:parse-livequery-android:1.0.4'
 }
 

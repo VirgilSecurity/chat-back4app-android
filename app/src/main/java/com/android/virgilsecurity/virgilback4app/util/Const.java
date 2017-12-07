@@ -29,8 +29,4 @@ public class Const {
         public static final String CREATED_AT_DATE = "createdAtDate";
         public static final String TIMESTAMP = "timestamp";
     }
-
-    public static class Request {
-        public static final String CRETE_CARD = "csr";
-    }
 }

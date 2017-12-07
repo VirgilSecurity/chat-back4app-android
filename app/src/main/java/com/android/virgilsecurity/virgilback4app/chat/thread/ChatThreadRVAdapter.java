@@ -9,9 +9,7 @@ import android.widget.TextView;
 
 import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.model.Message;
-import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
 import com.parse.ParseUser;
-import com.virgilsecurity.sdk.highlevel.VirgilCard;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,12 +32,9 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private List<Message> items;
-    private VirgilHelper virgilHelper;
-    private VirgilCard youCard;
-    private VirgilCard meCard;
 
-    ChatThreadRVAdapter(VirgilHelper virgilHelper) {
-        this.virgilHelper = virgilHelper;
+    ChatThreadRVAdapter() {
+
     }
 
     @Override
@@ -51,23 +46,17 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             case MessageType.ME:
                 viewHolder = new HolderMe(inflater.inflate(R.layout.layout_holder_me,
                                                            viewGroup,
-                                                           false),
-                                          virgilHelper,
-                                          meCard);
+                                                           false));
                 break;
             case MessageType.YOU:
                 viewHolder = new HolderYou(inflater.inflate(R.layout.layout_holder_you,
                                                             viewGroup,
-                                                            false),
-                                           virgilHelper,
-                                           youCard);
+                                                            false));
                 break;
             default:
                 viewHolder = new HolderMe(inflater.inflate(R.layout.layout_holder_me,
                                                            viewGroup,
-                                                           false),
-                                          virgilHelper,
-                                          meCard);
+                                                           false));
                 break;
         }
         return viewHolder;
@@ -109,11 +98,6 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         notifyDataSetChanged();
     }
 
-    void setCards(VirgilCard meCard, VirgilCard youCard) {
-        this.meCard = meCard;
-        this.youCard = youCard;
-    }
-
     void addItems(List<Message> items) {
         this.items.addAll(items);
         notifyDataSetChanged();
@@ -129,41 +113,29 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     static class HolderMe extends RecyclerView.ViewHolder {
 
-        private VirgilHelper virgilHelper;
-        private VirgilCard card;
-
         @BindView(R.id.tvMessage) TextView tvMessage;
 
-        HolderMe(View v, VirgilHelper virgilHelper, VirgilCard card) {
+        HolderMe(View v) {
             super(v);
             ButterKnife.bind(this, v);
-
-            this.virgilHelper = virgilHelper;
-            this.card = card;
         }
 
         void bind(Message message) {
-            tvMessage.setText(virgilHelper.decrypt(message.getBody(), card));
+            tvMessage.setText(message.getBody());
         }
     }
 
     static class HolderYou extends RecyclerView.ViewHolder {
 
-        private VirgilHelper virgilHelper;
-        private VirgilCard card;
-
         @BindView(R.id.tvMessage) TextView tvMessage;
 
-        HolderYou(View v, VirgilHelper virgilHelper, VirgilCard card) {
+        HolderYou(View v) {
             super(v);
             ButterKnife.bind(this, v);
-
-            this.virgilHelper = virgilHelper;
-            this.card = card;
         }
 
         void bind(Message message) {
-            tvMessage.setText(virgilHelper.decrypt(message.getBody(), card));
+            tvMessage.setText(message.getBody());
         }
     }
 }

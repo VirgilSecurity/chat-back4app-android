@@ -7,7 +7,6 @@ import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.virgilsecurity.sdk.highlevel.VirgilCard;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -22,16 +21,15 @@ import io.reactivex.Observable;
 
 public class RxParse {
 
-    public static Observable<VirgilCard> signUp(String username, String password, VirgilCard card) {
+    public static Observable<Object> signUp(String username, String password) {
         return Observable.create(e -> {
             final ParseUser user = new ParseUser();
             user.setUsername(username);
             user.setPassword(password);
-            user.put(Const.Request.CRETE_CARD, card.export());
 
             user.signUpInBackground((exception) -> {
                 if (exception == null) {
-                    e.onNext(card);
+                    e.onNext(new Object());
                     e.onComplete();
                 } else {
                     e.onError(exception);
