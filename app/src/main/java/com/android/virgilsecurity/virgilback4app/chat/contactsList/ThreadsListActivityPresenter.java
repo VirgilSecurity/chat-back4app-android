@@ -69,4 +69,10 @@ public class ThreadsListActivityPresenter extends RxPresenter<ThreadsListActivit
 
         start(CREATE_THREAD);
     }
+
+    void disposeAll() {
+        stop(GET_USER);
+        stop(GET_THREADS);
+        stop(CREATE_THREAD);
+    }
 }

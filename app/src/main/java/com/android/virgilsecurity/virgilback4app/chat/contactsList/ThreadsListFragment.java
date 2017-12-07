@@ -1,5 +1,6 @@
 package com.android.virgilsecurity.virgilback4app.chat.contactsList;
 
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,6 +13,8 @@ import com.android.virgilsecurity.virgilback4app.base.BaseFragmentWithPresenter;
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.util.Const;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
+import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
+import com.parse.OkHttp3SocketClientFactory;
 import com.parse.ParseLiveQueryClient;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -22,9 +25,13 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import nucleus5.factory.RequiresPresenter;
+import okhttp3.OkHttpClient;
 
 /**
  * Created by Danylo Oliinyk on 11/22/17 at Virgil Security.
@@ -43,6 +50,7 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
     private boolean isLoading;
     private ParseLiveQueryClient parseLiveQueryClient;
     private ParseQuery<ChatThread> parseQueryResult;
+    private Disposable networkTracker;
 
     @BindView(R.id.rvContacts)
     protected RecyclerView rvContacts;
@@ -119,8 +127,9 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
         super.onPause();
 
         getPresenter().disposeAll();
-        if (parseLiveQueryClient != null && parseQueryResult != null)
-            parseLiveQueryClient.unsubscribe(parseQueryResult);
+        unsubscribeLiveQuery();
+        if (!networkTracker.isDisposed())
+            networkTracker.dispose();
     }
 
     @Override public void onResume() {
@@ -138,33 +147,50 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
             showProgress(true);
         }
 
-        initLiveQuery();
+        networkTracker = ReactiveNetwork.observeNetworkConnectivity(activity.getApplicationContext())
+                                        .debounce(1000, TimeUnit.MILLISECONDS)
+                                        .distinctUntilChanged()
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe((connectivity) -> {
+                                            if (connectivity.getState() == NetworkInfo.State.CONNECTED) {
+                                                unsubscribeLiveQuery();
+                                                initLiveQuery();
+                                                subscribeToLiveQuery();
+                                            }
+                                        });
     }
 
     private void initLiveQuery() {
-        try {
-            parseLiveQueryClient = ParseLiveQueryClient.Factory
-                    .getClient(new URI(getString(R.string.back4app_live_query_url)));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+        if (parseLiveQueryClient == null) {
+            try {
+                parseLiveQueryClient = ParseLiveQueryClient.Factory
+                        .getClient(new URI(getString(R.string.back4app_live_query_url)),
+                                   new OkHttp3SocketClientFactory(new OkHttpClient()));
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+
+            ParseQuery<ChatThread> parseThreadSender = ParseQuery.getQuery(ChatThread.class);
+            parseThreadSender.whereEqualTo(Const.TableNames.SENDER_ID,
+                                           ParseUser.getCurrentUser().getObjectId());
+            ParseQuery<ChatThread> parseThreadRecipient = ParseQuery.getQuery(ChatThread.class);
+            parseThreadRecipient.whereEqualTo(Const.TableNames.RECIPIENT_ID,
+                                              ParseUser.getCurrentUser().getObjectId());
+            parseQueryResult = ParseQuery.or(Arrays.asList(parseThreadSender,
+                                                           parseThreadRecipient));
         }
-        ParseQuery<ChatThread> parseThreadSender = ParseQuery.getQuery(ChatThread.class);
-        parseThreadSender.whereEqualTo(Const.TableNames.SENDER_ID,
-                                       ParseUser.getCurrentUser().getObjectId());
-        ParseQuery<ChatThread> parseThreadRecipient = ParseQuery.getQuery(ChatThread.class);
-        parseThreadRecipient.whereEqualTo(Const.TableNames.RECIPIENT_ID,
-                                          ParseUser.getCurrentUser().getObjectId());
-        parseQueryResult = ParseQuery.or(Arrays.asList(parseThreadSender,
-                                                       parseThreadRecipient));
+    }
 
+    private void subscribeToLiveQuery() {
         SubscriptionHandling<ChatThread> subscriptionHandling = parseLiveQueryClient.subscribe(parseQueryResult);
-
         subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE,
                                          (query, thread) -> {
                                              Utils.log("Log", query.toString() + thread.toString());
                                              activity.runOnUiThread(() -> {
                                                  if (threads == null || !threads.contains(thread)) {
-                                                     threads = new ArrayList<>();
+                                                     if (threads == null)
+                                                         threads = new ArrayList<>();
+
                                                      threads.add(0, thread);
                                                      adapter.addItem(0, thread);
                                                      rvContacts.smoothScrollToPosition(0);
@@ -174,6 +200,13 @@ public class ThreadsListFragment extends BaseFragmentWithPresenter<ThreadsListAc
                                                  }
                                              });
                                          });
+    }
+
+    private void unsubscribeLiveQuery() {
+        if (parseLiveQueryClient != null) {
+            parseLiveQueryClient.unsubscribe(parseQueryResult);
+            parseLiveQueryClient = null;
+        }
     }
 
     public void onGetThreadsSuccess(@NonNull List<ChatThread> threads) {

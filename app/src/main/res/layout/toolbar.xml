@@ -43,10 +43,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:maxLines="1"
+                android:maxLength="25"
+                android:ellipsize="end"
+                android:gravity="center"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
-                tools:text="Chat list" />
+                tools:text="Chat list is very good like this hey dh dhhh fjfjfj" />
         </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>

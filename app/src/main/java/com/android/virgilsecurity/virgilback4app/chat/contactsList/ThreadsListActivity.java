@@ -4,11 +4,9 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.TextView;
 
 import com.android.virgilsecurity.virgilback4app.R;
@@ -39,7 +37,6 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
 
     private static final String THREADS_FRAGMENT = "THREADS_FRAGMENT";
 
-    private ActionBarDrawerToggle drawerToggle;
     private CreateThreadDialog createThreadDialog;
     private ParseUser newThreadUser;
     private boolean secondPress;
@@ -87,20 +84,6 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
                 nvNavigation.getHeaderView(0).findViewById(R.id.tvUsernameDrawer);
         tvUsernameDrawer.setText(ParseUser.getCurrentUser().getUsername());
 
-        drawerToggle = new ActionBarDrawerToggle(this, dlDrawer,
-                                                 R.string.drawer_open, R.string.drawer_close) {
-
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-        };
-
-        dlDrawer.addDrawerListener(drawerToggle);
-
         if (getActionBar() != null) {
             getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setHomeButtonEnabled(true);
@@ -130,6 +113,7 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
                     return true;
                 case R.id.itemLogOut:
                     dlDrawer.closeDrawer(Gravity.START);
+                    getPresenter().disposeAll();
                     showBaseLoading(true);
                     ParseUser.logOutInBackground(e -> {
                         runOnUiThread(() -> showBaseLoading(false));

@@ -14,7 +14,6 @@ import com.parse.ParseObject;
 
 import javax.inject.Inject;
 
-
 /**
  * Created by Danylo Oliinyk on 16.11.17 at Virgil Security.
  * -__o

@@ -1,6 +1,7 @@
 package com.android.virgilsecurity.virgilback4app.chat.thread;
 
 import android.content.Context;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -22,6 +23,8 @@ import com.android.virgilsecurity.virgilback4app.util.Const;
 import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
+import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
+import com.parse.OkHttp3SocketClientFactory;
 import com.parse.ParseLiveQueryClient;
 import com.parse.ParseQuery;
 import com.parse.SubscriptionHandling;
@@ -34,12 +37,16 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import nucleus5.factory.RequiresPresenter;
+import okhttp3.OkHttpClient;
 
 /**
  * Created by Danylo Oliinyk on 11/22/17 at Virgil Security.
@@ -59,6 +66,10 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
     private List<Message> messages;
     private int page;
     private boolean isLoading;
+    private Disposable networkTracker;
+    private ParseLiveQueryClient parseLiveQueryClient;
+    private ParseQuery<Message> parseQuery;
+
     @Inject protected VirgilHelper virgilHelper;
     @Inject protected VirgilApi virgilApi;
     @Inject protected VirgilApiContext virgilApiContext;
@@ -172,15 +183,21 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
     }
 
     private void initLiveQuery() {
-        ParseLiveQueryClient parseLiveQueryClient = null;
-        try {
-            parseLiveQueryClient = ParseLiveQueryClient.Factory
-                    .getClient(new URI(getString(R.string.back4app_live_query_url)));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+        if (parseLiveQueryClient == null) {
+            try {
+                parseLiveQueryClient = ParseLiveQueryClient.Factory
+                        .getClient(new URI(getString(R.string.back4app_live_query_url)),
+                                   new OkHttp3SocketClientFactory(new OkHttpClient()));
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+
+            parseQuery = ParseQuery.getQuery(Message.class);
+            parseQuery.whereEqualTo(Const.TableNames.THREAD_ID, thread.getObjectId());
         }
-        ParseQuery<Message> parseQuery = ParseQuery.getQuery(Message.class);
-        parseQuery.whereEqualTo(Const.TableNames.THREAD_ID, thread.getObjectId());
+    }
+
+    private void subscribeToLiveQuery() {
         SubscriptionHandling<Message> subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
 
         subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE,
@@ -196,22 +213,35 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
                                          });
     }
 
+    private void unsubscribeLiveQuery() {
+        if (parseLiveQueryClient != null) {
+            parseLiveQueryClient.unsubscribe(parseQuery);
+            parseLiveQueryClient = null;
+        }
+    }
+
     @OnClick({R.id.btnSend}) void onInterfaceClick(View v) {
         switch (v.getId()) {
             case R.id.btnSend:
+                String message = etMessage.getText().toString().trim();
                 if (meCard != null && youCard != null) {
-                    VirgilCards cards = new VirgilCards(virgilApiContext);
-                    cards.add(meCard);
-                    cards.add(youCard);
-                    lockSendUi(true, true);
-                    getPresenter().requestSendMessage(etMessage.getText().toString(),
-                                                      thread,
-                                                      cards);
-                    isLoading = true;
+                    if (!message.isEmpty()) {
+                        VirgilCards cards = new VirgilCards(virgilApiContext);
+                        cards.add(meCard);
+                        cards.add(youCard);
+                        lockSendUi(true, true);
+                        getPresenter().requestSendMessage(message,
+                                                          thread,
+                                                          cards);
+                        isLoading = true;
+                    }
                 } else {
-                    showProgress(true);
-                    getMessages();
-                    lockSendUi(true, false);
+                    if (!isLoading) {
+                        isLoading = true;
+                        showProgress(true);
+                        getMessages();
+                        lockSendUi(true, false);
+                    }
                 }
                 break;
         }
@@ -299,6 +329,9 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
         hideKeyboard();
 
         getPresenter().disposeAll();
+        unsubscribeLiveQuery();
+        if (!networkTracker.isDisposed())
+            networkTracker.dispose();
     }
 
     @Override public void onResume() {
@@ -313,13 +346,24 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
         }
 
         getMessages();
+
+        networkTracker = ReactiveNetwork.observeNetworkConnectivity(activity.getApplicationContext())
+                                        .debounce(1000, TimeUnit.MILLISECONDS)
+                                        .distinctUntilChanged()
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe((connectivity) -> {
+                                            if (connectivity.getState() == NetworkInfo.State.CONNECTED) {
+                                                unsubscribeLiveQuery();
+                                                initLiveQuery();
+                                                subscribeToLiveQuery();
+                                            }
+                                        });
     }
 
     public void onGetCardSuccess(VirgilCard virgilCard) {
         youCard = virgilCard;
 
         adapter.setCards(meCard, youCard);
-        initLiveQuery();
 
         if (messages == null) {
             showProgress(false);
