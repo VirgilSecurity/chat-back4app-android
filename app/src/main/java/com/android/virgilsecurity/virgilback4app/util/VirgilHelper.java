@@ -3,7 +3,6 @@ package com.android.virgilsecurity.virgilback4app.util;
 import android.content.Context;
 import android.util.Pair;
 
-import com.android.virgilsecurity.virgilback4app.R;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsAlreadyExistsException;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
 import com.virgilsecurity.sdk.client.model.CardModel;
@@ -19,8 +18,6 @@ import com.virgilsecurity.sdk.highlevel.VirgilCard;
 import com.virgilsecurity.sdk.highlevel.VirgilCards;
 import com.virgilsecurity.sdk.highlevel.VirgilKey;
 import com.virgilsecurity.sdk.storage.KeyStorage;
-import com.virgilsecurity.sdk.utils.ConvertionUtils;
-import com.virgilsecurity.sdk.utils.VirgilCardValidator;
 
 import javax.inject.Inject;
 
@@ -39,7 +36,6 @@ public class VirgilHelper {
     private VirgilApi virgilApi;
     private Context context;
     private VirgilApiContext virgilApiContext;
-    private VirgilCardValidator validator;
     private RxVirgil rxVirgil;
 
     private VirgilKey privateKey;
@@ -54,9 +50,6 @@ public class VirgilHelper {
         this.virgilApiContext = virgilApiContext;
 
         crypto = new VirgilCrypto();
-        validator = new VirgilCardValidator(crypto);
-        validator.addVerifier(context.getString(R.string.virgil_app_id),
-                              ConvertionUtils.base64ToBytes(context.getString(R.string.virgil_app_public_key)));
         rxVirgil = new RxVirgil(virgilApi);
     }
 
