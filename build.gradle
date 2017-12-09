@@ -44,7 +44,6 @@ ext {
     gson = "2.8.0"
     butterKnife = "8.8.1"
     networkTracker = "0.12.2"
-    dagger = "2.13"
     firebase = "11.6.2"
     crashlytics = "2.7.1@aar"
     nucleus = "7.0.0"

@@ -48,10 +48,6 @@ dependencies {
     // Network Tracker
     implementation "com.github.pwittchen:reactivenetwork-rx2:$rootProject.ext.networkTracker"
 
-    // Dagger
-    implementation "com.google.dagger:dagger:$rootProject.ext.dagger"
-    annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.ext.dagger"
-
     // Crashlytics
     implementation "com.google.firebase:firebase-core:$rootProject.ext.firebase"
     implementation("com.crashlytics.sdk.android:crashlytics:$rootProject.ext.crashlytics") {
