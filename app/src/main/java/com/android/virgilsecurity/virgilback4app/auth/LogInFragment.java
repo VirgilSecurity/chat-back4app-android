@@ -71,7 +71,10 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         AppVirgil.getVirgilComponent().inject(this);
         authStateListener = activity;
 
-        etUsername.setFilters(new InputFilter[]{new UsernameInputFilter()});
+        etUsername.setFilters(new InputFilter[]{
+                new UsernameInputFilter(),
+                new InputFilter.LengthFilter(32)
+        });
         etUsername.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
