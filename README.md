@@ -162,6 +162,7 @@ To set it up, following these steps:
   - function `resolveAppKEy()` and put your Application credentials (that you got at Virgil Dashboard during App registration) instead of `YOUR_VIRGIL_APP_PRIVATE_KEY` and `YOUR_VIRGIL_APP_PRIVATE_KEY_PASSWORD`
 
   **Note!** If you save previously your Virgil App's Private Key into a file (thus, you don’t have App Key in base64-encoded string), now you need to get it by performing the following command:
+
   in the terminal (Unix):
   `cat ~/Downloads/<your_app_name>.virgilkey | base64`
 
@@ -170,9 +171,83 @@ To set it up, following these steps:
 
   - `signCardRequest(cardRequest, appKey)`  and put your Access Token from Virgil dashboard instead of `YOUR_VIRGIL_APP_ACCESS_TOKEN`;
 
-As result, you get something like this:
-![APP Credentials](img/app_credentials.jpeg)
-Save all your changes.
+  As result, you get something like this:
+  ![APP Credentials](img/app_credentials.jpeg)
+  Save all your changes.
+
+- Go to your App Dashboard at Back4App website:
+![Back4App Settings](img/back4app_settings.jpeg)
+
+- Open “Server Settings” and find “Cloud Code”
+![Back4App Settings](img/cloud_settings.jpeg)
+
+- Open Cloud “Settings”
+- Upload the main.js and package.json files in your Cloud Code settings and press “save” button:
+![Back4App Settings](img/cloud_code.jpeg)
+
+We are now ready to register Users Cards =)
+
+### Register Users Cards
+
+First of all, for every chat user you need to perform the following steps:
+1. Generate a Public/Private Key Pair as a part of each users’ signup
+2. Store the Private Key in a key storage, on the mobile device
+3. Prepare Virgil Card request to publish User’s Virgil Card
+4. Publish User’s Virgil Card
+
+#### Generate Private Key
+
+This is how we generate the Private (for decrypting incoming chat messages) Key for new users in [RxVirgil][_rxvirgil] class:
+![Generate Key](img/rxvirgil.jpeg)
+
+#### Store the Private Key in a Key storage on the mobile device
+
+After the Private Key is generated, we should save it locally, on user’s device, with a specific name and password. Virgil’s SDK takes care of saving the key to the Android device’s Key storage system.
+![Store Key](img/store_key.jpeg)
+In class named [VirgilHelper][_helper] we’re saving private key only after successful sign up.
+
+#### Create and Publish Virgil Card
+
+Next, we have to publish Virgil Card to Virgil Cards Services. This will be done via Back4App Cloud Code that will intercept create user request, get base64-encoded string representation of Virgil Card and publish it.
+
+First of all we need to create Virgil Card in [RxVirgil][_rxvirgil] class:
+![Publish](img/publish_card.jpeg)
+
+Now you need to send this Card request to the App Server where it has to be signed with your application's Private Key (AppKey).
+The VirgilCard object has a convenience method called export that returns the base64-encoded string representation of the request suitable for transfer ([RxParse][_rxparse] class):
+![Publish](img/publish2.jpeg)
+Now your project automatically sends the exported to base64 Virgil Card to the Back4App after that Cloud Code intercepts and publishes it.
+
+#### Encrypt Message
+
+With the User's Cards in place, we are now ready to encrypt a message for encrypted communication. In this case, we will encrypt the message using the Recipient's Virgil Card.
+
+In order to encrypt messages, the Sender must search for the receiver's Virgil Cards at the Virgil Services, where all Virgil Cards are saved.
+
+Looking for the receiver’s Virgil Card in [RxParse][_rxparse] class:
+![Encrypt Chat](img/encrypt.jpeg)
+
+Then encrypting message with sender’s and receiver’s public keys in [VirgilHelper][_helper] class:
+![Encrypt Chat](img/encrypted_chat.jpeg)
+
+#### Decrypt the Encrypted Message
+
+In order to decrypt the encrypted message we need to:
+- Load the Private Key from the secure storage provided by default
+![Load Private Key](img/load_private.jpeg)
+
+- Decrypt the message using receiver’s Private Key:
+![Decrypt](img/decrypt.jpeg)
+
+## HIPAA compliance:
+
+End-to-End Encryption is a way to meet the technical requirements for HIPAA. If you need more details, sign up for a free [Virgil account][_virgil], join our Slack community and ping us there: we’re happy to discuss your own privacy circumstances and help you understand what’s required to meet the technical HIPAA requirements. 
+
+
+
+## Any questions?
+
+Shortly following your Virgil signup, we invite you to our Slack community where you can ask questions or share your learnings with others. Also, feel free to post questions to the Back4app community groups, we’re listening there too!
 
 
 
@@ -185,3 +260,7 @@ Save all your changes.
 [_virgil_account]: https://developer.virgilsecurity.com/account/signup
 [_build.gradle]: https://github.com/VirgilSecurity/chat-back4app-android/blob/simpleEncrypt/app/build.gradle
 [_string.xml]: https://github.com/VirgilSecurity/chat-back4app-android/blob/simpleEncrypt/app/src/main/res/values/strings.xml
+[_rxvirgil]: https://github.com/VirgilSecurity/chat-back4app-android/blob/simpleEncrypt/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/RxVirgil.java
+[_helper]: https://github.com/VirgilSecurity/chat-back4app-android/blob/simpleEncrypt/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/VirgilHelper.java
+[_rxparse]: https://github.com/VirgilSecurity/chat-back4app-android/blob/simpleEncrypt/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/RxParse.java
+[_virgil]: https://developer.virgilsecurity.com/
