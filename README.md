@@ -49,9 +49,9 @@ This is the simplest implementation for E2EE chat and it works perfectly for sim
   - Check out the “cleanChat” branch
 
 ![Chat](img/open_chat.jpeg)
+**Note!** Choose “Project” type of file tree - it will be used all-through the tutorial.
 
 The project will look like this:
-**Note!** Choose “Project” type of file tree - it will be used all-through the tutorial.
 
 ![Project review](img/project_review.jpeg)
 
@@ -89,7 +89,7 @@ If everything works properly, you should be able to see some data in “Message�
 
 **Next**: Close your chat interface and move on to the next step – adding E2EE encryption.
 
-## Step-2. Adding E2EE encryption to chat
+## Step-2. Adding E2EE Encryption to Chat
 
 Now, let’s encrypt those chat messages. By the end of this part, you’ll be able to encrypt a chat message just like this:
 
@@ -102,7 +102,6 @@ To get started, you need the following:
 **Note!!!** During Application Key Generation you see special window. Press “click here” link, to open AppKey in base64-encoded string, copy and save local somewhere:
 
 ![Encoded string](img/encoded_string.jpeg)
-
 You need this App Key later.
 
 2. Checkout the simpleEncrypt branch:
