@@ -41,7 +41,7 @@ This is the simplest implementation for E2EE chat and it works perfectly for sim
 - Sign up for a [Back4app account][_back4app_account] and create a new app;
 - You’ need [Android Studio][_android_studio] for the coding work, we used 3.0.1.
 
-## Step 1: let’s set up the Back4app messenger app
+## Let’s set up the Back4app messenger app
 
 ### Import Project in Android Studio:
   - File -> New -> Project from Version Control -> Git
@@ -89,7 +89,7 @@ If everything works properly, you should be able to see some data in “Message�
 
 **Next**: Close your chat interface and move on to the next step – adding E2EE encryption.
 
-## Step-2. Adding E2EE Encryption to Chat
+## Adding E2EE Encryption to Chat
 
 Now, let’s encrypt those chat messages. By the end of this part, you’ll be able to encrypt a chat message just like this:
 
@@ -118,7 +118,7 @@ You need this App Key later.
 - Encrypt chat message before sending
 - Decrypt the encrypted message after receiving
 
-### Setup Your Android App
+### Step-1. Setup Your Android App
 In order to generate a Private Key, Public Key for every user, and to encrypt or decrypt messages we need to install the Virgil Java SDK Package. This package contains a Vigil Crypto Library, which allows us to perform the operations we need in E2EE chat easily.
 
 #### Add Virgil Java/Android SDK to your project
@@ -149,7 +149,7 @@ To initialize the Virgil SDK on a client-side you need to:
 - Initialize VirgilApi with VirgilApiContext:
 ![API Content](img/initialize_content.jpeg)
 
-### Setup your App Server
+### Step-2. Setup your App Server
 
 Besides the Android app, you’ll need some minimal server code to make the sample work securely and give you control over Users Cards.
 
@@ -176,15 +176,17 @@ To set it up, following these steps:
 
 - Go to your App Dashboard at Back4App website:
 ![Back4App Settings](img/back4app_settings.jpeg)
-- Open “Server Settings” and find “Cloud Code”
+
+- Open “Server Settings” and find “Cloud Code”:
 ![Back4App Settings](img/cloud_settings.jpeg)
+
 - Open Cloud “Settings”
 - Upload the main.js and package.json files in your Cloud Code settings and press “save” button:
 ![Back4App Settings](img/cloud_code.jpeg)
 
 We are now ready to register Users Cards =)
 
-### Register Users Cards
+### Step-3. Register Users Cards
 
 First of all, for every chat user you need to perform the following steps:
 1. Generate a Public/Private Key Pair as a part of each users’ signup
@@ -215,19 +217,19 @@ The VirgilCard object has a convenience method called export that returns the ba
 ![Publish](img/publish2.jpeg)
 Now your project automatically sends the exported to base64 Virgil Card to the Back4App after that Cloud Code intercepts and publishes it.
 
-#### Encrypt Message
+### Step-4. Encrypt Message
 
 With the User's Cards in place, we are now ready to encrypt a message for encrypted communication. In this case, we will encrypt the message using the Recipient's Virgil Card.
 
 In order to encrypt messages, the Sender must search for the receiver's Virgil Cards at the Virgil Services, where all Virgil Cards are saved.
 
-Looking for the receiver’s Virgil Card in [RxParse][_rxparse] class:
+- Looking for the receiver’s Virgil Card in [RxParse][_rxparse] class:
 ![Encrypt Chat](img/encrypt.jpeg)
 
-Then encrypting message with sender’s and receiver’s public keys in [VirgilHelper][_helper] class:
+-Then encrypting message with sender’s and receiver’s public keys in [VirgilHelper][_helper] class:
 ![Encrypt Chat](img/encrypted_chat.jpeg)
 
-#### Decrypt the Encrypted Message
+### Step-5. Decrypt the Encrypted Message
 
 In order to decrypt the encrypted message we need to:
 - Load the Private Key from the secure storage provided by default
