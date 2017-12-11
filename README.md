@@ -100,8 +100,7 @@ To get started, you need the following:
 1. Virgil Security developer account: [Sign up here][_virgil_account]. Sign in to your Virgil Security developer account and create a new application. Make sure you saved the Private Key file that is generated for your application, you will need it later.
 
 **Note!!!** During Application Key Generation you see special window. Press “click here” link, to open AppKey in base64-encoded string, copy and save local somewhere:
-
-![Encoded string](img/encoded_string.jpeg)
+<img src="img/encoded_string.jpeg" width="800" >
 You need this App Key later.
 
 2. Checkout the simpleEncrypt branch:
@@ -258,9 +257,9 @@ Shortly following your Virgil signup, we invite you to our Slack community where
 [_back4app_account]: https://www.back4app.com/
 [_android_studio]: https://developer.android.com/studio/index.html
 [_virgil_account]: https://developer.virgilsecurity.com/account/signup
-[_build.gradle]: https://github.com/VirgilSecurity/chat-back4app-android/blob/simpleEncrypt/app/build.gradle
-[_string.xml]: https://github.com/VirgilSecurity/chat-back4app-android/blob/simpleEncrypt/app/src/main/res/values/strings.xml
-[_rxvirgil]: https://github.com/VirgilSecurity/chat-back4app-android/blob/simpleEncrypt/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/RxVirgil.java
-[_helper]: https://github.com/VirgilSecurity/chat-back4app-android/blob/simpleEncrypt/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/VirgilHelper.java
-[_rxparse]: https://github.com/VirgilSecurity/chat-back4app-android/blob/simpleEncrypt/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/RxParse.java
+[_build.gradle]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/build.gradle
+[_string.xml]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/res/values/strings.xml
+[_rxvirgil]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/RxVirgil.java
+[_helper]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/VirgilHelper.java
+[_rxparse]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/RxParse.java
 [_virgil]: https://developer.virgilsecurity.com/
