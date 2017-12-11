@@ -176,10 +176,8 @@ To set it up, following these steps:
 
 - Go to your App Dashboard at Back4App website:
 ![Back4App Settings](img/back4app_settings.jpeg)
-
 - Open “Server Settings” and find “Cloud Code”:
 ![Back4App Settings](img/cloud_settings.jpeg)
-
 - Open Cloud “Settings”
 - Upload the main.js and package.json files in your Cloud Code settings and press “save” button:
 ![Back4App Settings](img/cloud_code.jpeg)
