@@ -1,7 +1,6 @@
 # msgr-back4app-android
 
-## Ahoy Back4app community!
-
+**Ahoy Back4app community!**
 This is a guest post by Virgil Security: we’re the tech behind [Twilio’s End-to-End Encrypted Messaging][_twilio]. We’ve been asked by our friends @ Back4app to show you how to build an End-to-End encrypted chat app on top of Back4app.
 
 In this post, we’ll walk you through the steps to make [Back4app’s Android Simple Messenger app][_back4app] End-to-End Encrypted! Are you ready? Or if you don’t care about the details, you can simply skip to the end of the post and download the final product.
@@ -48,16 +47,16 @@ This is the simplest implementation for E2EE chat and it works perfectly for sim
   Git Repository URL: https://github.com/VirgilSecurity/chat-back4app-android
   Check out the “cleanChat” branch
 
-![Chat](img/open_chat.png)
+![Chat](img/open_chat.jpeg)
 
 The project will look like this:
 **Note!** Choose “Project” type of file tree - it will be used all-through the tutorial.
 
-![Project review](img/project_review.png)
+![Project review](img/project_review.jpeg)
 
 Set up the app with the credentials from your new Back4App app’s dashboard:
 
-![Back4app credentials](img/back4app_credentials.png)
+![Back4app credentials](img/back4app_credentials.gpeg)
 
 Open /app/src/main/res/values/strings.xml in the project and paste in your app credentials:
 
