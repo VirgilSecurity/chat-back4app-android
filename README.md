@@ -47,7 +47,6 @@ This is the simplest implementation for E2EE chat and it works perfectly for sim
   - File -> New -> Project from Version Control -> Git
   - Git Repository URL: https://github.com/VirgilSecurity/chat-back4app-android
   - Check out the “cleanChat” branch
-
 ![Chat](img/open_chat.jpeg)
 **Note!** Choose “Project” type of file tree - it will be used all-through the tutorial.
 
@@ -176,9 +175,8 @@ To set it up, following these steps:
   Save all your changes.
 
 - Go to your App Dashboard at Back4App website:
-![Back4App Settings](img/back4app_settings.jpeg)
+<img src="img/back4app_settings.jpeg" width="500" height="300">
 - Open “Server Settings” and find “Cloud Code”:
-![Back4App Settings](img/cloud_settings.jpeg)
 <img src="img/cloud_settings.jpeg" width="300" height="300">
 - Open Cloud “Settings”
 - Upload the main.js and package.json files in your Cloud Code settings and press “save” button:
