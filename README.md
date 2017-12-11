@@ -59,6 +59,7 @@ The project will look like this:
 
 ![Back4app credentials](img/back4app_credentials.jpeg)
 
+
 Open /app/src/main/res/values/strings.xml in the project and paste in your app credentials:
 
 ![Back4app credentials](img/back4app_credentials2.jpeg)
@@ -178,6 +179,7 @@ To set it up, following these steps:
 ![Back4App Settings](img/back4app_settings.jpeg)
 - Open “Server Settings” and find “Cloud Code”:
 ![Back4App Settings](img/cloud_settings.jpeg)
+<img src="img/cloud_settings.jpeg" width="300" height="300">
 - Open Cloud “Settings”
 - Upload the main.js and package.json files in your Cloud Code settings and press “save” button:
 ![Back4App Settings](img/cloud_code.jpeg)
