@@ -43,9 +43,9 @@ This is the simplest implementation for E2EE chat and it works perfectly for sim
 ## Step 1: let’s set up the Back4app messenger app
 
 ### Import Project in Android Studio:
-  File -> New -> Project from Version Control -> Git
-  Git Repository URL: https://github.com/VirgilSecurity/chat-back4app-android
-  Check out the “cleanChat” branch
+  - File -> New -> Project from Version Control -> Git
+  - Git Repository URL: https://github.com/VirgilSecurity/chat-back4app-android
+  - Check out the “cleanChat” branch
 
 ![Chat](img/open_chat.jpeg)
 
@@ -56,9 +56,22 @@ The project will look like this:
 
 Set up the app with the credentials from your new Back4App app’s dashboard:
 
-![Back4app credentials](img/back4app_credentials.gpeg)
+![Back4app credentials](img/back4app_credentials.jpeg)
 
 Open /app/src/main/res/values/strings.xml in the project and paste in your app credentials:
+
+![Back4app credentials](img/back4app_credentials2.jpeg)
+
+  - Go to your App Dashboard at Back4App website.
+  - Open “Server Settings” of your app -> In “Core Settings” tile choose “Settings”.
+  - Return to your strings.xml file and paste your “App Id” into “back4app_app_id” and “Client Key” into “back4app_client_key”.
+To get live updates for messages and chat threads you have to enable Live Query. Live Query can be enabled for any custom class user created, so firstly - Launch the “Data Managment” for your app and create two classes “Message” and “ChatThread”:
+
+![Create Class](img/create_class.jpeg)
+
+
+After you successfully created “Message” and “ChatThread” classes you should enable Live Query. Open Live Query Settings and check the “Activate Hosting” option. Also you have to enter “Subdomain name” which can be any string you want and activate Live Query for recently created classes “Message” and “ChatThread”:
+
 
 
 [_twilio]: https://www.twilio.com/blog/2016/05/introducing-end-to-end-encryption-for-twilio-ip-messaging-with-virgil-security.html
