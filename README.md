@@ -137,8 +137,10 @@ When users want to start sending and receiving messages in a browser or mobile d
 - Choose your Chat Application
 ![Access Token](img/access_token.jpeg)
 - Click the “Add New Token” button.
-- Enter the Access Token name, choose permissions for users, and press "Generate Token". As a result, you get the Access Token:
+- Enter the Access Token name, choose permissions for users, and press "Generate Token":
 ![Access Token](img/access_token2.jpeg)
+As a result, you get the Access Token:
+![Access Token](img/access_token3.jpeg)
 - Copy this Access Token.
 
 To initialize the Virgil SDK on a client-side you need to:
@@ -238,7 +240,7 @@ In order to decrypt the encrypted message we need to:
 
 ## HIPAA compliance:
 
-End-to-End Encryption is a way to meet the technical requirements for HIPAA. If you need more details, sign up for a free [Virgil account][_virgil], join our Slack community and ping us there: we’re happy to discuss your own privacy circumstances and help you understand what’s required to meet the technical HIPAA requirements. 
+End-to-End Encryption is a way to meet the technical requirements for HIPAA. If you need more details, sign up for a free [Virgil account][_virgil], join our Slack community and ping us there: we’re happy to discuss your own privacy circumstances and help you understand what’s required to meet the technical HIPAA requirements.
 
 
 
