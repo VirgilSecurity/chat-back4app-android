@@ -104,7 +104,7 @@ To get started, you need the following:
 You need this App Key later.
 
 2. Checkout the simpleEncrypt branch:
-![Checkout](img/checkout.jpeg)
+<img src="img/checkout.jpeg" width="600" >
 
 **Note!** In the text below you find such terms as Virgil Key, Virgil Card, Virgil Cards Service. In Virgil Security infrastructure:
   - Virgil Key – this is how we call a User's Private Key;
