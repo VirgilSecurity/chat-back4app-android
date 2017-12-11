@@ -10,11 +10,11 @@ In this post, we’ll walk you through the steps to make [Back4app’s Android S
 
 First, let’s start with a quick refresher of what E2EE is and how it works. E2EE is simple: when you type in a chat message, it gets encrypted on your mobile device (or in your browser) and gets decrypted only when your chat partner receives it and wants to display it in her chat window.
 
-[image]
+![Virgil Chat](img/chat_example.png)
 
 So essentially, the message remains encrypted while travels over wifi, the internet, gets on the web server, goes into the database and on the way back to your chat partner. In other words, none of the networks or servers have a clue of what the two of you are chatting about.
 
-[another image]
+![Virgil Chat Server](img/chat_example_server.png)
 
 What’s difficult in End-to-End Encryption is the task of managing the encryption keys: managing them in a way that only the users involved in the chat can access them and nobody else. Also, it’s tricky to implement crypto on 3 platforms with 3 different libraries and various levels of operating system support. You’d also have to consider what type of encryption you need use for the data you want to encrypt (for example, some encryption algorithms are built for encrypting keys, while some for encrypting text, while others for encrypting images). And these are just 3 examples of why developers end up not implementing crypto.
 
@@ -55,7 +55,7 @@ The project will look like this:
 
 ![Project review](img/project_review.jpeg)
 
-Set up the app with the credentials from your new Back4App app’s dashboard:
+### Set up the app with the credentials from your new Back4App app’s dashboard:
 
 ![Back4app credentials](img/back4app_credentials.jpeg)
 
@@ -74,7 +74,26 @@ To get live updates for messages and chat threads you have to enable Live Query.
 
 After you successfully created “Message” and “ChatThread” classes you should enable Live Query. Open Live Query Settings and check the “Activate Hosting” option. Also you have to enter “Subdomain name” which can be any string you want and activate Live Query for recently created classes “Message” and “ChatThread”:
 
+![Enablle Live Query](img/live_query.jpeg)
 
+Now you can build and run your app on a real device or on an emulator.
+
+![Enablle Live Query](img/emulator.jpeg)
+
+As a result, you see a chat messenger, where you can send and receive messages. As a server, this chat uses Back4App services.
+
+Register two users and send few messages to each other.
+If everything works properly, you should be able to see some data in “Message”, “ChatThread” and “User” classes. You able to manage data in your classes (for example you can view message text in “body” column):
+
+![DB](img/db_back4app.jpeg)
+
+**Next**: Close your chat interface and move on to the next step – adding E2EE encryption.
+
+## Adding E2EE encryption to chat
+
+Now, let’s encrypt those chat messages. By the end of this part, you’ll be able to encrypt a chat message just like this:
+
+![Encrypt example](img/encrypt_example.jpeg)
 
 [_twilio]: https://www.twilio.com/blog/2016/05/introducing-end-to-end-encryption-for-twilio-ip-messaging-with-virgil-security.html
 [_back4app]: https://docs.back4app.com/docs/new-parse-app/simple-messenger/
