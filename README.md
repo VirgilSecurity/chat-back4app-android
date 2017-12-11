@@ -226,7 +226,7 @@ In order to encrypt messages, the Sender must search for the receiver's Virgil C
 - Looking for the receiver’s Virgil Card in [RxParse][_rxparse] class:
 ![Encrypt Chat](img/encrypt.jpeg)
 
--Then encrypting message with sender’s and receiver’s public keys in [VirgilHelper][_helper] class:
+- Then encrypting message with sender’s and receiver’s public keys in [VirgilHelper][_helper] class:
 ![Encrypt Chat](img/encrypted_chat.jpeg)
 
 ### Step-5. Decrypt the Encrypted Message
