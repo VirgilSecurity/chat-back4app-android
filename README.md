@@ -138,7 +138,7 @@ When users want to start sending and receiving messages in a browser or mobile d
 ![Access Token](img/access_token.jpeg)
 - Click the “Add New Token” button.
 - Enter the Access Token name, choose permissions for users, and press "Generate Token":
-![Access Token](img/access_token2.jpeg)
+<img src="img/access_token2.jpeg" width="300" height="400">
 As a result, you get the Access Token:
 ![Access Token](img/access_token3.jpeg)
 - Copy this Access Token.
