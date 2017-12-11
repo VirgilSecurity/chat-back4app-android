@@ -143,7 +143,36 @@ When users want to start sending and receiving messages in a browser or mobile d
 - Copy this Access Token.
 
 To initialize the Virgil SDK on a client-side you need to:
+- Open “[strings.xml][_string.xml]” file and put generated on Virgil Dashboard Access Token to the “virgil_token” string and App Id to the “virgil_app_id” string:
+![String xml](img/string_xml.jpeg)
+- Setup VirgilApiContext with virgil_token and KeyStorage with default files directory:
+![API Content](img/setup_apicontent.jpeg)
+- Initialize VirgilApi with VirgilApiContext:
+![API Content](img/initialize_content.jpeg)
 
+### Setup your App Server
+
+Besides the Android app, you’ll need some minimal server code to make the sample work securely and give you control over Users Cards.
+
+To set it up, following these steps:
+- Download this archive that contains two files: main.js and package.json;
+- Extract files from the archive and open main.js with any file editor;
+- Find in main.js file:
+  - Function `signCardRequest` and put your App ID from Virgil Dashboard instead of `YOUR_VIRGIL_APP_ID`;
+  - function `resolveAppKEy()` and put your Application credentials (that you got at Virgil Dashboard during App registration) instead of `YOUR_VIRGIL_APP_PRIVATE_KEY` and `YOUR_VIRGIL_APP_PRIVATE_KEY_PASSWORD`
+
+  **Note!** If you save previously your Virgil App's Private Key into a file (thus, you don’t have App Key in base64-encoded string), now you need to get it by performing the following command:
+  in the terminal (Unix):
+  `cat ~/Downloads/<your_app_name>.virgilkey | base64`
+
+  or on Windows:
+  `certutil -encode <key_name>.virgilkey tmp.b64 && findstr /v /c:- tmp.b64 > app_private_key.txt`
+
+  - `signCardRequest(cardRequest, appKey)`  and put your Access Token from Virgil dashboard instead of `YOUR_VIRGIL_APP_ACCESS_TOKEN`;
+
+As result, you get something like this:
+![APP Credentials](img/app_credentials.jpeg)
+Save all your changes.
 
 
 
@@ -155,3 +184,4 @@ To initialize the Virgil SDK on a client-side you need to:
 [_android_studio]: https://developer.android.com/studio/index.html
 [_virgil_account]: https://developer.virgilsecurity.com/account/signup
 [_build.gradle]: https://github.com/VirgilSecurity/chat-back4app-android/blob/simpleEncrypt/app/build.gradle
+[_string.xml]: https://github.com/VirgilSecurity/chat-back4app-android/blob/simpleEncrypt/app/src/main/res/values/strings.xml
