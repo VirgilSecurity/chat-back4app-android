@@ -1,6 +1,7 @@
 # msgr-back4app-android
 
 **Ahoy Back4app community!**
+
 This is a guest post by Virgil Security: we’re the tech behind [Twilio’s End-to-End Encrypted Messaging][_twilio]. We’ve been asked by our friends @ Back4app to show you how to build an End-to-End encrypted chat app on top of Back4app.
 
 In this post, we’ll walk you through the steps to make [Back4app’s Android Simple Messenger app][_back4app] End-to-End Encrypted! Are you ready? Or if you don’t care about the details, you can simply skip to the end of the post and download the final product.
@@ -65,6 +66,7 @@ Open /app/src/main/res/values/strings.xml in the project and paste in your app c
   - Go to your App Dashboard at Back4App website.
   - Open “Server Settings” of your app -> In “Core Settings” tile choose “Settings”.
   - Return to your strings.xml file and paste your “App Id” into “back4app_app_id” and “Client Key” into “back4app_client_key”.
+
 To get live updates for messages and chat threads you have to enable Live Query. Live Query can be enabled for any custom class user created, so firstly - Launch the “Data Managment” for your app and create two classes “Message” and “ChatThread”:
 
 ![Create Class](img/create_class.jpeg)
