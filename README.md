@@ -69,7 +69,7 @@ After you successfully created `Message` and `ChatThread` classes you should ena
 
 ![Enablle Live Query](img/live_query.jpeg)
 
-### Build and Run Chat without E2EE
+### 3) Build and Run Chat without E2EE
 
 Now you can build and run your app on a real device or on an emulator.
 
