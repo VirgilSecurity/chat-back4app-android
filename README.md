@@ -196,7 +196,7 @@ Initialize the Virgil SDK on a client-side:
 Besides the Android app, you’ll need some minimal server code to make the sample work securely and give you control over Users Cards.
 
 To set it up, following these steps:
-- Download this archive that contains two files: main.js and package.json;
+- [Download this archive][_main_js_package_json] that contains two files: `main.js` and `package.json`;
 - Extract files from the archive and open main.js with any file editor;
 - Find in main.js file:
   - Function `signCardRequest` and put your App ID from Virgil Dashboard instead of `YOUR_VIRGIL_APP_ID`;
@@ -403,3 +403,4 @@ Shortly following your Virgil signup, we invite you to our Slack community where
 [_helper]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/VirgilHelper.java
 [_rxparse]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/RxParse.java
 [_virgil]: https://developer.virgilsecurity.com/
+[_main_js_package_json]: https://gist.github.com/vadimavdeev/0df867740156ca787908a4f2b62997b8/archive/80a7f913fdb81fa8e05f23cec30ac992aff70ee3.zip
