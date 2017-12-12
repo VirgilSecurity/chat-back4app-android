@@ -8,7 +8,7 @@ In this post, we’ll walk you through the steps to make [Back4app’s Android S
 
 ## What is End-to-End Encryption?
 
-First, let’s start with a quick refresher of what E2EE is and how it works. E2EE is simple: when you type in a chat message, it gets encrypted on your mobile device (or in your browser) and gets decrypted only when your chat partner receives it and wants to display it in her chat window.
+First, let’s start with a quick refresher of what E2EE is and how it works. E2EE is simple: when you type in a chat message, it gets encrypted on your mobile device (or in your browser) and gets decrypted only when your chat partner receives it and wants to display it in chat window.
 
 ![Virgil Chat](img/chat_example.png)
 
