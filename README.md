@@ -48,10 +48,6 @@ This is the simplest implementation for E2EE chat and it works perfectly for sim
   - Git Repository URL: https://github.com/VirgilSecurity/chat-back4app-android
   - Check out the “cleanChat” branch
 ![Chat](img/open_chat.jpeg)
-**Note!** Choose “Project” type of file tree - it will be used all-through the tutorial.
-
-  The project will look like this:
-  ![Project review](img/project_review.jpeg)
 
 ### 2) Set up the App with the Credentials from your Back4App App’s Dashboard:
   - Go to your App Dashboard at Back4App website.
