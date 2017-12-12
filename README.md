@@ -233,7 +233,22 @@ In order to decrypt the encrypted message we need to:
 ![Load Private Key](img/load_private.jpeg)
 
 - Decrypt the message using receiver’s Private Key:
-![Decrypt](img/decrypt.jpeg)
+```java
+public String decrypt(String text, VirgilCard card) {
+    String decryptedText = null;
+
+    try {
+        VirgilKey virgilKey = loadKey(getMyCard().getIdentity());
+        decryptedText = virgilKey.decryptThenVerify(text, card).toString();
+    } catch (VirgilKeyIsNotFoundException e) {
+        e.printStackTrace();
+    } catch (CryptoException e) {
+        e.printStackTrace();
+    }
+
+    return decryptedText;
+}
+```
 
 ## HIPAA compliance:
 
