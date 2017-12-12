@@ -58,7 +58,13 @@ This is the simplest implementation for E2EE chat and it works perfectly for sim
   - Open “Server Settings” of your app -> In “Core Settings” tile choose “Settings”:
   ![Back4app credentials](img/back4app_credentials.jpeg)
   - Return to your  /app/src/main/res/values/strings.xml file in the project and paste your “App Id” into “back4app_app_id” and “Client Key” into “back4app_client_key”.
-  ![Back4app credentials](img/back4app_credentials2.jpeg)
+```xml
+<!-- Back4App -->
+<string name="back4app_server_url">https://parseapi.back4app.com/</string>
+<string name="back4app_live_query_url">wss://virgilmessangerandroid.back4app.io/</string>
+<string name="back4app_app_id">0YP4zSHDOZy5v5123e2ttGRkG123aaBTUnr6wfH</string>
+<string name="back4app_client_key">Wu1T8l9AriZ123oZQbz2AXKvh123nEqYabPez7</string>
+```
 
 To get live updates for messages and chat threads you have to enable Live Query. Live Query can be enabled for any custom class user created, so firstly - Launch the “Data Managment” for your app and create two classes “Message” and “ChatThread”:
 
@@ -88,7 +94,22 @@ If everything works properly, you should be able to see some data in `Message`, 
 
 Now, let’s encrypt those chat messages. By the end of this part, you’ll be able to encrypt a chat message just like this:
 
-![Encrypt example](img/encrypt_example.jpeg)
+```java
+public String encrypt(String text, VirgilCards cards) {
+    String encryptedText = null;
+
+    try {
+        VirgilKey key = loadKey(getMyCard().getIdentity());
+        encryptedText = key.signThenEncrypt(text, cards).toString(StringEncoding.Base64);
+    } catch (VirgilKeyIsNotFoundException e) {
+        e.printStackTrace();
+    } catch (CryptoException e) {
+        e.printStackTrace();
+    }
+
+    return encryptedText;
+}
+```
 
 To get started, you need the following:
 
@@ -119,10 +140,15 @@ In order to generate a Private Key, Public Key for every user, and to encrypt or
 #### Add Virgil Java/Android SDK to your project
 The Virgil Java/Android SDK is provided as a package named com.virgilsecurity.sdk. You can easily add the SDK package by adding the following code into your app-level [build.gradle][_build.gradle]:
 
-![Gradle](img/gradle.jpeg)
+```gradle
+implementation "com.virgilsecurity.sdk:crypto-android:$rootProject.ext.virgilSecurity"
+implementation "com.virgilsecurity.sdk:sdk-android:$rootProject.ext.virgilSecurity"
+```
 
 As well you have to add to your project-level build.gradle (‘ext’ code block) next line:
-`virgilSecurity = “4.5.0@aar”`
+```gradle
+virgilSecurity = “4.5.0@aar”
+```
 
 #### Initialize Virgil Java/Android SDK
 When users want to start sending and receiving messages in a browser or mobile device, Virgil can't trust them right away. Clients have to be provided with a unique identity, thus, you'll need to give your users the Access Token that tells Virgil who they are and what they can do. You generate Access Token in your Application Dashboard at Virgil website.
@@ -140,11 +166,30 @@ Get Access Token:
 
 Initialize the Virgil SDK on a client-side:
 - Open “[strings.xml][_string.xml]” file and put generated on Virgil Dashboard Access Token to the “virgil_token” string and App Id to the “virgil_app_id” string:
-![String xml](img/string_xml.jpeg)
+```xml
+<string name="virgil_token">AT.8641c450a983a3435aebe7994fd41235fs0babea997d29b3e8eewed7b35beab72be3</string>
+<string name="virgil_app_id">bd7bf7e832f16e2b3f61fa32dw282cbfc6b3d31f90778ab0e15faa775e7b7db3</string>
+```
 - Setup VirgilApiContext with virgil_token and KeyStorage with default files directory:
-![API Content](img/setup_apicontent.jpeg)
+```java
+@Provides KeyStorage provideKeyStorage(Context context) {
+    return new VirgilKeyStorage(context.getFilesDir().getAbsolutePath());
+}
+
+@Provides VirgilApiContext provideVirgilApiContext(KeyStorage keyStorage, Context context) {
+    VirgilApiContext virgilApiContext =
+            new VirgilApiContext(context.getString(R.string.virgil_token));
+    virgilApiContext.setKeyStorage(keyStorage);
+
+    return virgilApiContext;
+}
+```
 - Initialize VirgilApi with VirgilApiContext:
-![API Content](img/initialize_content.jpeg)
+```java
+@Provides VirgilApi provideVirgilApi(VirgilApiContext virgilApiContext) {
+    return new VirgilApiImpl(virgilApiContext);
+}
+```
 
 ### Step-2. Setup your App Server
 
@@ -155,8 +200,24 @@ To set it up, following these steps:
 - Extract files from the archive and open main.js with any file editor;
 - Find in main.js file:
   - Function `signCardRequest` and put your App ID from Virgil Dashboard instead of `YOUR_VIRGIL_APP_ID`;
-  - function `resolveAppKEy()` and put your Application credentials (that you got at Virgil Dashboard during App registration) instead of `YOUR_VIRGIL_APP_PRIVATE_KEY` and `YOUR_VIRGIL_APP_PRIVATE_KEY_PASSWORD`
-
+```javascript
+function signCardRequest(cardRequest) {
+  const signer = virgil.requestSigner(virgil.crypto);
+  signer.authoritySign(cardRequest, 'bd7bf7e832f16e2b3f6fd343s1f90778ab0e15515aa775e7b7db3', appKey);
+}
+```
+  - function `resolveAppKey()` and put your Application credentials (that you got at Virgil Dashboard during App registration) instead of `YOUR_VIRGIL_APP_PRIVATE_KEY` and `YOUR_VIRGIL_APP_PRIVATE_KEY_PASSWORD`
+```javascript
+  function resolveAppKey() {
+    try {
+      return virgil.crypto.importPrivateKey('MIGhMF0GCSqGSIb3DQEFDTBQMC8GCSqGSIb3DQEFDDAiBBAmU9m+EJOvLRxRaJP6d......',
+        'a0KEOifsd2Ean6fzQ'
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+```
   **Note!** If you save previously your Virgil App's Private Key into a file (thus, you don’t have App Key in base64-encoded string), now you need to get it by performing the following command:
 
   in the terminal (Unix):
@@ -166,9 +227,12 @@ To set it up, following these steps:
   `certutil -encode <key_name>.virgilkey tmp.b64 && findstr /v /c:- tmp.b64 > app_private_key.txt`
 
   - `signCardRequest(cardRequest, appKey)`  and put your Access Token from Virgil dashboard instead of `YOUR_VIRGIL_APP_ACCESS_TOKEN`;
-
-  As result, you get something like this:
-  ![APP Credentials](img/app_credentials.jpeg)
+  ```javascript
+  signCardRequest(cardRequest);
+  const client = virgil.client('AT.8641c450a983a3435aebe79sad32abea997d29b3e8eed7b35beab72be3');
+  client.publishCard(cardRequest)
+  ...
+  ```
   Save all your changes.
 
 - Go to your App Dashboard at Back4App website:
@@ -194,12 +258,27 @@ First of all, for every chat user you need to perform the following steps:
 #### Generate Private Key
 
 This is how we generate the Private (for decrypting incoming chat messages) Key for new users in [RxVirgil][_rxvirgil] class:
-![Generate Key](img/rxvirgil.jpeg)
+```java
+private Single<Pair<VirgilCard, VirgilKey>> createCard(String identity) {
+    return Single.create(e -> {
+        VirgilKey privateKey = virgilApi.getKeys().generate();
+...
+```
 
 #### Store the Private Key in a Key storage on the mobile device
 
 After the Private Key is generated, we should save it locally, on user’s device, with a specific name and password. Virgil’s SDK takes care of saving the key to the Android device’s Key storage system.
-![Store Key](img/store_key.jpeg)
+```java
+private void saveLastGeneratedPrivateKey() {
+    if (privateKey != null) {
+        try {
+            privateKey.save(myVirgilCard.getIdentity());
+        } catch (VirgilKeyIsAlreadyExistsException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
 In class named [VirgilHelper][_helper] we’re saving private key only after successful sign up.
 
 #### Create and Publish Virgil Card
@@ -207,11 +286,29 @@ In class named [VirgilHelper][_helper] we’re saving private key only after suc
 Next, we have to publish Virgil Card to Virgil Cards Services. This will be done via Back4App Cloud Code that will intercept create user request, get base64-encoded string representation of Virgil Card and publish it.
 
 First of all we need to create Virgil Card in [RxVirgil][_rxvirgil] class:
-![Publish](img/publish_card.jpeg)
+```java
+...
+    VirgilCard userCard = virgilApi.getCards().create(identity, privateKey);
+    if (userCard == null)
+        e.onError(new VirgilCardNotCreatedException());
+
+    e.onSuccess(new Pair<>(userCard, privateKey));
+});
+}
+```
 
 Now you need to send this Card request to the App Server where it has to be signed with your application's Private Key (AppKey).
 The VirgilCard object has a convenience method called export that returns the base64-encoded string representation of the request suitable for transfer ([RxParse][_rxparse] class):
-![Publish](img/publish2.jpeg)
+```java
+public static Observable<VirgilCard> signUp(String username, 
+                                            String password, 
+                                            VirgilCard card) {
+    return Observable.create(e -> {
+        final ParseUser user = new ParseUser();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.put(Const.Request.CRETE_CARD, card.export());
+```
 Now your project automatically sends the exported to base64 Virgil Card to the Back4App after that Cloud Code intercepts and publishes it.
 
 ### Step-4. Encrypt Message
@@ -221,16 +318,46 @@ With the User's Cards in place, we are now ready to encrypt a message for encryp
 In order to encrypt messages, the Sender must search for the receiver's Virgil Cards at the Virgil Services, where all Virgil Cards are saved.
 
 - Looking for the receiver’s Virgil Card in [RxParse][_rxparse] class:
-![Encrypt Chat](img/encrypt.jpeg)
+```java
+private Single<VirgilCard> findCard(String identity) {
+    return Single.create(e -> {
+        VirgilCards cards = virgilApi.getCards().find(identity);
+        if (cards.size() > 0) {
+            e.onSuccess(cards.get(0));
+        } else {
+            e.onError(new VirgilCardIsNotFoundException());
+        }
+    });
+}
+```
 
 - Then encrypting message with sender’s and receiver’s public keys in [VirgilHelper][_helper] class:
-![Encrypt Chat](img/encrypted_chat.jpeg)
+```java
+public String encrypt(String text, VirgilCards cards) {
+    String encryptedText = null;
+
+    try {
+        VirgilKey key = loadKey(getMyCard().getIdentity());
+        encryptedText = key.signThenEncrypt(text, cards).toString(StringEncoding.Base64);
+    } catch (VirgilKeyIsNotFoundException e) {
+        e.printStackTrace();
+    } catch (CryptoException e) {
+        e.printStackTrace();
+    }
+
+    return encryptedText;
+}
+```
 
 ### Step-5. Decrypt the Encrypted Message
 
 In order to decrypt the encrypted message we need to:
 - Load the Private Key from the secure storage provided by default
-![Load Private Key](img/load_private.jpeg)
+```java
+private VirgilKey loadKey(String identity) throws VirgilKeyIsNotFoundException, CryptoException {
+    return virgilApi.getKeys().load(identity);
+}
+```
 
 - Decrypt the message using receiver’s Private Key:
 ```java
