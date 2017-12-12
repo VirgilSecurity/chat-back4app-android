@@ -96,7 +96,7 @@ To get started, you need the following:
 
     **Note!!!** During Application Key Generation you see special window. Press “click here” link, to open AppKey in base64-       encoded string, copy and save local somewhere:
     <img src="img/encoded_string.jpeg" width="800" >
-      
+
       You need this App Key later.
 
 2. Checkout the simpleEncrypt branch:
@@ -178,7 +178,7 @@ To set it up, following these steps:
   <img src="img/cloud_settings.jpeg" width="300" height="300">
 - Open Cloud “Settings”
 - Upload the main.js and package.json files in your Cloud Code settings and press “save” button:
-  ![Settings](img/сloud_code.jpeg)
+  ![Settings](img/back4app_cloud_code.jpeg)
 
 We are now ready to register Users Cards =)
 
