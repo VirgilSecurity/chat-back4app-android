@@ -1,4 +1,4 @@
-# msgr-back4app-android
+# End-to-End Encrypted Chat & the road to HIPAA compliance!
 
 **Ahoy Back4app community!**
 
