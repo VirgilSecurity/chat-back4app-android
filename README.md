@@ -52,13 +52,10 @@ This is the simplest implementation for E2EE chat and it works perfectly for sim
 ### 2) Set up the App with the Credentials from your Back4App App’s Dashboard:
   - Open “Dashboard” of your app -> “App Settings” -> “Security & Keys”:
   ![Back4app credentials](img/back4app_dashboard.png)
-  - Return to your  /app/src/main/res/values/strings.xml file in the project and paste your “App Id” into “back4app_app_id” and “Client Key” into “back4app_client_key”.
+  - Return to your  `/app/src/main/res/values/strings.xml` file in the project and paste your “App Id” into “back4app_app_id” and “Client Key” into “back4app_client_key”.
 ```xml
-<!-- Back4App -->
 <string name="back4app_server_url">https://parseapi.back4app.com/</string>
-<string name="back4app_live_query_url">wss://virgilmessangerandroid.back4app.io/</string>
 <string name="back4app_app_id">0YP4zSHDOZy5v5123e2ttGRkG123aaBTUnr6wfH</string>
-<string name="back4app_client_key">Wu1T8l9AriZ123oZQbz2AXKvh123nEqYabPez7</string>
 ```
 
 To get live updates for messages and chat threads you have to enable Live Query. Live Query can be enabled for any custom class user created, so firstly - Launch the “Data Managment” for your app and create two classes “Message” and “ChatThread”:
@@ -69,6 +66,11 @@ To get live updates for messages and chat threads you have to enable Live Query.
 After you successfully created `Message` and `ChatThread` classes you should enable Live Query. Open Live Query Settings and check the “Activate Hosting” option. Also you have to enter “Subdomain name” which can be any string you want and activate Live Query for recently created classes “Message” and “ChatThread”:
 
 ![Enablle Live Query](img/live_query.jpeg)
+
+Return to `/app/src/main/res/values/strings.xml` and paste "Subdomain name" you have entered above into the `back4app_live_query_url` instead of "yourSubdomainName":
+```xml
+<string name="back4app_live_query_url">wss://yourSubdomainName.back4app.io/</string>
+```
 
 ### 3) Build and Run Chat without E2EE
 
