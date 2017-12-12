@@ -86,7 +86,7 @@ As a result, you see a chat messenger, where you can send and receive messages. 
 Register two users and send few messages to each other.
 If everything works properly, you should be able to see some data in `Message`, `ChatThread` and `User` classes. You able to manage data in your classes (for example you can view message text in `body` column):
 
-![DB](img/db_back4app.jpeg)
+![DB](img/back4app_messages_no_encrypt.png)
 
 **Next**: Close your chat interface and move on to the next step – adding E2EE encryption.
 
@@ -257,7 +257,7 @@ First of all, for every chat user you need to perform the following steps:
 
 #### Generate Private Key
 
-This is how we generate the Private (for decrypting incoming chat messages) Key for new users in [RxVirgil][_rxvirgil] class:
+This is how we generate the Private (for decrypting incoming chat messages) Key for new users in [LogInPresenter][_login_presenter] class:
 ```java
 private Single<Pair<VirgilCard, VirgilKey>> createCard(String identity) {
     return Single.create(e -> {
@@ -279,13 +279,13 @@ private void saveLastGeneratedPrivateKey() {
     }
 }
 ```
-In class named [VirgilHelper][_helper] we’re saving private key only after successful sign up.
+In class named [LogInPresenter][_login_presenter] we’re saving private key only after successful sign up.
 
 #### Create and Publish Virgil Card
 
 Next, we have to publish Virgil Card to Virgil Cards Services. This will be done via Back4App Cloud Code that will intercept create user request, get base64-encoded string representation of Virgil Card and publish it.
 
-First of all we need to create Virgil Card in [RxVirgil][_rxvirgil] class:
+First of all we need to create Virgil Card in [LogInPresenter][_login_presenter] class:
 ```java
 ...
     VirgilCard userCard = virgilApi.getCards().create(identity, privateKey);
@@ -317,7 +317,7 @@ With the User's Cards in place, we are now ready to encrypt a message for encryp
 
 In order to encrypt messages, the Sender must search for the receiver's Virgil Cards at the Virgil Services, where all Virgil Cards are saved.
 
-- Looking for the receiver’s Virgil Card in [RxParse][_rxparse] class:
+- Looking for the receiver’s Virgil Card in [ChatThreadPresenter][_chat_thread_presenter] class:
 ```java
 private Single<VirgilCard> findCard(String identity) {
     return Single.create(e -> {
@@ -331,7 +331,7 @@ private Single<VirgilCard> findCard(String identity) {
 }
 ```
 
-- Then encrypting message with sender’s and receiver’s public keys in [VirgilHelper][_helper] class:
+- Then encrypting message with sender’s and receiver’s public keys in [ChatThreadPresenter][_chat_thread_presenter] class:
 ```java
 public String encrypt(String text, VirgilCards cards) {
     String encryptedText = null;
@@ -399,7 +399,8 @@ Shortly following your Virgil signup, we invite you to our Slack community where
 [_build.gradle_app_level]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/build.gradle
 [_build.gradle_project_level]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/build.gradle
 [_string.xml]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/res/values/strings.xml
-[_rxvirgil]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/RxVirgil.java
+[_login_presenter]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/auth/LogInPresenter.java
+[_chat_thread_presenter]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/chat/thread/ChatThreadPresenter.java
 [_helper]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/VirgilHelper.java
 [_rxparse]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/RxParse.java
 [_virgil]: https://developer.virgilsecurity.com/
