@@ -43,29 +43,22 @@ This is the simplest implementation for E2EE chat and it works perfectly for sim
 
 ## Let’s set up the Back4app messenger app
 
-### Import Project in Android Studio:
+### 1) Import Project in Android Studio:
   - File -> New -> Project from Version Control -> Git
   - Git Repository URL: https://github.com/VirgilSecurity/chat-back4app-android
   - Check out the “cleanChat” branch
 ![Chat](img/open_chat.jpeg)
 **Note!** Choose “Project” type of file tree - it will be used all-through the tutorial.
 
-The project will look like this:
+  The project will look like this:
+  ![Project review](img/project_review.jpeg)
 
-![Project review](img/project_review.jpeg)
-
-### Set up the app with the credentials from your new Back4App app’s dashboard:
-
-![Back4app credentials](img/back4app_credentials.jpeg)
-
-
-Open /app/src/main/res/values/strings.xml in the project and paste in your app credentials:
-
-![Back4app credentials](img/back4app_credentials2.jpeg)
-
+### 2) Set up the app with the credentials from your new Back4App app’s dashboard:
   - Go to your App Dashboard at Back4App website.
-  - Open “Server Settings” of your app -> In “Core Settings” tile choose “Settings”.
-  - Return to your strings.xml file and paste your “App Id” into “back4app_app_id” and “Client Key” into “back4app_client_key”.
+  - Open “Server Settings” of your app -> In “Core Settings” tile choose “Settings”:
+  ![Back4app credentials](img/back4app_credentials.jpeg)
+  - Return to your  /app/src/main/res/values/strings.xml file in the project and paste your “App Id” into “back4app_app_id” and “Client Key” into “back4app_client_key”.
+  ![Back4app credentials](img/back4app_credentials2.jpeg)
 
 To get live updates for messages and chat threads you have to enable Live Query. Live Query can be enabled for any custom class user created, so firstly - Launch the “Data Managment” for your app and create two classes “Message” and “ChatThread”:
 
