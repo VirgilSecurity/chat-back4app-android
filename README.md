@@ -1,4 +1,4 @@
-# End-to-End Encrypted Chat & the road to HIPAA compliance!
+# msgr-back4app-android
 
 **Ahoy Back4app community!**
 
@@ -25,7 +25,7 @@ This blog post is about how to ignore all these annoying details and just End-to
 2. Before sending a chat message, you’ll encrypt it with the destination user’s public key,
 3. When receiving a message, you’ll decrypt it with your app user’s private key.
 
-![Virgil E2EE](img/virgil_main.png)
+![Virgil E2EE](img/virgil_back4app.png)
 
 The user public keys, we’ll publish to Virgil’s public key directory for chat users to be able to look up; the private keys will be kept on the user devices.
 
@@ -138,14 +138,14 @@ To get started, you need the following:
 In order to generate a Private Key, Public Key for every user, and to encrypt or decrypt messages we need to install the Virgil Java SDK Package. This package contains a Vigil Crypto Library, which allows us to perform the operations we need in E2EE chat easily.
 
 #### Add Virgil Java/Android SDK to your project
-The Virgil Java/Android SDK is provided as a package named com.virgilsecurity.sdk. You can easily add the SDK package by adding the following code into your app-level [build.gradle][_build.gradle]:
+The Virgil Java/Android SDK is provided as a package named com.virgilsecurity.sdk. You can easily add the SDK package by adding the following code into your app-level [build.gradle][_build.gradle_app_level]:
 
 ```gradle
 implementation "com.virgilsecurity.sdk:crypto-android:$rootProject.ext.virgilSecurity"
 implementation "com.virgilsecurity.sdk:sdk-android:$rootProject.ext.virgilSecurity"
 ```
 
-As well you have to add to your project-level build.gradle (‘ext’ code block) next line:
+As well you have to add to your project-level [build.gradle][_build.gradle_project_level] (‘ext’ code block) next line:
 ```gradle
 virgilSecurity = “4.5.0@aar”
 ```
@@ -206,13 +206,6 @@ To set it up, following these steps:
     signer.authoritySign(cardRequest, 'bd7bf7e832f16e2b3f6fd343s1f90778ab0e15515aa775e7b7db3', appKey);
   }
   ```
-   - `signCardRequest(cardRequest, appKey)` and put your Access Token from Virgil dashboard instead of `YOUR_VIRGIL_APP_ACCESS_TOKEN`;
-  ```javascript
-  signCardRequest(cardRequest);
-  const client = virgil.client('AT.8641c450a983a3435aebe79sad32abea997d29b3e8eed7b35beab72be3');
-  client.publishCard(cardRequest)
-  ...
-  ```
   - function `resolveAppKey()` and put your Application credentials (that you got at Virgil Dashboard during App registration) instead of `YOUR_VIRGIL_APP_PRIVATE_KEY` and `YOUR_VIRGIL_APP_PRIVATE_KEY_PASSWORD`
   ```javascript
     function resolveAppKey() {
@@ -232,7 +225,14 @@ To set it up, following these steps:
 
   or on Windows:
   `certutil -encode <key_name>.virgilkey tmp.b64 && findstr /v /c:- tmp.b64 > app_private_key.txt`
- 
+
+  - `signCardRequest(cardRequest, appKey)` and put your Access Token from Virgil dashboard instead of `YOUR_VIRGIL_APP_ACCESS_TOKEN`;
+  ```javascript
+  signCardRequest(cardRequest);
+  const client = virgil.client('AT.8641c450a983a3435aebe79sad32abea997d29b3e8eed7b35beab72be3');
+  client.publishCard(cardRequest)
+  ...
+  ```
   Save all your changes.
 
 - Go to your App Dashboard at Back4App website:
@@ -396,7 +396,8 @@ Shortly following your Virgil signup, we invite you to our Slack community where
 [_back4app_account]: https://www.back4app.com/
 [_android_studio]: https://developer.android.com/studio/index.html
 [_virgil_account]: https://developer.virgilsecurity.com/account/signup
-[_build.gradle]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/build.gradle
+[_build.gradle_app_level]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/build.gradle
+[_build.gradle_project_level]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/build.gradle
 [_string.xml]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/res/values/strings.xml
 [_rxvirgil]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/RxVirgil.java
 [_helper]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/VirgilHelper.java
