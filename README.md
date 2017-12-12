@@ -200,24 +200,24 @@ To set it up, following these steps:
 - Extract files from the archive and open main.js with any file editor;
 - Find in main.js file:
   - Function `signCardRequest` and put your App ID from Virgil Dashboard instead of `YOUR_VIRGIL_APP_ID`;
-```javascript
-function signCardRequest(cardRequest) {
-  const signer = virgil.requestSigner(virgil.crypto);
-  signer.authoritySign(cardRequest, 'bd7bf7e832f16e2b3f6fd343s1f90778ab0e15515aa775e7b7db3', appKey);
-}
-```
-  - function `resolveAppKey()` and put your Application credentials (that you got at Virgil Dashboard during App registration) instead of `YOUR_VIRGIL_APP_PRIVATE_KEY` and `YOUR_VIRGIL_APP_PRIVATE_KEY_PASSWORD`
-```javascript
-  function resolveAppKey() {
-    try {
-      return virgil.crypto.importPrivateKey('MIGhMF0GCSqGSIb3DQEFDTBQMC8GCSqGSIb3DQEFDDAiBBAmU9m+EJOvLRxRaJP6d......',
-        'a0KEOifsd2Ean6fzQ'
-      );
-    } catch (e) {
-      return null;
-    }
+  ```javascript
+  function signCardRequest(cardRequest) {
+    const signer = virgil.requestSigner(virgil.crypto);
+    signer.authoritySign(cardRequest, 'bd7bf7e832f16e2b3f6fd343s1f90778ab0e15515aa775e7b7db3', appKey);
   }
-```
+  ```
+  - function `resolveAppKey()` and put your Application credentials (that you got at Virgil Dashboard during App registration) instead of `YOUR_VIRGIL_APP_PRIVATE_KEY` and `YOUR_VIRGIL_APP_PRIVATE_KEY_PASSWORD`
+  ```javascript
+    function resolveAppKey() {
+      try {
+        return virgil.crypto.importPrivateKey('MIGhMF0GCSqGSIb3DQEFDTBQMC8GCSqGSIb3DQEFDDAiBBAmU9m+EJOvLRxRaJP6d......',
+          'a0KEOifsd2Ean6fzQ'
+        );
+      } catch (e) {
+        return null;
+      }
+    }
+  ```
   **Note!** If you save previously your Virgil App's Private Key into a file (thus, you don’t have App Key in base64-encoded string), now you need to get it by performing the following command:
 
   in the terminal (Unix):
@@ -226,7 +226,7 @@ function signCardRequest(cardRequest) {
   or on Windows:
   `certutil -encode <key_name>.virgilkey tmp.b64 && findstr /v /c:- tmp.b64 > app_private_key.txt`
 
-  - `signCardRequest(cardRequest, appKey)`  and put your Access Token from Virgil dashboard instead of `YOUR_VIRGIL_APP_ACCESS_TOKEN`;
+  - `signCardRequest(cardRequest, appKey)` and put your Access Token from Virgil dashboard instead of `YOUR_VIRGIL_APP_ACCESS_TOKEN`;
   ```javascript
   signCardRequest(cardRequest);
   const client = virgil.client('AT.8641c450a983a3435aebe79sad32abea997d29b3e8eed7b35beab72be3');
