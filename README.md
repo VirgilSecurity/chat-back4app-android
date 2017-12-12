@@ -206,6 +206,13 @@ To set it up, following these steps:
     signer.authoritySign(cardRequest, 'bd7bf7e832f16e2b3f6fd343s1f90778ab0e15515aa775e7b7db3', appKey);
   }
   ```
+   - `signCardRequest(cardRequest, appKey)` and put your Access Token from Virgil dashboard instead of `YOUR_VIRGIL_APP_ACCESS_TOKEN`;
+  ```javascript
+  signCardRequest(cardRequest);
+  const client = virgil.client('AT.8641c450a983a3435aebe79sad32abea997d29b3e8eed7b35beab72be3');
+  client.publishCard(cardRequest)
+  ...
+  ```
   - function `resolveAppKey()` and put your Application credentials (that you got at Virgil Dashboard during App registration) instead of `YOUR_VIRGIL_APP_PRIVATE_KEY` and `YOUR_VIRGIL_APP_PRIVATE_KEY_PASSWORD`
   ```javascript
     function resolveAppKey() {
@@ -225,14 +232,7 @@ To set it up, following these steps:
 
   or on Windows:
   `certutil -encode <key_name>.virgilkey tmp.b64 && findstr /v /c:- tmp.b64 > app_private_key.txt`
-
-  - `signCardRequest(cardRequest, appKey)` and put your Access Token from Virgil dashboard instead of `YOUR_VIRGIL_APP_ACCESS_TOKEN`;
-  ```javascript
-  signCardRequest(cardRequest);
-  const client = virgil.client('AT.8641c450a983a3435aebe79sad32abea997d29b3e8eed7b35beab72be3');
-  client.publishCard(cardRequest)
-  ...
-  ```
+ 
   Save all your changes.
 
 - Go to your App Dashboard at Back4App website:
