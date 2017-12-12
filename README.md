@@ -178,7 +178,8 @@ To set it up, following these steps:
   <img src="img/cloud_settings.jpeg" width="300" height="300">
 - Open Cloud “Settings”
 - Upload the main.js and package.json files in your Cloud Code settings and press “save” button:
-  ![Settings](img/back4app_cloud_code.jpeg)
+  <img src="img/back4app_cloud_code.jpeg" width="600" height="300">
+
 
 We are now ready to register Users Cards =)
 
