@@ -53,7 +53,7 @@ This is the simplest implementation for E2EE chat and it works perfectly for sim
   The project will look like this:
   ![Project review](img/project_review.jpeg)
 
-### 2) Set up the app with the credentials from your new Back4App app’s dashboard:
+### 2) Set up the App with the Credentials from your Back4App App’s Dashboard:
   - Go to your App Dashboard at Back4App website.
   - Open “Server Settings” of your app -> In “Core Settings” tile choose “Settings”:
   ![Back4app credentials](img/back4app_credentials.jpeg)
@@ -65,9 +65,11 @@ To get live updates for messages and chat threads you have to enable Live Query.
 ![Create Class](img/create_class.jpeg)
 
 
-After you successfully created “Message” and “ChatThread” classes you should enable Live Query. Open Live Query Settings and check the “Activate Hosting” option. Also you have to enter “Subdomain name” which can be any string you want and activate Live Query for recently created classes “Message” and “ChatThread”:
+After you successfully created `Message` and `ChatThread` classes you should enable Live Query. Open Live Query Settings and check the “Activate Hosting” option. Also you have to enter “Subdomain name” which can be any string you want and activate Live Query for recently created classes “Message” and “ChatThread”:
 
 ![Enablle Live Query](img/live_query.jpeg)
+
+### Build and Run Chat without E2EE
 
 Now you can build and run your app on a real device or on an emulator.
 
@@ -76,7 +78,7 @@ Now you can build and run your app on a real device or on an emulator.
 As a result, you see a chat messenger, where you can send and receive messages. As a server, this chat uses Back4App services.
 
 Register two users and send few messages to each other.
-If everything works properly, you should be able to see some data in “Message”, “ChatThread” and “User” classes. You able to manage data in your classes (for example you can view message text in “body” column):
+If everything works properly, you should be able to see some data in `Message`, `ChatThread` and `User` classes. You able to manage data in your classes (for example you can view message text in `body` column):
 
 ![DB](img/db_back4app.jpeg)
 
