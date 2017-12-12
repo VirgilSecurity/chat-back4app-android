@@ -46,13 +46,12 @@ This is the simplest implementation for E2EE chat and it works perfectly for sim
 ### 1) Import Project in Android Studio:
   - File -> New -> Project from Version Control -> Git
   - Git Repository URL: https://github.com/VirgilSecurity/chat-back4app-android
-  - Check out the “cleanChat” branch
-![Chat](img/open_chat.jpeg)
+  - Check out the “clean-chat” branch
+![Chat](img/checkout_clean_chat_arr.jpg)
 
 ### 2) Set up the App with the Credentials from your Back4App App’s Dashboard:
-  - Go to your App Dashboard at Back4App website.
-  - Open “Server Settings” of your app -> In “Core Settings” tile choose “Settings”:
-  ![Back4app credentials](img/back4app_credentials.jpeg)
+  - Open “Dashboard” of your app -> “App Settings” -> “Security & Keys”:
+  ![Back4app credentials](img/back4app_dashboard.png)
   - Return to your  /app/src/main/res/values/strings.xml file in the project and paste your “App Id” into “back4app_app_id” and “Client Key” into “back4app_client_key”.
 ```xml
 <!-- Back4App -->
@@ -116,8 +115,8 @@ To get started, you need the following:
 
       You need this App Key later.
 
-2. Checkout the simpleEncrypt branch:
-<img src="img/checkout.jpeg" width="600" >
+2. Checkout the e2ee branch:
+<img src="img/checkout_e2ee.png" width="500" >
 
 **Note!** In the text below you find such terms as Virgil Key, Virgil Card, Virgil Cards Service. In Virgil Security infrastructure:
   - Virgil Key – this is how we call a User's Private Key;
@@ -232,10 +231,10 @@ To set it up, following these steps:
   Save all your changes.
 
 - Go to your App Dashboard at Back4App website:
-  <img src="img/back4app_settings.jpeg" width="500" height="300">
+  <img src="img/back4app_settings.jpeg" width="600" height="300">
 - Open “Server Settings” and find “Cloud Code”:
 
-  <img src="img/cloud_settings.jpeg" width="300" height="300">
+  <img src="img/cloud_settings.jpeg" width="250" height="300">
 - Open Cloud “Settings”
 - Upload the main.js and package.json files in your Cloud Code settings and press “save” button:
   <img src="img/back4app_cloud_code.jpeg" width="600" height="300">
