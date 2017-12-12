@@ -174,10 +174,11 @@ To set it up, following these steps:
 - Go to your App Dashboard at Back4App website:
   <img src="img/back4app_settings.jpeg" width="500" height="300">
 - Open “Server Settings” and find “Cloud Code”:
+
   <img src="img/cloud_settings.jpeg" width="300" height="300">
 - Open Cloud “Settings”
 - Upload the main.js and package.json files in your Cloud Code settings and press “save” button:
-  ![Back4App Settings](img/сloud_code.jpeg)
+  ![Settings](img/сloud_code.jpeg)
 
 We are now ready to register Users Cards =)
 
