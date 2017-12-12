@@ -25,7 +25,7 @@ This blog post is about how to ignore all these annoying details and just End-to
 2. Before sending a chat message, you’ll encrypt it with the destination user’s public key,
 3. When receiving a message, you’ll decrypt it with your app user’s private key.
 
-![Virgil E2EE](img/virgil_back4app.png)
+![Virgil E2EE](img/virgil_main.png)
 
 The user public keys, we’ll publish to Virgil’s public key directory for chat users to be able to look up; the private keys will be kept on the user devices.
 
