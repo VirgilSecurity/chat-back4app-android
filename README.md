@@ -39,7 +39,7 @@ This is the simplest implementation for E2EE chat and it works perfectly for sim
 **Prerequisites:**
 
 - Sign up for a [Back4app account][_back4app_account] and create a new app;
-- You’ need [Android Studio][_android_studio] for the coding work, we used 3.0.1.
+- You’ll need [Android Studio][_android_studio] for the coding work, we used 3.0.1.
 
 ## Let’s set up the Back4app messenger app
 
