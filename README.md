@@ -25,7 +25,7 @@ This blog post is about how to ignore all these annoying details and just End-to
 2. Before sending a chat message, you’ll encrypt it with the destination user’s public key,
 3. When receiving a message, you’ll decrypt it with your app user’s private key.
 
-![Virgil E2EE](img/virgil_main.png)
+![Virgil E2EE](img/virgil_back4app.png)
 
 The user public keys, we’ll publish to Virgil’s public key directory for chat users to be able to look up; the private keys will be kept on the user devices.
 
@@ -58,7 +58,7 @@ This is the simplest implementation for E2EE chat and it works perfectly for sim
 <string name="back4app_app_id">0YP4zSHDOZy5v5123e2ttGRkG123aaBTUnr6wfH</string>
 ```
 
-To get live updates for messages and chat threads you have to enable Live Query. Live Query can be enabled for any custom class user created, so firstly - Launch the “Data Managment” for your app and create two classes “Message” and “ChatThread”:
+To get live updates for messages and chat threads you have to enable Live Query. Live Query can be enabled for any custom class user created, so firstly - Launch the “Data Management” for your app and create two classes “Message” and “ChatThread”:
 
 ![Create Class](img/create_class.jpeg)
 
