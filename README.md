@@ -107,11 +107,11 @@ To get started, you need the following:
   - Virgil Card – Virgil Сards carry the Users’ public information, such as their Public Key. Virgil Сards are published to Virgil’s Cards Service for other users to retrieve them (Alice retrieves Bob’s Public Key in order to encrypt a message for Bob).;
 
 **In order to add E2EE to your chat it is necessary to perform the following steps:**
-- Setup Your Android app
-- Setup Your Server app, which approves Virgil cards creation (similar to email verification when you sign up users: otherwise, you’ll end up with a bunch of spam cards)
-- Register Users
-- Encrypt chat message before sending
-- Decrypt the encrypted message after receiving
+1. Setup Your Android app
+2. Setup Your Server app, which approves Virgil cards creation (similar to email verification when you sign up users: otherwise, you’ll end up with a bunch of spam cards)
+3. Register Users
+4. Encrypt chat message before sending
+5 Decrypt the encrypted message after receiving
 
 ### Step-1. Setup Your Android App
 In order to generate a Private Key, Public Key for every user, and to encrypt or decrypt messages we need to install the Virgil Java SDK Package. This package contains a Vigil Crypto Library, which allows us to perform the operations we need in E2EE chat easily.
@@ -133,10 +133,9 @@ When users want to start sending and receiving messages in a browser or mobile d
 ![Access Token](img/access_token.jpeg)
 - Click the “Add New Token” button.
 - Enter the Access Token name, choose permissions for users, and press "Generate Token":
-<img src="img/access_token2.jpeg" width="250" height="300">
-
+  <img src="img/access_token2.jpeg" width="250" height="300">
 - As a result, you get the Access Token:
-<img src="img/access_token3.jpeg" width="600" >
+  <img src="img/access_token3.jpeg" width="600" >
 - Copy this Access Token.
 
 To initialize the Virgil SDK on a client-side you need to:
