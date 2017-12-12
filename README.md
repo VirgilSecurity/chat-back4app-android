@@ -94,9 +94,10 @@ To get started, you need the following:
 
 1. Virgil Security developer account: [Sign up here][_virgil_account]. Sign in to your Virgil Security developer account and create a new application. Make sure you saved the Private Key file that is generated for your application, you will need it later.
 
-**Note!!!** During Application Key Generation you see special window. Press “click here” link, to open AppKey in base64-encoded string, copy and save local somewhere:
-<img src="img/encoded_string.jpeg" width="800" >
-You need this App Key later.
+    **Note!!!** During Application Key Generation you see special window. Press “click here” link, to open AppKey in base64-       encoded string, copy and save local somewhere:
+    <img src="img/encoded_string.jpeg" width="800" >
+      
+      You need this App Key later.
 
 2. Checkout the simpleEncrypt branch:
 <img src="img/checkout.jpeg" width="600" >
