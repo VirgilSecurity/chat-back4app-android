@@ -343,6 +343,9 @@ public String encrypt(String text, VirgilCards cards) {
     return encryptedText;
 }
 ```
+Now you can find out the encrypted message body in back4app dashboard:
+
+![Virgil Chat](img/back4app_messages_encrypted.png)
 
 ### Step-5. Decrypt the Encrypted Message
 
