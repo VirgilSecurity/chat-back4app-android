@@ -3,7 +3,6 @@ package com.android.virgilsecurity.virgilback4app.api.dagger;
 import android.content.Context;
 
 import com.android.virgilsecurity.virgilback4app.R;
-import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
 import com.virgilsecurity.sdk.highlevel.VirgilApiContext;
 import com.virgilsecurity.sdk.highlevel.VirgilApiImpl;
@@ -35,11 +34,5 @@ public class VirgilModule {
         virgilApiContext.setKeyStorage(keyStorage);
 
         return virgilApiContext;
-    }
-
-    @Provides VirgilHelper provideVirgilHelper(Context context, VirgilApi virgilApi,
-                                               KeyStorage keyStorage,
-                                               VirgilApiContext virgilApiContext) {
-        return new VirgilHelper(context, virgilApi, keyStorage, virgilApiContext);
     }
 }

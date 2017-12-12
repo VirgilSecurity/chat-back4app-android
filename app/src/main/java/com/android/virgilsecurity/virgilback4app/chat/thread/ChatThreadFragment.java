@@ -22,7 +22,6 @@ import com.android.virgilsecurity.virgilback4app.model.Message;
 import com.android.virgilsecurity.virgilback4app.util.Const;
 import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
-import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 import com.parse.OkHttp3SocketClientFactory;
 import com.parse.ParseLiveQueryClient;
@@ -70,7 +69,6 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
     private ParseLiveQueryClient parseLiveQueryClient;
     private ParseQuery<Message> parseQuery;
 
-    @Inject protected VirgilHelper virgilHelper;
     @Inject protected VirgilApi virgilApi;
     @Inject protected VirgilApiContext virgilApiContext;
 
@@ -120,7 +118,7 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
 
         initMessageInput();
 
-        adapter = new ChatThreadRVAdapter(virgilHelper);
+        adapter = new ChatThreadRVAdapter(virgilApi, virgilApiContext);
         LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
         layoutManager.setReverseLayout(true);
         rvChat.setLayoutManager(layoutManager);
@@ -150,7 +148,7 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
             showProgress(true);
             getPresenter().requestMessages(thread, 50, page,
                                            Const.TableNames.CREATED_AT_CRITERIA,
-                                           virgilApi, virgilHelper);
+                                           virgilApi, virgilApiContext);
         }
     }
 
@@ -160,9 +158,9 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
         meCard = new VirgilCard(virgilApiContext, PrefsManager.VirgilPreferences.getCardModel());
 
         if (thread.getSenderUsername().equals(meCard.getIdentity()))
-            getPresenter().requestGetCard(thread.getRecipientUsername(), virgilHelper);
+            getPresenter().requestGetCard(thread.getRecipientUsername(), virgilApi);
         else
-            getPresenter().requestGetCard(thread.getSenderUsername(), virgilHelper);
+            getPresenter().requestGetCard(thread.getSenderUsername(), virgilApi);
     }
 
     private void initMessageInput() {
@@ -232,7 +230,9 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
                         lockSendUi(true, true);
                         getPresenter().requestSendMessage(message,
                                                           thread,
-                                                          cards);
+                                                          cards,
+                                                          virgilApi,
+                                                          virgilApiContext);
                         isLoading = true;
                     }
                 } else {
@@ -369,7 +369,7 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
             showProgress(false);
             getPresenter().requestMessages(thread, 50, page,
                                            Const.TableNames.CREATED_AT_CRITERIA,
-                                           virgilApi, virgilHelper);
+                                           virgilApi, virgilApiContext);
         } else {
             showProgress(false);
             srlRefresh.setRefreshing(false);

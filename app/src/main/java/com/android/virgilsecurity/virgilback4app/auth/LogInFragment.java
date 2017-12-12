@@ -15,9 +15,11 @@ import com.android.virgilsecurity.virgilback4app.base.BaseFragmentWithPresenter;
 import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.UsernameInputFilter;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
-import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
 import com.parse.ParseUser;
+import com.virgilsecurity.sdk.highlevel.VirgilApi;
+import com.virgilsecurity.sdk.highlevel.VirgilApiContext;
 import com.virgilsecurity.sdk.highlevel.VirgilCard;
+import com.virgilsecurity.sdk.storage.KeyStorage;
 
 import java.util.Locale;
 
@@ -46,10 +48,11 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     @BindView(R.id.pbLoading)
     protected View pbLoading;
 
-    @Inject protected VirgilHelper virgilHelper;
-
     private AuthStateListener authStateListener;
     private String identity;
+    @Inject KeyStorage keyStorage;
+    @Inject VirgilApi virgilApi;
+    @Inject VirgilApiContext virgilApiContext;
 
     public static LogInFragment newInstance() {
 
@@ -122,13 +125,13 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
                 tilUserName.setError(null);
                 tilUserName.setErrorEnabled(false);
                 showProgress(true);
-                getPresenter().requestLogIn(identity, virgilHelper);
+                getPresenter().requestLogIn(identity, keyStorage, virgilApi, virgilApiContext);
                 break;
             case R.id.btnSignup:
                 tilUserName.setError(null);
                 tilUserName.setErrorEnabled(false);
                 showProgress(true);
-                getPresenter().requestSignUp(identity, virgilHelper);
+                getPresenter().requestSignUp(identity, virgilApi);
                 break;
             default:
                 break;

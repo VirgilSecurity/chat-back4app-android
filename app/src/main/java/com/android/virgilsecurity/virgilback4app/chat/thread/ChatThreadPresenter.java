@@ -3,11 +3,20 @@ package com.android.virgilsecurity.virgilback4app.chat.thread;
 import android.os.Bundle;
 
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
+import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
-import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
+import com.virgilsecurity.sdk.client.exceptions.VirgilCardIsNotFoundException;
+import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
+import com.virgilsecurity.sdk.client.model.CardModel;
+import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
+import com.virgilsecurity.sdk.highlevel.StringEncoding;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
+import com.virgilsecurity.sdk.highlevel.VirgilApiContext;
+import com.virgilsecurity.sdk.highlevel.VirgilCard;
 import com.virgilsecurity.sdk.highlevel.VirgilCards;
+import com.virgilsecurity.sdk.highlevel.VirgilKey;
 
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import nucleus5.presenter.RxPresenter;
@@ -29,7 +38,7 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
     private String sortCriteria;
     private String text;
     private VirgilApi virgilApi;
-    private VirgilHelper virgilHelper;
+    private VirgilApiContext virgilApiContext;
     private String identity;
     private VirgilCards cards;
 
@@ -42,29 +51,28 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
                          ChatThreadFragment::onGetMessagesError);
 
         restartableFirst(SEND_MESSAGE, () ->
-                                 RxParse.sendMessage(virgilHelper.encrypt(text, cards),
+                                 RxParse.sendMessage(encrypt(text, cards),
                                                      thread)
                                         .observeOn(AndroidSchedulers.mainThread()),
                          ChatThreadFragment::onSendMessageSuccess,
                          ChatThreadFragment::onSendMessageError);
 
         restartableFirst(GET_CARD, () ->
-        virgilHelper.findCard(identity)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()),
+                                 findCard(identity).toObservable()
+                                                   .subscribeOn(Schedulers.io())
+                                                   .observeOn(AndroidSchedulers.mainThread()),
                          ChatThreadFragment::onGetCardSuccess,
                          ChatThreadFragment::onGetCardError);
     }
 
     void requestMessages(ChatThread thread, int limit,
                          int page, String sortCriteria,
-                         VirgilApi virgilApi, VirgilHelper virgilHelper) {
+                         VirgilApi virgilApi,
+                         VirgilApiContext virgilApiContext) {
         this.thread = thread;
         this.limit = limit;
         this.page = page;
         this.sortCriteria = sortCriteria;
-        this.virgilApi = virgilApi;
-        this.virgilHelper = virgilHelper;
 
         start(GET_MESSAGES);
     }
@@ -75,17 +83,23 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
         start(GET_MESSAGES);
     }
 
-    void requestSendMessage(String text, ChatThread thread, VirgilCards cards) {
+    void requestSendMessage(String text,
+                            ChatThread thread,
+                            VirgilCards cards,
+                            VirgilApi virgilApi,
+                            VirgilApiContext virgilApiContext) {
         this.text = text;
         this.thread = thread;
         this.cards = cards;
+        this.virgilApi = virgilApi;
+        this.virgilApiContext = virgilApiContext;
 
         start(SEND_MESSAGE);
     }
 
-    void requestGetCard(String identity, VirgilHelper virgilHelper) {
+    void requestGetCard(String identity, VirgilApi virgilApi) {
         this.identity = identity;
-        this.virgilHelper = virgilHelper;
+        this.virgilApi = virgilApi;
 
         start(GET_CARD);
     }
@@ -100,5 +114,47 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
         return isDisposed(GET_MESSAGES)
                 || isDisposed(SEND_MESSAGE)
                 || isDisposed(GET_CARD);
+    }
+
+    private Single<VirgilCard> findCard(String identity) {
+        return Single.create(e -> {
+            VirgilCards cards = virgilApi.getCards().find(identity);
+            if (cards.size() > 0) {
+                e.onSuccess(cards.get(0));
+            } else {
+                e.onError(new VirgilCardIsNotFoundException());
+            }
+        });
+    }
+
+    /**
+     * Encrypt data
+     *
+     * @param text  to decrypt
+     * @param cards of recipients
+     * @return encrypted data
+     */
+    public String encrypt(String text, VirgilCards cards) {
+        String encryptedText = null;
+
+        try {
+            VirgilKey key = loadKey(getMyCard().getIdentity());
+            encryptedText = key.signThenEncrypt(text, cards).toString(StringEncoding.Base64);
+        } catch (VirgilKeyIsNotFoundException e) {
+            e.printStackTrace();
+        } catch (CryptoException e) {
+            e.printStackTrace();
+        }
+
+        return encryptedText;
+    }
+
+    private VirgilKey loadKey(String identity) throws VirgilKeyIsNotFoundException, CryptoException {
+        return virgilApi.getKeys().load(identity);
+    }
+
+    private VirgilCard getMyCard() {
+        CardModel cardModel = PrefsManager.VirgilPreferences.getCardModel();
+        return new VirgilCard(virgilApiContext, cardModel);
     }
 }

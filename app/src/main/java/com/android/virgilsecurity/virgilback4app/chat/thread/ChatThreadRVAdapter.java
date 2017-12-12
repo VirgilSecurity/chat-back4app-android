@@ -9,9 +9,15 @@ import android.widget.TextView;
 
 import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.model.Message;
-import com.android.virgilsecurity.virgilback4app.util.VirgilHelper;
+import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.parse.ParseUser;
+import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
+import com.virgilsecurity.sdk.client.model.CardModel;
+import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
+import com.virgilsecurity.sdk.highlevel.VirgilApi;
+import com.virgilsecurity.sdk.highlevel.VirgilApiContext;
 import com.virgilsecurity.sdk.highlevel.VirgilCard;
+import com.virgilsecurity.sdk.highlevel.VirgilKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,12 +40,14 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private List<Message> items;
-    private VirgilHelper virgilHelper;
+    private VirgilApi virgilApi;
+    private VirgilApiContext virgilApiContext;
     private VirgilCard youCard;
     private VirgilCard meCard;
 
-    ChatThreadRVAdapter(VirgilHelper virgilHelper) {
-        this.virgilHelper = virgilHelper;
+    ChatThreadRVAdapter(VirgilApi virgilApi, VirgilApiContext virgilApiContext) {
+        this.virgilApi = virgilApi;
+        this.virgilApiContext = virgilApiContext;
     }
 
     @Override
@@ -52,21 +60,24 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 viewHolder = new HolderMe(inflater.inflate(R.layout.layout_holder_me,
                                                            viewGroup,
                                                            false),
-                                          virgilHelper,
+                                          virgilApi,
+                                          virgilApiContext,
                                           meCard);
                 break;
             case MessageType.YOU:
                 viewHolder = new HolderYou(inflater.inflate(R.layout.layout_holder_you,
                                                             viewGroup,
                                                             false),
-                                           virgilHelper,
+                                           virgilApi,
+                                           virgilApiContext,
                                            youCard);
                 break;
             default:
                 viewHolder = new HolderMe(inflater.inflate(R.layout.layout_holder_me,
                                                            viewGroup,
                                                            false),
-                                          virgilHelper,
+                                          virgilApi,
+                                          virgilApiContext,
                                           meCard);
                 break;
         }
@@ -129,41 +140,113 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     static class HolderMe extends RecyclerView.ViewHolder {
 
-        private VirgilHelper virgilHelper;
+        private VirgilApi virgilApi;
+        private VirgilApiContext virgilApiContext;
         private VirgilCard card;
 
         @BindView(R.id.tvMessage) TextView tvMessage;
 
-        HolderMe(View v, VirgilHelper virgilHelper, VirgilCard card) {
+        HolderMe(View v,
+                 VirgilApi virgilApi,
+                 VirgilApiContext virgilApiContext,
+                 VirgilCard card) {
             super(v);
             ButterKnife.bind(this, v);
 
-            this.virgilHelper = virgilHelper;
+            this.virgilApi = virgilApi;
+            this.virgilApiContext = virgilApiContext;
             this.card = card;
         }
 
         void bind(Message message) {
-            tvMessage.setText(virgilHelper.decrypt(message.getBody(), card));
+            tvMessage.setText(decrypt(message.getBody(), card));
+        }
+
+        /**
+         * Decrypt data
+         *
+         * @param text to encrypt
+         * @param card senders card to verify data
+         * @return decrypted data
+         */
+        public String decrypt(String text, VirgilCard card) {
+            String decryptedText = null;
+
+            try {
+                VirgilKey virgilKey = loadKey(getMyCard().getIdentity());
+                decryptedText = virgilKey.decryptThenVerify(text, card).toString();
+            } catch (VirgilKeyIsNotFoundException e) {
+                e.printStackTrace();
+            } catch (CryptoException e) {
+                e.printStackTrace();
+            }
+
+            return decryptedText;
+        }
+
+        private VirgilKey loadKey(String identity) throws VirgilKeyIsNotFoundException, CryptoException {
+            return virgilApi.getKeys().load(identity);
+        }
+
+        private VirgilCard getMyCard() {
+            CardModel cardModel = PrefsManager.VirgilPreferences.getCardModel();
+            return new VirgilCard(virgilApiContext, cardModel);
         }
     }
 
     static class HolderYou extends RecyclerView.ViewHolder {
 
-        private VirgilHelper virgilHelper;
+        private VirgilApi virgilApi;
+        private VirgilApiContext virgilApiContext;
         private VirgilCard card;
 
         @BindView(R.id.tvMessage) TextView tvMessage;
 
-        HolderYou(View v, VirgilHelper virgilHelper, VirgilCard card) {
+        HolderYou(View v,
+                  VirgilApi virgilApi,
+                  VirgilApiContext virgilApiContext,
+                  VirgilCard card) {
             super(v);
             ButterKnife.bind(this, v);
 
-            this.virgilHelper = virgilHelper;
+            this.virgilApi = virgilApi;
+            this.virgilApiContext = virgilApiContext;
             this.card = card;
         }
 
         void bind(Message message) {
-            tvMessage.setText(virgilHelper.decrypt(message.getBody(), card));
+            tvMessage.setText(decrypt(message.getBody(), card));
+        }
+
+        /**
+         * Decrypt data
+         *
+         * @param text to encrypt
+         * @param card senders card to verify data
+         * @return decrypted data
+         */
+        public String decrypt(String text, VirgilCard card) {
+            String decryptedText = null;
+
+            try {
+                VirgilKey virgilKey = loadKey(getMyCard().getIdentity());
+                decryptedText = virgilKey.decryptThenVerify(text, card).toString();
+            } catch (VirgilKeyIsNotFoundException e) {
+                e.printStackTrace();
+            } catch (CryptoException e) {
+                e.printStackTrace();
+            }
+
+            return decryptedText;
+        }
+
+        private VirgilKey loadKey(String identity) throws VirgilKeyIsNotFoundException, CryptoException {
+            return virgilApi.getKeys().load(identity);
+        }
+
+        private VirgilCard getMyCard() {
+            CardModel cardModel = PrefsManager.VirgilPreferences.getCardModel();
+            return new VirgilCard(virgilApiContext, cardModel);
         }
     }
 }
