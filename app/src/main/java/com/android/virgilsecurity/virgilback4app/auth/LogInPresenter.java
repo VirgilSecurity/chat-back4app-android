@@ -50,7 +50,10 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
         super.onCreate(savedState);
 
         restartableFirst(SIGN_UP, () ->
-                                 createCard(identity).toObservable()
+                                 generatePrivateKey().toObservable()
+                                                     .flatMap(privateKey -> {
+                                                         return createCard(identity, privateKey).toObservable();
+                                                     })
                                                      .flatMap(pair -> {
                                                          privateKey = pair.second;
                                                          if (privateKey == null)
@@ -133,15 +136,24 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
                 || isDisposed(LOG_IN);
     }
 
-    private Single<Pair<VirgilCard, VirgilKey>> createCard(String identity) {
+    private Single<Pair<VirgilCard, VirgilKey>> createCard(String identity, VirgilKey virgilKey) {
+        return Single.create(e -> {
+            VirgilCard userCard = virgilApi.getCards().create(identity, virgilKey);
+            if (userCard != null)
+                e.onSuccess(new Pair<>(userCard, virgilKey));
+            else
+                e.onError(new VirgilCardNotCreatedException());
+        });
+    }
+
+    private Single<VirgilKey> generatePrivateKey() {
         return Single.create(e -> {
             VirgilKey privateKey = virgilApi.getKeys().generate();
 
-            VirgilCard userCard = virgilApi.getCards().create(identity, privateKey);
-            if (userCard == null)
-                e.onError(new VirgilCardNotCreatedException());
-
-            e.onSuccess(new Pair<>(userCard, privateKey));
+            if (privateKey != null)
+                e.onSuccess(privateKey);
+            else
+                e.onError(new Throwable("Private key is not generated"));
         });
     }
 
