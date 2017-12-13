@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 26
@@ -11,7 +10,6 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-//        multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -33,29 +31,18 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$rootProject.ext.supportLibrary"
     implementation "com.android.support.constraint:constraint-layout:$rootProject.ext.constraintLayout"
     implementation "com.android.support:design:$rootProject.ext.supportLibrary"
-//    implementation "com.android.support:multidex:$rootProject.ext.multideiDex"
 
-    // Tests
-//    testImplementation 'junit:junit:4.12'
-//    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-//    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    // Back4App
+    implementation "com.parse:parse-android:$rootProject.ext.back4appCore"
+    implementation 'com.parse:parse-livequery-android:1.0.4'
 
     // Virgil Security
     implementation "com.virgilsecurity.sdk:crypto-android:$rootProject.ext.virgilSecurity"
     implementation "com.virgilsecurity.sdk:sdk-android:$rootProject.ext.virgilSecurity"
 
-    // Room
-    implementation "android.arch.persistence.room:runtime:$rootProject.ext.room"
-    annotationProcessor "android.arch.persistence.room:compiler:$rootProject.ext.room"
-    implementation "android.arch.persistence.room:rxjava2:$rootProject.ext.room"
-
     // RxJava
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.ext.rxJava"
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.ext.rxAndroid"
-
-    // Retrofit
-    implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofit"
-    implementation "com.google.code.gson:gson:$rootProject.ext.gson"
 
     // ButterKnife
     implementation "com.jakewharton:butterknife:$rootProject.ext.butterKnife"
@@ -64,26 +51,12 @@ dependencies {
     // Network Tracker
     implementation "com.github.pwittchen:reactivenetwork-rx2:$rootProject.ext.networkTracker"
 
-    // Dagger
-    implementation "com.google.dagger:dagger:$rootProject.ext.dagger"
-    annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.ext.dagger"
-
-    // Crashlytics
-    implementation "com.google.firebase:firebase-core:$rootProject.ext.firebase"
-    implementation("com.crashlytics.sdk.android:crashlytics:$rootProject.ext.crashlytics") {
-        transitive = true
-    }
-    implementation "com.google.firebase:firebase-crash:$rootProject.ext.firebase"
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofit"
+    implementation "com.google.code.gson:gson:$rootProject.ext.gson"
 
     // Nucleus
     implementation "info.android15.nucleus5:nucleus:$rootProject.ext.nucleus"
     implementation "info.android15.nucleus5:nucleus-support-v4:$rootProject.ext.nucleus"
     implementation "info.android15.nucleus5:nucleus-support-v7:$rootProject.ext.nucleus"
-
-    // Back4App
-    implementation "com.parse:parse-android:$rootProject.ext.back4appCore"
-//    implementation "com.github.tgio:parse-livequery:$rootProject.ext.back4appLiveQuery"
-    implementation 'com.parse:parse-livequery-android:1.0.4'
 }
-
-apply plugin: 'com.google.gms.google-services'

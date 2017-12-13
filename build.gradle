@@ -11,10 +11,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
-        
-        // For Crashlytics
-        classpath 'io.fabric.tools:gradle:1.24.4'
-        classpath 'com.google.gms:google-services:3.1.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -50,7 +46,6 @@ ext {
     networkTracker = "0.12.2"
     dagger = "2.13"
     firebase = "11.6.2"
-    crashlytics = "2.7.1@aar"
     nucleus = "7.0.0"
     back4appCore = "1.16.3"
     back4appLiveQuery = "1.0.3"

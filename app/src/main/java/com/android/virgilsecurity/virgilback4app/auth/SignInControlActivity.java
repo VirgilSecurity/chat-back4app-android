@@ -90,12 +90,12 @@ public class SignInControlActivity extends BaseActivity
 
     @Override
     public void onLoggedInSuccesfully() {
-        ThreadsListActivity.start(this);
+        ThreadsListActivity.startWithFinish(this);
     }
 
     @Override
     public void onRegisteredInSuccesfully() {
-        ThreadsListActivity.start(this);
+        ThreadsListActivity.startWithFinish(this);
     }
 
     @Override public void onBackPressed() {
