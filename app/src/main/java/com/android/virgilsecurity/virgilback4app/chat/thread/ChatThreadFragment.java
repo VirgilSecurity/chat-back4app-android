@@ -9,36 +9,37 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.android.virgilsecurity.virgilback4app.AppVirgil;
 import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.base.BaseFragmentWithPresenter;
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.model.Message;
 import com.android.virgilsecurity.virgilback4app.util.Const;
-import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 import com.parse.OkHttp3SocketClientFactory;
 import com.parse.ParseLiveQueryClient;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.parse.SubscriptionHandling;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
 import com.virgilsecurity.sdk.highlevel.VirgilApiContext;
+import com.virgilsecurity.sdk.highlevel.VirgilApiImpl;
 import com.virgilsecurity.sdk.highlevel.VirgilCard;
 import com.virgilsecurity.sdk.highlevel.VirgilCards;
+import com.virgilsecurity.sdk.storage.KeyStorage;
+import com.virgilsecurity.sdk.storage.VirgilKeyStorage;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -69,8 +70,8 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
     private ParseLiveQueryClient parseLiveQueryClient;
     private ParseQuery<Message> parseQuery;
 
-    @Inject protected VirgilApi virgilApi;
-    @Inject protected VirgilApiContext virgilApiContext;
+    protected VirgilApi virgilApi;
+    protected VirgilApiContext virgilApiContext;
 
     @BindView(R.id.rvChat) RecyclerView rvChat;
     @BindView(R.id.etMessage) EditText etMessage;
@@ -99,7 +100,7 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
     @Override
     protected void postButterInit() {
         thread = getArguments().getParcelable(KEY_THREAD);
-        AppVirgil.getVirgilComponent().inject(this);
+        initVirgil();
 
         btnSend.setEnabled(false);
         btnSend.setBackground(ContextCompat.getDrawable(activity,
@@ -141,6 +142,15 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
         });
     }
 
+    private void initVirgil() {
+        KeyStorage keyStorage = new VirgilKeyStorage(activity.getFilesDir().getAbsolutePath());
+
+        virgilApiContext = new VirgilApiContext(getString(R.string.virgil_token));
+        virgilApiContext.setKeyStorage(keyStorage);
+
+        virgilApi = new VirgilApiImpl(virgilApiContext);
+    }
+
     private void getMessages() {
         if (meCard == null || youCard == null) {
             initCards();
@@ -155,12 +165,9 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
     private void initCards() {
         showProgress(true);
 
-        meCard = new VirgilCard(virgilApiContext, PrefsManager.UserPreferences.getCardModel());
-
-        if (thread.getSenderUsername().equals(meCard.getIdentity()))
-            getPresenter().requestGetCard(thread.getRecipientUsername(), virgilApi);
-        else
-            getPresenter().requestGetCard(thread.getSenderUsername(), virgilApi);
+        getPresenter().requestGetCards(thread.getSenderUsername(),
+                                       thread.getRecipientUsername(),
+                                       virgilApi);
     }
 
     private void initMessageInput() {
@@ -360,20 +367,28 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
                                         });
     }
 
-    public void onGetCardSuccess(VirgilCard virgilCard) {
-        youCard = virgilCard;
-
-        adapter.setCards(meCard, youCard);
-
-        if (messages == null) {
-            showProgress(false);
-            getPresenter().requestMessages(thread, 50, page,
-                                           Const.TableNames.CREATED_AT_CRITERIA,
-                                           virgilApi, virgilApiContext);
+    public void onGetCardSuccess(Pair<VirgilCard, VirgilCard> cards) {
+        if (cards.first.getIdentity().equals(ParseUser.getCurrentUser().getUsername())) {
+            meCard = cards.first;
+            youCard = cards.second;
         } else {
-            showProgress(false);
-            srlRefresh.setRefreshing(false);
-            lockSendUi(false, false);
+            meCard = cards.second;
+            youCard = cards.first;
+        }
+
+        if (meCard != null && youCard != null) {
+            adapter.setCards(meCard, youCard);
+
+            if (messages == null) {
+                showProgress(false);
+                getPresenter().requestMessages(thread, 50, page,
+                                               Const.TableNames.CREATED_AT_CRITERIA,
+                                               virgilApi, virgilApiContext);
+            } else {
+                showProgress(false);
+                srlRefresh.setRefreshing(false);
+                lockSendUi(false, false);
+            }
         }
     }
 

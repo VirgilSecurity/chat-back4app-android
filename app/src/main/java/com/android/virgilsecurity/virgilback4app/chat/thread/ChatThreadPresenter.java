@@ -1,6 +1,7 @@
 package com.android.virgilsecurity.virgilback4app.chat.thread;
 
 import android.os.Bundle;
+import android.util.Pair;
 
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
@@ -15,6 +16,7 @@ import com.virgilsecurity.sdk.highlevel.VirgilCard;
 import com.virgilsecurity.sdk.highlevel.VirgilCards;
 import com.virgilsecurity.sdk.highlevel.VirgilKey;
 
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -29,7 +31,7 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
 
     private static final int GET_MESSAGES = 0;
     private static final int SEND_MESSAGE = 1;
-    private static final int GET_CARD = 2;
+    private static final int GET_CARDS = 2;
 
     private ChatThread thread;
     private int limit;
@@ -38,7 +40,8 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
     private String text;
     private VirgilApi virgilApi;
     private VirgilApiContext virgilApiContext;
-    private String identity;
+    private String identitySender;
+    private String identityRecipient;
     private VirgilCards cards;
 
     @Override protected void onCreate(Bundle savedState) {
@@ -56,9 +59,13 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
                          ChatThreadFragment::onSendMessageSuccess,
                          ChatThreadFragment::onSendMessageError);
 
-        restartableFirst(GET_CARD, () ->
-                                 findCard(identity).toObservable()
-                                                   .subscribeOn(Schedulers.io())
+        restartableFirst(GET_CARDS, () ->
+                                 Observable.zip(findCard(identitySender).toObservable()
+                                                                  .subscribeOn(Schedulers.io()),
+                                                findCard(identityRecipient).toObservable()
+                                                                  .subscribeOn(Schedulers.io()),
+                                                Pair::new)
+
                                                    .observeOn(AndroidSchedulers.mainThread()),
                          ChatThreadFragment::onGetCardSuccess,
                          ChatThreadFragment::onGetCardError);
@@ -96,23 +103,24 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
         start(SEND_MESSAGE);
     }
 
-    void requestGetCard(String identity, VirgilApi virgilApi) {
-        this.identity = identity;
+    void requestGetCards(String identitySender, String identityRecipient, VirgilApi virgilApi) {
+        this.identitySender = identitySender;
+        this.identityRecipient = identityRecipient;
         this.virgilApi = virgilApi;
 
-        start(GET_CARD);
+        start(GET_CARDS);
     }
 
     void disposeAll() {
         stop(GET_MESSAGES);
         stop(SEND_MESSAGE);
-        stop(GET_CARD);
+        stop(GET_CARDS);
     }
 
     boolean isDisposed() {
         return isDisposed(GET_MESSAGES)
                 || isDisposed(SEND_MESSAGE)
-                || isDisposed(GET_CARD);
+                || isDisposed(GET_CARDS);
     }
 
     private Single<VirgilCard> findCard(String identity) {

@@ -4,11 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.android.virgilsecurity.virgilback4app.model.exception.VirgilCardNotCreatedException;
-import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
-import com.parse.ParseUser;
 import com.virgilsecurity.sdk.client.exceptions.VirgilCardIsNotFoundException;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsAlreadyExistsException;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
@@ -70,7 +67,6 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
                                                      })
                                                      .flatMap(card -> {
                                                          saveLastGeneratedPrivateKey();
-                                                         PrefsManager.UserPreferences.saveCardModel(card.getModel());
                                                          return Observable.just(card);
                                                      })
                                                      .subscribeOn(Schedulers.io())
@@ -87,18 +83,10 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
                                                                                      .load(virgilCard.getIdentity())
                                                                                      .getPrivateKey()
                                                                                      .getValue());
-
                                              myVirgilCard = virgilCard;
-                                             Observable<ParseUser> observableLogIn = RxParse.logIn(virgilCard.getIdentity(),
-                                                                                                   password);
-                                             Observable<VirgilCard> observableVirgilCard = Observable.just(virgilCard);
 //
-                                             return Observable.zip(observableLogIn,
-                                                                   observableVirgilCard,
-                                                                   (user, card) -> {
-                                                                       PrefsManager.UserPreferences.saveCardModel(card.getModel());
-                                                                       return user;
-                                                                   });
+                                             return RxParse.logIn(virgilCard.getIdentity(),
+                                                                  password);
                                          })
                                          .subscribeOn(Schedulers.io())
                                          .observeOn(AndroidSchedulers.mainThread()),
@@ -142,7 +130,7 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
             if (userCard != null)
                 e.onSuccess(new Pair<>(userCard, virgilKey));
             else
-                e.onError(new VirgilCardNotCreatedException());
+                e.onError(new Throwable("Virgil Card was not created"));
         });
     }
 
@@ -191,18 +179,12 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
             e.printStackTrace();
         }
 
-        if (PrefsManager.UserPreferences.getCardModel() != null) {
-            cardObservable =
-                    Observable.just(new VirgilCard(virgilApiContext,
-                                                   PrefsManager.UserPreferences.getCardModel()));
-        } else {
-            cardObservable = findCard(identity).toObservable()
-                                               .subscribeOn(Schedulers.io())
-                                               .flatMap(card -> {
-                                                   myVirgilCard = card;
-                                                   return Observable.just(card);
-                                               });
-        }
+        cardObservable = findCard(identity).toObservable()
+                                           .subscribeOn(Schedulers.io())
+                                           .flatMap(card -> {
+                                               myVirgilCard = card;
+                                               return Observable.just(card);
+                                           });
 
         return cardObservable;
     }

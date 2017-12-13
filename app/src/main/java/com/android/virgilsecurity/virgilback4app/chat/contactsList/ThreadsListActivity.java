@@ -9,14 +9,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.widget.TextView;
 
-import com.android.virgilsecurity.virgilback4app.AppVirgil;
 import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.auth.SignInControlActivity;
 import com.android.virgilsecurity.virgilback4app.base.BaseActivityWithPresenter;
 import com.android.virgilsecurity.virgilback4app.chat.thread.ChatThreadActivity;
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.util.Const;
-import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.android.virgilsecurity.virgilback4app.util.customElements.CreateThreadDialog;
 import com.android.virgilsecurity.virgilback4app.util.customElements.OnFinishTimer;
@@ -65,7 +63,6 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
 
     @Override
     protected void postButterInit() {
-        AppVirgil.getVirgilComponent().inject(this);
         initToolbar(toolbar, getString(R.string.contacts));
         initDrawer();
         Utils.replaceFragmentNoBackStack(getSupportFragmentManager(),
@@ -120,7 +117,6 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
                     ParseUser.logOutInBackground(e -> {
                         runOnUiThread(() -> showBaseLoading(false));
                         if (e == null) {
-                            PrefsManager.UserPreferences.clearCardModel();
                             SignInControlActivity.startClearTop(this);
                         } else {
                             Utils.toast(this, Utils.resolveError(e));

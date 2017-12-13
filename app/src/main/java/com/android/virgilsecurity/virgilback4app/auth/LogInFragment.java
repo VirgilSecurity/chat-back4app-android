@@ -9,21 +9,19 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
-import com.android.virgilsecurity.virgilback4app.AppVirgil;
 import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.base.BaseFragmentWithPresenter;
-import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.UsernameInputFilter;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.parse.ParseUser;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
 import com.virgilsecurity.sdk.highlevel.VirgilApiContext;
+import com.virgilsecurity.sdk.highlevel.VirgilApiImpl;
 import com.virgilsecurity.sdk.highlevel.VirgilCard;
 import com.virgilsecurity.sdk.storage.KeyStorage;
+import com.virgilsecurity.sdk.storage.VirgilKeyStorage;
 
 import java.util.Locale;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -50,9 +48,9 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
 
     private AuthStateListener authStateListener;
     private String identity;
-    @Inject KeyStorage keyStorage;
-    @Inject VirgilApi virgilApi;
-    @Inject VirgilApiContext virgilApiContext;
+    KeyStorage keyStorage;
+    VirgilApi virgilApi;
+    VirgilApiContext virgilApiContext;
 
     public static LogInFragment newInstance() {
 
@@ -71,7 +69,7 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     @Override
     protected void postButterInit() {
 
-        AppVirgil.getVirgilComponent().inject(this);
+        initVirgil();
         authStateListener = activity;
 
         etUsername.setFilters(new InputFilter[]{
@@ -97,6 +95,15 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         });
     }
 
+    private void initVirgil() {
+        keyStorage = new VirgilKeyStorage(activity.getFilesDir().getAbsolutePath());
+
+        virgilApiContext = new VirgilApiContext(getString(R.string.virgil_token));
+        virgilApiContext.setKeyStorage(keyStorage);
+
+        virgilApi = new VirgilApiImpl(virgilApiContext);
+    }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -109,7 +116,7 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
 
         showProgress(!getPresenter().isDisposed());
 
-        if (PrefsManager.UserPreferences.getCardModel() != null)
+        if (ParseUser.getCurrentUser() != null)
             authStateListener.onRegisteredInSuccesfully();
     }
 
