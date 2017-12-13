@@ -22,12 +22,14 @@ import io.reactivex.Observable;
 
 public class RxParse {
 
-    public static Observable<VirgilCard> signUp(String username, String password, VirgilCard card) {
+    public static Observable<VirgilCard> signUp(String username,
+                                                String password,
+                                                VirgilCard card) {
         return Observable.create(e -> {
             final ParseUser user = new ParseUser();
             user.setUsername(username);
             user.setPassword(password);
-            user.put(Const.Request.CRETE_CARD, card.export());
+            user.put(Const.Request.CREATE_CARD, card.export());
 
             user.signUpInBackground((exception) -> {
                 if (exception == null) {

@@ -80,9 +80,10 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
                                  getDeviceOnlyVirgilCard(identity)
                                          .flatMap(virgilCard -> {
                                              String password =
-                                                     Utils.generatePassword(loadKey(virgilCard.getIdentity())
-                                                                                    .getPrivateKey()
-                                                                                    .getValue());
+                                                     Utils.generatePassword(virgilApi.getKeys()
+                                                                                     .load(virgilCard.getIdentity())
+                                                                                     .getPrivateKey()
+                                                                                     .getValue());
 
                                              myVirgilCard = virgilCard;
                                              Observable<ParseUser> observableLogIn = RxParse.logIn(virgilCard.getIdentity(),
@@ -170,7 +171,7 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
 
         Observable<VirgilCard> cardObservable;
         try {
-            privateKey = loadKey(identity);
+            privateKey = virgilApi.getKeys().load(identity);
         } catch (VirgilKeyIsNotFoundException e) {
             e.printStackTrace();
         } catch (CryptoException e) {
@@ -191,10 +192,6 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
         }
 
         return cardObservable;
-    }
-
-    private VirgilKey loadKey(String identity) throws VirgilKeyIsNotFoundException, CryptoException {
-        return virgilApi.getKeys().load(identity);
     }
 
     private Single<VirgilCard> findCard(String identity) {

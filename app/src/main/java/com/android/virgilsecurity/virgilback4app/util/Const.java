@@ -31,6 +31,6 @@ public class Const {
     }
 
     public static class Request {
-        public static final String CRETE_CARD = "csr";
+        public static final String CREATE_CARD = "csr";
     }
 }

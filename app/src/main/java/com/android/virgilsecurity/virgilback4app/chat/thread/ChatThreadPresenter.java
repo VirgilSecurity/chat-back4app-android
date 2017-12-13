@@ -3,11 +3,10 @@ package com.android.virgilsecurity.virgilback4app.chat.thread;
 import android.os.Bundle;
 
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
-import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
+import com.parse.ParseUser;
 import com.virgilsecurity.sdk.client.exceptions.VirgilCardIsNotFoundException;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
-import com.virgilsecurity.sdk.client.model.CardModel;
 import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
 import com.virgilsecurity.sdk.highlevel.StringEncoding;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
@@ -138,7 +137,7 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
         String encryptedText = null;
 
         try {
-            VirgilKey key = loadKey(getMyCard().getIdentity());
+            VirgilKey key = virgilApi.getKeys().load(ParseUser.getCurrentUser().getUsername());
             encryptedText = key.signThenEncrypt(text, cards).toString(StringEncoding.Base64);
         } catch (VirgilKeyIsNotFoundException e) {
             e.printStackTrace();
@@ -147,14 +146,5 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
         }
 
         return encryptedText;
-    }
-
-    private VirgilKey loadKey(String identity) throws VirgilKeyIsNotFoundException, CryptoException {
-        return virgilApi.getKeys().load(identity);
-    }
-
-    private VirgilCard getMyCard() {
-        CardModel cardModel = PrefsManager.VirgilPreferences.getCardModel();
-        return new VirgilCard(virgilApiContext, cardModel);
     }
 }
