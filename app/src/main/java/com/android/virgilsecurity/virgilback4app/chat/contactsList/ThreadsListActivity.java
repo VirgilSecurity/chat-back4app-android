@@ -120,7 +120,7 @@ public class ThreadsListActivity extends BaseActivityWithPresenter<ThreadsListAc
                     ParseUser.logOutInBackground(e -> {
                         runOnUiThread(() -> showBaseLoading(false));
                         if (e == null) {
-                            PrefsManager.VirgilPreferences.clearCardModel();
+                            PrefsManager.UserPreferences.clearCardModel();
                             SignInControlActivity.startClearTop(this);
                         } else {
                             Utils.toast(this, Utils.resolveError(e));

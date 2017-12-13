@@ -109,7 +109,7 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
 
         showProgress(!getPresenter().isDisposed());
 
-        if (PrefsManager.VirgilPreferences.getCardModel() != null)
+        if (PrefsManager.UserPreferences.getCardModel() != null)
             authStateListener.onRegisteredInSuccesfully();
     }
 

@@ -133,7 +133,8 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
      * @param cards of recipients
      * @return encrypted data
      */
-    public String encrypt(String text, VirgilCards cards) {
+
+    private String encrypt(String text, VirgilCards cards) {
         String encryptedText = null;
 
         try {
@@ -147,4 +148,5 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
 
         return encryptedText;
     }
+
 }

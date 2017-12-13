@@ -70,7 +70,7 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
                                                      })
                                                      .flatMap(card -> {
                                                          saveLastGeneratedPrivateKey();
-                                                         PrefsManager.VirgilPreferences.saveCardModel(card.getModel());
+                                                         PrefsManager.UserPreferences.saveCardModel(card.getModel());
                                                          return Observable.just(card);
                                                      })
                                                      .subscribeOn(Schedulers.io())
@@ -96,7 +96,7 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
                                              return Observable.zip(observableLogIn,
                                                                    observableVirgilCard,
                                                                    (user, card) -> {
-                                                                       PrefsManager.VirgilPreferences.saveCardModel(card.getModel());
+                                                                       PrefsManager.UserPreferences.saveCardModel(card.getModel());
                                                                        return user;
                                                                    });
                                          })
@@ -161,6 +161,7 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
      * Use after createCard method - last generated private key
      * will be saved in secure storage
      */
+
     private void saveLastGeneratedPrivateKey() {
         if (privateKey != null) {
             try {
@@ -190,10 +191,10 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
             e.printStackTrace();
         }
 
-        if (PrefsManager.VirgilPreferences.getCardModel() != null) {
+        if (PrefsManager.UserPreferences.getCardModel() != null) {
             cardObservable =
                     Observable.just(new VirgilCard(virgilApiContext,
-                                                   PrefsManager.VirgilPreferences.getCardModel()));
+                                                   PrefsManager.UserPreferences.getCardModel()));
         } else {
             cardObservable = findCard(identity).toObservable()
                                                .subscribeOn(Schedulers.io())

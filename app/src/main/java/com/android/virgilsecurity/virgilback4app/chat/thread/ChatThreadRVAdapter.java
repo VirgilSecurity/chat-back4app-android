@@ -9,10 +9,8 @@ import android.widget.TextView;
 
 import com.android.virgilsecurity.virgilback4app.R;
 import com.android.virgilsecurity.virgilback4app.model.Message;
-import com.android.virgilsecurity.virgilback4app.util.PrefsManager;
 import com.parse.ParseUser;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
-import com.virgilsecurity.sdk.client.model.CardModel;
 import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
 import com.virgilsecurity.sdk.highlevel.VirgilApiContext;
@@ -169,11 +167,12 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
          * @param card senders card to verify data
          * @return decrypted data
          */
-        public String decrypt(String text, VirgilCard card) {
+        String decrypt(String text, VirgilCard card) {
             String decryptedText = null;
 
             try {
-                VirgilKey virgilKey = loadKey(getMyCard().getIdentity());
+                VirgilKey virgilKey = virgilApi.getKeys()
+                                               .load(ParseUser.getCurrentUser().getUsername());
                 decryptedText = virgilKey.decryptThenVerify(text, card).toString();
             } catch (VirgilKeyIsNotFoundException e) {
                 e.printStackTrace();
@@ -182,15 +181,6 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
 
             return decryptedText;
-        }
-
-        private VirgilKey loadKey(String identity) throws VirgilKeyIsNotFoundException, CryptoException {
-            return virgilApi.getKeys().load(identity);
-        }
-
-        private VirgilCard getMyCard() {
-            CardModel cardModel = PrefsManager.VirgilPreferences.getCardModel();
-            return new VirgilCard(virgilApiContext, cardModel);
         }
     }
 
@@ -225,11 +215,12 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
          * @param card senders card to verify data
          * @return decrypted data
          */
-        public String decrypt(String text, VirgilCard card) {
+        String decrypt(String text, VirgilCard card) {
             String decryptedText = null;
 
             try {
-                VirgilKey virgilKey = loadKey(getMyCard().getIdentity());
+                VirgilKey virgilKey = virgilApi.getKeys()
+                                               .load(ParseUser.getCurrentUser().getUsername());
                 decryptedText = virgilKey.decryptThenVerify(text, card).toString();
             } catch (VirgilKeyIsNotFoundException e) {
                 e.printStackTrace();
@@ -238,15 +229,6 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
 
             return decryptedText;
-        }
-
-        private VirgilKey loadKey(String identity) throws VirgilKeyIsNotFoundException, CryptoException {
-            return virgilApi.getKeys().load(identity);
-        }
-
-        private VirgilCard getMyCard() {
-            CardModel cardModel = PrefsManager.VirgilPreferences.getCardModel();
-            return new VirgilCard(virgilApiContext, cardModel);
         }
     }
 }

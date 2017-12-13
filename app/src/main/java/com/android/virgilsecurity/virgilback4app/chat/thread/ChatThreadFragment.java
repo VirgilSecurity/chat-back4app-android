@@ -155,7 +155,7 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
     private void initCards() {
         showProgress(true);
 
-        meCard = new VirgilCard(virgilApiContext, PrefsManager.VirgilPreferences.getCardModel());
+        meCard = new VirgilCard(virgilApiContext, PrefsManager.UserPreferences.getCardModel());
 
         if (thread.getSenderUsername().equals(meCard.getIdentity()))
             getPresenter().requestGetCard(thread.getRecipientUsername(), virgilApi);

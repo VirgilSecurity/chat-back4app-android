@@ -20,7 +20,7 @@ public class PrefsManager {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public static class VirgilPreferences {
+    public static class UserPreferences {
         private static final String VIRGIL_CARD = "VIRGIL_CARD";
 
         public static void saveCardModel(CardModel cardModel) {
