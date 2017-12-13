@@ -2,10 +2,10 @@ package com.android.virgilsecurity.virgilback4app.auth;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Base64;
 import android.util.Pair;
 
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
-import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.virgilsecurity.sdk.client.exceptions.VirgilCardIsNotFoundException;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsAlreadyExistsException;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
@@ -17,6 +17,9 @@ import com.virgilsecurity.sdk.highlevel.VirgilCard;
 import com.virgilsecurity.sdk.highlevel.VirgilCards;
 import com.virgilsecurity.sdk.highlevel.VirgilKey;
 import com.virgilsecurity.sdk.storage.KeyStorage;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -57,8 +60,8 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
                                                              return Observable.error(VirgilKeyIsNotFoundException::new);
 
                                                          String password =
-                                                                 Utils.generatePassword(privateKey.getPrivateKey()
-                                                                                                  .getValue());
+                                                                 generatePassword(privateKey.getPrivateKey()
+                                                                                            .getValue());
                                                          myVirgilCard = pair.first;
 
                                                          return RxParse.signUp(pair.first.getIdentity(),
@@ -79,10 +82,10 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
                                  getDeviceOnlyVirgilCard(identity)
                                          .flatMap(virgilCard -> {
                                              String password =
-                                                     Utils.generatePassword(virgilApi.getKeys()
-                                                                                     .load(virgilCard.getIdentity())
-                                                                                     .getPrivateKey()
-                                                                                     .getValue());
+                                                     generatePassword(virgilApi.getKeys()
+                                                                               .load(virgilCard.getIdentity())
+                                                                               .getPrivateKey()
+                                                                               .getValue());
                                              myVirgilCard = virgilCard;
 //
                                              return RxParse.logIn(virgilCard.getIdentity(),
@@ -198,5 +201,23 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
                 e.onError(new VirgilCardIsNotFoundException());
             }
         });
+    }
+
+    /*
+ * Generates SHA-256 password from base[]
+ *
+ */
+    public static String generatePassword(byte[] privateKey) {
+        MessageDigest sha;
+        byte[] hash = new byte[0];
+
+        try {
+            sha = MessageDigest.getInstance("SHA-256");
+            hash = sha.digest(privateKey);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return Base64.encodeToString(hash, Base64.DEFAULT);
     }
 }

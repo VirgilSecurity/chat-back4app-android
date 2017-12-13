@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Base64;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,10 +14,6 @@ import com.parse.ParseException;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsAlreadyExistsException;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
 import com.virgilsecurity.sdk.crypto.exceptions.KeyEntryNotFoundException;
-import com.virgilsecurity.sdk.highlevel.VirgilBuffer;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import retrofit2.HttpException;
 
@@ -73,42 +68,6 @@ public class Utils {
           .replace(containerId, fragment, tag)
           .addToBackStack(tag)
           .commit();
-    }
-
-    /*
-     * Generates SHA-256 password from base64 string
-     *
-     */
-    public static String generatePassword(VirgilBuffer virgilBuffer) {
-        MessageDigest sha;
-        byte[] hash = new byte[0];
-
-        try {
-            sha = MessageDigest.getInstance("SHA-256");
-            hash = sha.digest(virgilBuffer.toString().getBytes());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        return Base64.encodeToString(hash, Base64.DEFAULT);
-    }
-
-    /*
-     * Generates SHA-256 password from base[]
-     *
-     */
-    public static String generatePassword(byte[] privateKey) {
-        MessageDigest sha;
-        byte[] hash = new byte[0];
-
-        try {
-            sha = MessageDigest.getInstance("SHA-256");
-            hash = sha.digest(privateKey);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        return Base64.encodeToString(hash, Base64.DEFAULT);
     }
 
     public static String resolveError(Throwable t) {

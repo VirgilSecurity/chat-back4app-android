@@ -29,7 +29,7 @@ public class RxParse {
             final ParseUser user = new ParseUser();
             user.setUsername(username);
             user.setPassword(password);
-            user.put(Const.Request.CREATE_CARD, card.export());
+            user.put("csr", card.export());
 
             user.signUpInBackground((exception) -> {
                 if (exception == null) {
