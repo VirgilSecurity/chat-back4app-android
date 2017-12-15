@@ -1,4 +1,4 @@
-# End-to-End Encrypted Chat & the road to HIPAA compliance!
+# End-to-End Encrypted Chat & the road to HIPAA & GDPR compliance!
 
 **Ahoy Back4app community!**
 
