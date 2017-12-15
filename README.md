@@ -27,7 +27,7 @@ This blog post is about how to ignore all these annoying details and just End-to
 3. When receiving messages, you’ll decrypt them with your user’s private key.
 
 
-![Virgil E2EE](img/virgil_back4app.png)
+![Virgil E2EE](img/virgil_main.png)
 
 We’ll publish the users’ public keys to Virgil’s Cards Service for chat users to be able to look up each other and be able to encrypt messages for each other; the private keys will be kept on the user devices.
 
