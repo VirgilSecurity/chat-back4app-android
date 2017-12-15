@@ -81,43 +81,36 @@ Return to `/app/src/main/res/values/strings.xml` and paste "Subdomain name" you 
 <string name="back4app_live_query_url">wss://yourSubdomainName.back4app.io/</string>
 ```
 
-### 3) Build and Run Chat without E2EE
-
-Now you can build and run your app on a real device or on an emulator.
+### Now you can build and run your app on your device or emulator:
 
 ![Enablle Live Query](img/emulator.jpeg)
 
-As a result, you see a chat messenger, where you can send and receive messages. As a server, this chat uses Back4App services.
+If it all worked out, you should see the chat messenger app popping up. Register two users and send a few messages to each other: you should see new data showing up in the Message class:
 
-Register two users and send few messages to each other.
-If everything works properly, you should be able to see some data in `Message`, `ChatThread` and `User` classes. You able to manage data in your classes (for example you can view message text in `body` column):
+**Note that you can see on the server what your users are chatting about:**
 
 ![DB](img/back4app_messages_no_encrypt.png)
 
 **Next**: Close your chat interface and move on to the next step – adding E2EE encryption.
 
-## Adding E2EE Encryption to Chat
+## Now, let’s End-to-End Encrypt those messages!
 
-Now, let’s encrypt those chat messages. By the end of this part, you’ll be able to encrypt a chat message just like this:
+By the end of this part, this is how your chat messages will look like on the server: can you spot the difference?
 
-```java
-public String encrypt(String text, VirgilCards cards) {
-    String encryptedText = null;
+![DB 2](img/encrypted_db.png)
 
-    try {
-        VirgilKey key = loadKey(getMyCard().getIdentity());
-        encryptedText = key.signThenEncrypt(text, cards).toString(StringEncoding.Base64);
-    } catch (VirgilKeyIsNotFoundException e) {
-        e.printStackTrace();
-    } catch (CryptoException e) {
-        e.printStackTrace();
-    }
+And this is how we’ll get there:
+  **Step 1:** we’ll set up a minimal Back4App server app that will approve the creation of new users at registration time: otherwise, you’ll end up with a bunch of spam cards. Later, you can introduce an email/SMS verification by customizing this app!
+  **Step 2:** we’ll modify the messenger app by adding E2EE code; I’ll do my best to explain every step along the way, hopefully simply enough that you can continue playing with it and reuse in your own project!
 
-    return encryptedText;
-}
-```
+But before we begin, let’s clear 2 important terms for you: what’s a Virgil Key and a Virgil Card?
 
-To get started, you need the following:
+  - Virgil Key – this is how we call a user's private key. Remember, private keys can decrypt data that was encrypted using the matching public key.
+  - Virgil Card – Virgil Сards carry the user’s public key. Virgil cards are published to Virgil’s Cards Service (imagine this service like a telephone book) for other users to retrieve them: Alice needs to retrieve Bob’s Public Key in order to encrypt a message for Bob using that key. 
+
+### Set up your App Server
+
+You’ll need some minimal server code to make the sample work. This piece of server code will enable you to verify new users before they can start using Virgil’s crypto service. To keep this app server simple, we created one for you: it will automatically approve all new users. Later, you can add your own SMS/email verification code, so that you won’t end up with a ton of false users.
 
 1. Virgil Security developer account: [Sign up here][_virgil_account]. Sign in to your Virgil Security developer account and create a new application. Make sure you saved the Private Key file that is generated for your application, you will need it later.
 
