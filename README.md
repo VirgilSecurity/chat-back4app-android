@@ -100,6 +100,7 @@ By the end of this part, this is how your chat messages will look like on the se
 ![DB 2](img/encrypted_db.jpeg)
 
 And this is how we’ll get there:
+
   **Step 1:** we’ll set up a minimal Back4App server app that will approve the creation of new users at registration time: otherwise, you’ll end up with a bunch of spam cards. Later, you can introduce an email/SMS verification by customizing this app!
   **Step 2:** we’ll modify the messenger app by adding E2EE code; I’ll do my best to explain every step along the way, hopefully simply enough that you can continue playing with it and reuse in your own project!
 
