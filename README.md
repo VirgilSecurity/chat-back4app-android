@@ -16,29 +16,34 @@ So essentially, the message remains encrypted while travels over wifi, the inter
 
 ![Virgil Chat Server](img/chat_example_server.png)
 
-What’s difficult in End-to-End Encryption is the task of managing the encryption keys: managing them in a way that only the users involved in the chat can access them and nobody else. Also, it’s tricky to implement crypto on 3 platforms with 3 different libraries and various levels of operating system support. You’d also have to consider what type of encryption you need use for the data you want to encrypt (for example, some encryption algorithms are built for encrypting keys, while some for encrypting text, while others for encrypting images). And these are just 3 examples of why developers end up not implementing crypto.
+What’s difficult in End-to-End Encryption is the task of managing the encryption keys: managing them in a way that only the users involved in the chat can access them and nobody else. And when I write “nobody else”, I really mean it: even insiders of your cloud provider or even you, the developer are out; [no accidental mistakes][_mistakes] or legally enforced peeking are possible. Writing crypto, especially for multiple platforms is hard: generating true random numbers, picking the right algorithms, choosing the right encryption modes are just a few examples that make most of us developers just end up NOT doing it.
 
-This blog post is about how to ignore all these annoying details and just End-to-End Encrypt using Virgil’s SDK that does it all for you.
+This blog post is about how to ignore all these annoying details and just End-to-End Encrypt using Virgil’s SDK.
+
 
 **For an intro, this is how we’ll upgrade Back4app’s messenger app to be End-to-End Encrypted:**
-1. During sign-up: we’ll generate individual private & public key for new users (public keys for encryption, private keys for decryption).
-2. Before sending a chat message, you’ll encrypt it with the destination user’s public key,
-3. When receiving a message, you’ll decrypt it with your app user’s private key.
+1. During sign-up: we’ll generate individual private & public key for new users (remember: public key encrypts messages, the matching private key decrypts them).
+2. You’ll encrypt chat messages with the destination user’s public key before they’re sent,
+3. When receiving messages, you’ll decrypt them with your user’s private key.
+
 
 ![Virgil E2EE](img/virgil_back4app.png)
 
-The user public keys, we’ll publish to Virgil’s public key directory for chat users to be able to look up; the private keys will be kept on the user devices.
+We’ll publish the users’ public keys to Virgil’s Cards Service for chat users to be able to look up each other and be able to encrypt messages for each other; the private keys will be kept on the user devices.
 
-This is the simplest implementation for E2EE chat and it works perfectly for simple chat use-cases where users aren’t joining and leaving existing chat channels all the time. For a busier, Slack-like chat implementation, we’ll build a Part II for this post: [sign up here if you’re interested][_next_post] and we’ll ping you once we have it.
+**Keep it simple**
+
+This is the simplest possible implementation of E2EE chat and it works perfectly for simple chat apps between 2 users where conversations are short-lived and the message history is OK to be lost if a device is lost with the private key on it. For a busier, Slack-like chat app where history is important and users are joining and leaving channels all the time, we’ll build a Part II for this post: [sign up here if you’re interested][_next_post] and we’ll ping you once we have it.
 
 **OK, enough talking! Let’s get down to coding.**
 
-- We’ll start by setting up Back4app’s messenger app,
-- Then, we’ll show you how to End-to-End Encrypt it!
+- We’ll start by guiding you through the Android app’s setup,
+- Then, we’ll make you add the E2EE code and explain what each code block does.
 
 **Prerequisites:**
 
 - Sign up for a [Back4app account][_back4app_account] and create a new app;
+- Sign up for a [Virgil Security account][_virgil] (we’ll create the app later)
 - You’ll need [Android Studio][_android_studio] for the coding work, we used 3.0.1.
 
 ## Let’s set up the Back4app messenger app
@@ -49,7 +54,7 @@ This is the simplest implementation for E2EE chat and it works perfectly for sim
   - Check out the “clean-chat” branch
 ![Chat](img/checkout_clean_chat_arr.jpg)
 
-### 2) Set up the App with the Credentials from your Back4App App’s Dashboard:
+### 2) Set up the App with the Credentials from your new Back4App App’s Dashboard:
   - Open “Dashboard” of your app -> “App Settings” -> “Security & Keys”:
   ![Back4app credentials](img/back4app_dashboard.png)
   - Return to your  `/app/src/main/res/values/strings.xml` file in the project and paste your “App Id” into “back4app_app_id” and “Client Key” into “back4app_client_key”.
@@ -58,14 +63,18 @@ This is the simplest implementation for E2EE chat and it works perfectly for sim
 <string name="back4app_app_id">0YP4zSHDOZy5v5123e2ttGRkG123aaBTUnr6wfH</string>
 ```
 
-To get live updates for messages and chat threads you have to enable Live Query. Live Query can be enabled for any custom class user created, so firstly - Launch the “Data Management” for your app and create two classes “Message” and “ChatThread”:
+### 3) Enable Live Query to get live updates for messages and chat threads: 
+  - Launch Data Management for your app and create two classes: `Message` and `ChatThread`:
 
-![Create Class](img/create_class.jpeg)
+    ![Create Class](img/create_class.jpeg)
 
-
-After you successfully created `Message` and `ChatThread` classes you should enable Live Query. Open Live Query Settings and check the “Activate Hosting” option. Also you have to enter “Subdomain name” which can be any string you want and activate Live Query for recently created classes “Message” and “ChatThread”:
-
-![Enablle Live Query](img/live_query.jpeg)
+  - Go back to your [Back4App account][_back4app_admin]
+  - Press the “Server Settings” button on your Application
+  - Find the “Web Hosting and Live Query” block
+  - Open the Live Query Settings  and check the “Activate Hosting” option.
+  - Choose a name for your subdomain to activate Live Query for the 2 classes you created: `Message` and `ChatThread`.
+  - Copy your new subdomain name and click the SAVE button:
+  ![Enablle Live Query](img/live_query.jpeg)
 
 Return to `/app/src/main/res/values/strings.xml` and paste "Subdomain name" you have entered above into the `back4app_live_query_url` instead of "yourSubdomainName":
 ```xml
@@ -389,11 +398,12 @@ Shortly following your Virgil signup, we invite you to our Slack community where
 
 
 
-
+[_mistakes]: https://techcrunch.com/2017/11/29/meet-the-man-who-deactivated-trumps-twitter-account/
 [_twilio]: https://www.twilio.com/blog/2016/05/introducing-end-to-end-encryption-for-twilio-ip-messaging-with-virgil-security.html
 [_back4app]: https://docs.back4app.com/docs/new-parse-app/simple-messenger/
 [_next_post]: https://virgilsecurity.us13.list-manage.com/subscribe?u=b2d755932a192a668f143411a&id=d2891963f1
 [_back4app_account]: https://www.back4app.com/
+[_back4app_admin]: https://dashboard.back4app.com/apps/#!/admin
 [_android_studio]: https://developer.android.com/studio/index.html
 [_virgil_account]: https://developer.virgilsecurity.com/account/signup
 [_build.gradle_app_level]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/build.gradle
