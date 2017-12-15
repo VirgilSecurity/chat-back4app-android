@@ -105,12 +105,75 @@ And this is how we’ll get there:
 
 But before we begin, let’s clear 2 important terms for you: what’s a Virgil Key and a Virgil Card?
 
-  - Virgil Key – this is how we call a user's private key. Remember, private keys can decrypt data that was encrypted using the matching public key.
-  - Virgil Card – Virgil Сards carry the user’s public key. Virgil cards are published to Virgil’s Cards Service (imagine this service like a telephone book) for other users to retrieve them: Alice needs to retrieve Bob’s Public Key in order to encrypt a message for Bob using that key. 
+  - **Virgil Key** – this is how we call a user's private key. Remember, private keys can decrypt data that was encrypted using the matching public key.
+  - **Virgil Card** – Virgil Сards carry the user’s public key. Virgil cards are published to Virgil’s Cards Service (imagine this service like a telephone book) for other users to retrieve them: Alice needs to retrieve Bob’s Public Key in order to encrypt a message for Bob using that key. 
 
-### Set up your App Server
+### Step 1: Set up your App Server
 
 You’ll need some minimal server code to make the sample work. This piece of server code will enable you to verify new users before they can start using Virgil’s crypto service. To keep this app server simple, we created one for you: it will automatically approve all new users. Later, you can add your own SMS/email verification code, so that you won’t end up with a ton of false users.
+
+**Let’s get started:**
+- [Download this archive][_main_js_package_json] that contains two files: `main.js` and `package.json`;
+- Extract the archive and open `main.js` with your favorite editor;
+- Go back to your [Virgil developer account][_virgil_account] and create a new application. Make sure that you save the Private Key that is generated for your application. Also, copy the new app’s base64-encoded AppKey string before you complete the app creation:
+![Encoded string](img/encoded_string.jpeg)
+- Edit main.js, find the function `resolveAppKEy()` and replace: 
+  - `YOUR_VIRGIL_APP_PRIVATE_KEY` with the Base64 AppKey on your clipboard
+  - `YOUR_VIRGIL_APP_PRIVATE_KEY_PASSWORD` with the password you’ve set for your new Virgil app: 
+    ```javascript
+    function resolveAppKey() {
+      try {
+        return virgil.crypto.importPrivateKey('MIGhMF0GCSqGSIb3DQEFDTBQMC8GCSqGSIb3DQEFDDAiBBAmU9m+EJOvLRxRaJP6d......',
+          'a0KEOifsd2Ean6fzQ'
+        );
+      } catch (e) {
+        return null;
+      }
+    }
+  ```
+- Now, go back to your Virgil dashboard and copy your new app’s **App ID**:
+![Access Token](img/access_token.jpeg)
+- Find the function `signCardRequest` and replace `YOUR_VIRGIL_APP_ID` with the ID on your clipboard:
+```javascript
+function signCardRequest(cardRequest) {
+  const signer = virgil.requestSigner(virgil.crypto);
+  signer.authoritySign(cardRequest, 'bd7bf7e832f16e2b3f6fd343s1f90778ab0e15515aa775e7b7db3', appKey);
+}
+```
+- Now, let’s get back to the Virgil dashboard and create a new token for your app:
+![Access Token](img/access_token.jpeg)
+
+  - function `resolveAppKey()` and put your Application credentials (that you got at Virgil Dashboard during App registration) instead of `YOUR_VIRGIL_APP_PRIVATE_KEY` and `YOUR_VIRGIL_APP_PRIVATE_KEY_PASSWORD`
+  ```javascript
+    function resolveAppKey() {
+      try {
+        return virgil.crypto.importPrivateKey('MIGhMF0GCSqGSIb3DQEFDTBQMC8GCSqGSIb3DQEFDDAiBBAmU9m+EJOvLRxRaJP6d......',
+          'a0KEOifsd2Ean6fzQ'
+        );
+      } catch (e) {
+        return null;
+      }
+    }
+  ```
+ 
+
+  - `signCardRequest(cardRequest, appKey)` and put your Access Token from Virgil dashboard instead of `YOUR_VIRGIL_APP_ACCESS_TOKEN`;
+  ```javascript
+  signCardRequest(cardRequest);
+  const client = virgil.client('AT.8641c450a983a3435aebe79sad32abea997d29b3e8eed7b35beab72be3');
+  client.publishCard(cardRequest)
+  ...
+  ```
+  Save all your changes.
+
+- Go to your App Dashboard at Back4App website:
+  <img src="img/back4app_settings.jpeg" width="600" height="300">
+- Open “Server Settings” and find “Cloud Code”:
+
+  <img src="img/cloud_settings.jpeg" width="250" height="300">
+- Open Cloud “Settings”
+- Upload the main.js and package.json files in your Cloud Code settings and press “save” button:
+  <img src="img/back4app_cloud_code.jpeg" width="600" height="300">
 
 1. Virgil Security developer account: [Sign up here][_virgil_account]. Sign in to your Virgil Security developer account and create a new application. Make sure you saved the Private Key file that is generated for your application, you will need it later.
 
@@ -122,9 +185,6 @@ You’ll need some minimal server code to make the sample work. This piece of se
 2. Checkout the e2ee branch:
 <img src="img/checkout_e2ee.png" width="500" >
 
-**Note!** In the text below you find such terms as Virgil Key, Virgil Card, Virgil Cards Service. In Virgil Security infrastructure:
-  - Virgil Key – this is how we call a User's Private Key;
-  - Virgil Card – Virgil Сards carry the Users’ public information, such as their Public Key. Virgil Сards are published to Virgil’s Cards Service for other users to retrieve them (Alice retrieves Bob’s Public Key in order to encrypt a message for Bob).;
 
 **In order to add E2EE to your chat it is necessary to perform the following steps:**
 1. Setup Your Android app
@@ -190,58 +250,7 @@ Initialize the Virgil SDK on a client-side:
 }
 ```
 
-### Step-2. Setup your App Server
 
-Besides the Android app, you’ll need some minimal server code to make the sample work securely and give you control over Users Cards.
-
-To set it up, following these steps:
-- [Download this archive][_main_js_package_json] that contains two files: `main.js` and `package.json`;
-- Extract files from the archive and open main.js with any file editor;
-- Find in main.js file:
-  - Function `signCardRequest` and put your App ID from Virgil Dashboard instead of `YOUR_VIRGIL_APP_ID`;
-  ```javascript
-  function signCardRequest(cardRequest) {
-    const signer = virgil.requestSigner(virgil.crypto);
-    signer.authoritySign(cardRequest, 'bd7bf7e832f16e2b3f6fd343s1f90778ab0e15515aa775e7b7db3', appKey);
-  }
-  ```
-  - function `resolveAppKey()` and put your Application credentials (that you got at Virgil Dashboard during App registration) instead of `YOUR_VIRGIL_APP_PRIVATE_KEY` and `YOUR_VIRGIL_APP_PRIVATE_KEY_PASSWORD`
-  ```javascript
-    function resolveAppKey() {
-      try {
-        return virgil.crypto.importPrivateKey('MIGhMF0GCSqGSIb3DQEFDTBQMC8GCSqGSIb3DQEFDDAiBBAmU9m+EJOvLRxRaJP6d......',
-          'a0KEOifsd2Ean6fzQ'
-        );
-      } catch (e) {
-        return null;
-      }
-    }
-  ```
-  **Note!** If you save previously your Virgil App's Private Key into a file (thus, you don’t have App Key in base64-encoded string), now you need to get it by performing the following command:
-
-  in the terminal (Unix):
-  `cat ~/Downloads/<your_app_name>.virgilkey | base64`
-
-  or on Windows:
-  `certutil -encode <key_name>.virgilkey tmp.b64 && findstr /v /c:- tmp.b64 > app_private_key.txt`
-
-  - `signCardRequest(cardRequest, appKey)` and put your Access Token from Virgil dashboard instead of `YOUR_VIRGIL_APP_ACCESS_TOKEN`;
-  ```javascript
-  signCardRequest(cardRequest);
-  const client = virgil.client('AT.8641c450a983a3435aebe79sad32abea997d29b3e8eed7b35beab72be3');
-  client.publishCard(cardRequest)
-  ...
-  ```
-  Save all your changes.
-
-- Go to your App Dashboard at Back4App website:
-  <img src="img/back4app_settings.jpeg" width="600" height="300">
-- Open “Server Settings” and find “Cloud Code”:
-
-  <img src="img/cloud_settings.jpeg" width="250" height="300">
-- Open Cloud “Settings”
-- Upload the main.js and package.json files in your Cloud Code settings and press “save” button:
-  <img src="img/back4app_cloud_code.jpeg" width="600" height="300">
 
 
 We are now ready to register Users Cards =)
