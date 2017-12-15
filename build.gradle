@@ -33,18 +33,15 @@ task clean(type: Delete) {
 
 ext {
     supportLibrary = "26.1.0"
-    multiDex = "1.0.2"
     constraintLayout = "1.0.2"
     virgilSecurity = "4.5.0@aar"
     virgilPfs = "1.1.1@aar"
-    room = "1.0.0"
     rxJava = "2.0.1"
     rxAndroid = "2.1.5"
     retrofit = "2.3.0"
     gson = "2.8.0"
     butterKnife = "8.8.1"
     networkTracker = "0.12.2"
-    dagger = "2.13"
     firebase = "11.6.2"
     nucleus = "7.0.0"
     back4appCore = "1.16.3"

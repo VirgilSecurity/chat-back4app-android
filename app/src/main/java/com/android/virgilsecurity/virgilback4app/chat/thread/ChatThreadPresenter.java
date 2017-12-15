@@ -72,9 +72,7 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
     }
 
     void requestMessages(ChatThread thread, int limit,
-                         int page, String sortCriteria,
-                         VirgilApi virgilApi,
-                         VirgilApiContext virgilApiContext) {
+                         int page, String sortCriteria) {
         this.thread = thread;
         this.limit = limit;
         this.page = page;

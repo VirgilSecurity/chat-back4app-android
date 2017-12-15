@@ -249,7 +249,7 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
                         getMessages();
                         lockSendUi(true, false);
                     }
-                }
+                } // TODO: 12/14/17 block button until the cards are loaded and delete this part of code
                 break;
         }
     }
@@ -377,7 +377,7 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
         }
 
         if (meCard != null && youCard != null) {
-            adapter.setCards(meCard, youCard);
+//            adapter.setCards(meCard, youCard);
 
             if (messages == null) {
                 showProgress(false);
