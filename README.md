@@ -142,30 +142,19 @@ function signCardRequest(cardRequest) {
 ```
 - Now, let’s get back to the Virgil dashboard and create a new token for your app:
 ![Access Token](img/access_token.jpeg)
+- Choose any name, leave all settings as-is and generate the token:
+ <img src="img/access_token2.jpeg" width="250" height="300">
+- As a result, you get the Access Token:
+  <img src="img/access_token3.jpeg" width="600" >
+- Copy the Token to the clipboard, find the function `signCardRequest(cardRequest, appKey)` and replace `YOUR_VIRGIL_APP_ACCESS_TOKEN` with the token on your clipboard:
+```javascript
+signCardRequest(cardRequest);
+const client = virgil.client('AT.8641c450a983a3435aebe79sad32abea997d29b3e8eed7b35beab72be3');
+client.publishCard(cardRequest)
+...
+```
 
-  - function `resolveAppKey()` and put your Application credentials (that you got at Virgil Dashboard during App registration) instead of `YOUR_VIRGIL_APP_PRIVATE_KEY` and `YOUR_VIRGIL_APP_PRIVATE_KEY_PASSWORD`
-  ```javascript
-    function resolveAppKey() {
-      try {
-        return virgil.crypto.importPrivateKey('MIGhMF0GCSqGSIb3DQEFDTBQMC8GCSqGSIb3DQEFDDAiBBAmU9m+EJOvLRxRaJP6d......',
-          'a0KEOifsd2Ean6fzQ'
-        );
-      } catch (e) {
-        return null;
-      }
-    }
-  ```
- 
-
-  - `signCardRequest(cardRequest, appKey)` and put your Access Token from Virgil dashboard instead of `YOUR_VIRGIL_APP_ACCESS_TOKEN`;
-  ```javascript
-  signCardRequest(cardRequest);
-  const client = virgil.client('AT.8641c450a983a3435aebe79sad32abea997d29b3e8eed7b35beab72be3');
-  client.publishCard(cardRequest)
-  ...
-  ```
-  Save all your changes.
-
+**Now, back to the Back4app dashboard:**
 - Go to your App Dashboard at Back4App website:
   <img src="img/back4app_settings.jpeg" width="600" height="300">
 - Open “Server Settings” and find “Cloud Code”:
@@ -174,6 +163,9 @@ function signCardRequest(cardRequest) {
 - Open Cloud “Settings”
 - Upload the main.js and package.json files in your Cloud Code settings and press “save” button:
   <img src="img/back4app_cloud_code.jpeg" width="600" height="300">
+
+
+
 
 1. Virgil Security developer account: [Sign up here][_virgil_account]. Sign in to your Virgil Security developer account and create a new application. Make sure you saved the Private Key file that is generated for your application, you will need it later.
 
