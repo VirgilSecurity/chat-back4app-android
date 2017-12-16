@@ -147,6 +147,7 @@ function signCardRequest(cardRequest) {
 - As a result, you get the Access Token:
   <img src="img/access_token3.jpeg" width="600" >
 - Copy the Token to the clipboard, find the function `signCardRequest(cardRequest, appKey)` and replace `YOUR_VIRGIL_APP_ACCESS_TOKEN` with the token on your clipboard:
+
 ```javascript
 signCardRequest(cardRequest);
 const client = virgil.client('AT.8641c450a983a3435aebe79sad32abea997d29b3e8eed7b35beab72be3');
