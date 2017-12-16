@@ -194,12 +194,12 @@ Note: for simplicity, we re-used the access token you created for the server app
 
 Replace the following files in your code:
 
-- LogInFragment.java file with LogInFragment.java
-- ChatThreadFragment.java file  with ChatThreadFragment.java
-- ChatThreadPresenter.java file with ChatThreadPresenter.java
-- ChatThreadRVAdapter.java with ChatThreadRVAdapter.java
-- LogInPresenter.java with LogInPresenter.java
-- RxParse.java with RxParse.java
+- LogInFragment.java file with [LogInFragment.java][_LogInFragment.java]
+- ChatThreadFragment.java file  with [ChatThreadFragment.java][_ChatThreadFragment.java]
+- ChatThreadPresenter.java file with [ChatThreadPresenter.java][_chat_thread_presenter]
+- ChatThreadRVAdapter.java with [ChatThreadRVAdapter.java][_ChatThreadRVAdapter.java]
+- LogInPresenter.java with [LogInPresenter.java][_login_presenter]
+- RxParse.java with [RxParse.java][_rxparse]
 
 
 ### Let’s look at what’s changed in the app
@@ -364,3 +364,8 @@ Shortly following your Virgil signup, we invite you to our Slack community where
 [_rxparse]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/RxParse.java
 [_virgil]: https://developer.virgilsecurity.com/
 [_main_js_package_json]: https://gist.github.com/vadimavdeev/0df867740156ca787908a4f2b62997b8/archive/80a7f913fdb81fa8e05f23cec30ac992aff70ee3.zip
+
+[_ChatThreadRVAdapter.java]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/chat/thread/ChatThreadRVAdapter.java
+[_ChatThreadFragment.java]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/chat/thread/ChatThreadFragment.java
+[_LogInFragment.java]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/auth/LogInFragment.java
+
