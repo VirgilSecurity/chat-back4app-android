@@ -43,7 +43,7 @@ This is the simplest possible implementation of E2EE chat and it works perfectly
 **Prerequisites:**
 
 - Sign up for a [Back4app account][_back4app_account] and create a new app;
-- Sign up for a [Virgil Security account][_virgil] (we’ll create the app later)
+- Sign up for a [Virgil Security account][_virgil_account] (we’ll create the app later)
 - You’ll need [Android Studio][_android_studio] for the coding work, we used 3.0.1.
 
 ## Let’s set up the Back4app messenger app
@@ -115,7 +115,7 @@ You’ll need some minimal server code to make the sample work. This piece of se
 **Let’s get started:**
 - [Download this archive][_main_js_package_json] that contains two files: `main.js` and `package.json`;
 - Extract the archive and open `main.js` with your favorite editor;
-- Go back to your [Virgil developer account][_virgil_account] and create a new application. Make sure that you save the Private Key that is generated for your application. Also, copy the new app’s base64-encoded AppKey string before you complete the app creation:
+- Go back to your [Virgil developer account][_virgil_dashboard] and create a new application. Make sure that you save the Private Key that is generated for your application. Also, copy the new app’s base64-encoded AppKey string before you complete the app creation:
 ![Encoded string](img/encoded_string.jpeg)
 - Edit main.js, find the function `resolveAppKEy()` and replace: 
   - `YOUR_VIRGIL_APP_PRIVATE_KEY` with the Base64 AppKey on your clipboard
@@ -337,7 +337,7 @@ If you missed pieces from the puzzle, open the E2EE project branch. You can inse
 
 ## HIPAA compliance:
 
-End-to-End Encryption is a way to meet the technical requirements for HIPAA. If you need more details, sign up for a free [Virgil account][_virgil], join our Slack community and ping us there: we’re happy to discuss your own privacy circumstances and help you understand what’s required to meet the technical HIPAA requirements.
+End-to-End Encryption is a way to meet the technical requirements for HIPAA. If you need more details, sign up for a free [Virgil account][_virgil_account], join our Slack community and ping us there: we’re happy to discuss your own privacy circumstances and help you understand what’s required to meet the technical HIPAA requirements.
 
 
 
@@ -354,7 +354,7 @@ Shortly following your Virgil signup, we invite you to our Slack community where
 [_back4app_account]: https://www.back4app.com/
 [_back4app_admin]: https://dashboard.back4app.com/apps/#!/admin
 [_android_studio]: https://developer.android.com/studio/index.html
-[_virgil_account]: https://developer.virgilsecurity.com/account/signup
+[_virgil_account]: https://developer.virgilsecurity.com/account/signup?utm_source=back4app&utm_medium=blog&utm_campaign=e2eechat
 [_build.gradle_app_level]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/build.gradle
 [_build.gradle_project_level]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/build.gradle
 [_string.xml]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/res/values/strings.xml
@@ -362,9 +362,8 @@ Shortly following your Virgil signup, we invite you to our Slack community where
 [_chat_thread_presenter]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/chat/thread/ChatThreadPresenter.java
 [_helper]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/VirgilHelper.java
 [_rxparse]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/util/RxParse.java
-[_virgil]: https://developer.virgilsecurity.com/
+[_virgil_dashboard]: https://developer.virgilsecurity.com/account/dashboard?utm_source=back4app&utm_medium=blog&utm_campaign=e2eechat
 [_main_js_package_json]: https://gist.github.com/vadimavdeev/0df867740156ca787908a4f2b62997b8/archive/80a7f913fdb81fa8e05f23cec30ac992aff70ee3.zip
-
 [_ChatThreadRVAdapter.java]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/chat/thread/ChatThreadRVAdapter.java
 [_ChatThreadFragment.java]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/chat/thread/ChatThreadFragment.java
 [_LogInFragment.java]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/auth/LogInFragment.java
