@@ -14,12 +14,6 @@ import com.android.virgilsecurity.virgilback4app.base.BaseFragmentWithPresenter;
 import com.android.virgilsecurity.virgilback4app.util.UsernameInputFilter;
 import com.android.virgilsecurity.virgilback4app.util.Utils;
 import com.parse.ParseUser;
-import com.virgilsecurity.sdk.highlevel.VirgilApi;
-import com.virgilsecurity.sdk.highlevel.VirgilApiContext;
-import com.virgilsecurity.sdk.highlevel.VirgilApiImpl;
-import com.virgilsecurity.sdk.highlevel.VirgilCard;
-import com.virgilsecurity.sdk.storage.KeyStorage;
-import com.virgilsecurity.sdk.storage.VirgilKeyStorage;
 
 import java.util.Locale;
 
@@ -47,10 +41,6 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     protected View pbLoading;
 
     private AuthStateListener authStateListener;
-    private String identity;
-    KeyStorage keyStorage;
-    VirgilApi virgilApi;
-    VirgilApiContext virgilApiContext;
 
     public static LogInFragment newInstance() {
 
@@ -68,8 +58,6 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
 
     @Override
     protected void postButterInit() {
-
-        initVirgil();
         authStateListener = activity;
 
         etUsername.setFilters(new InputFilter[]{
@@ -95,15 +83,6 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         });
     }
 
-    private void initVirgil() {
-        keyStorage = new VirgilKeyStorage(activity.getFilesDir().getAbsolutePath());
-
-        virgilApiContext = new VirgilApiContext(getString(R.string.virgil_token));
-        virgilApiContext.setKeyStorage(keyStorage);
-
-        virgilApi = new VirgilApiImpl(virgilApiContext);
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -125,20 +104,20 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         if (!Utils.validateUi(tilUserName))
             return;
 
-        identity = etUsername.getText().toString().toLowerCase(Locale.getDefault());
+        String identity = etUsername.getText().toString().toLowerCase(Locale.getDefault());
 
         switch (v.getId()) {
             case R.id.btnLogin:
                 tilUserName.setError(null);
                 tilUserName.setErrorEnabled(false);
                 showProgress(true);
-                getPresenter().requestLogIn(identity, keyStorage, virgilApi, virgilApiContext);
+                getPresenter().requestLogIn(identity);
                 break;
             case R.id.btnSignup:
                 tilUserName.setError(null);
                 tilUserName.setErrorEnabled(false);
                 showProgress(true);
-                getPresenter().requestSignUp(identity, virgilApi);
+                getPresenter().requestSignUp(identity);
                 break;
             default:
                 break;
@@ -155,7 +134,7 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         Utils.toast(this, Utils.resolveError(throwable));
     }
 
-    public void onSignUpSuccess(VirgilCard card) {
+    public void onSignUpSuccess(Object o) {
         showProgress(false);
         authStateListener.onRegisteredInSuccesfully();
     }

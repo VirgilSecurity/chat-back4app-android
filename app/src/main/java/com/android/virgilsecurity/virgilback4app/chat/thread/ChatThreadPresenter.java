@@ -3,6 +3,7 @@ package com.android.virgilsecurity.virgilback4app.chat.thread;
 import android.os.Bundle;
 import android.util.Pair;
 
+import com.android.virgilsecurity.virgilback4app.AppVirgil;
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
 import com.parse.ParseUser;
@@ -11,7 +12,6 @@ import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
 import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
 import com.virgilsecurity.sdk.highlevel.StringEncoding;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
-import com.virgilsecurity.sdk.highlevel.VirgilApiContext;
 import com.virgilsecurity.sdk.highlevel.VirgilCard;
 import com.virgilsecurity.sdk.highlevel.VirgilCards;
 import com.virgilsecurity.sdk.highlevel.VirgilKey;
@@ -39,13 +39,13 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
     private String sortCriteria;
     private String text;
     private VirgilApi virgilApi;
-    private VirgilApiContext virgilApiContext;
     private String identitySender;
     private String identityRecipient;
-    private VirgilCards cards;
 
     @Override protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
+
+        virgilApi = AppVirgil.getInfoHolder().getVirgilApi();
 
         restartableFirst(GET_MESSAGES, () ->
                                  RxParse.getMessages(thread, limit, page, sortCriteria),
@@ -53,7 +53,7 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
                          ChatThreadFragment::onGetMessagesError);
 
         restartableFirst(SEND_MESSAGE, () ->
-                                 RxParse.sendMessage(encrypt(text, cards),
+                                 RxParse.sendMessage(encrypt(text),
                                                      thread)
                                         .observeOn(AndroidSchedulers.mainThread()),
                          ChatThreadFragment::onSendMessageSuccess,
@@ -88,23 +88,16 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
     }
 
     void requestSendMessage(String text,
-                            ChatThread thread,
-                            VirgilCards cards,
-                            VirgilApi virgilApi,
-                            VirgilApiContext virgilApiContext) {
+                            ChatThread thread) {
         this.text = text;
         this.thread = thread;
-        this.cards = cards;
-        this.virgilApi = virgilApi;
-        this.virgilApiContext = virgilApiContext;
 
         start(SEND_MESSAGE);
     }
 
-    void requestGetCards(String identitySender, String identityRecipient, VirgilApi virgilApi) {
+    void requestGetCards(String identitySender, String identityRecipient) {
         this.identitySender = identitySender;
         this.identityRecipient = identityRecipient;
-        this.virgilApi = virgilApi;
 
         start(GET_CARDS);
     }
@@ -140,12 +133,12 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
      * @return encrypted data
      */
 
-    private String encrypt(String text, VirgilCards cards) {
+    private String encrypt(String text) {
         String encryptedText = null;
 
         try {
             VirgilKey key = virgilApi.getKeys().load(ParseUser.getCurrentUser().getUsername());
-            encryptedText = key.signThenEncrypt(text, cards).toString(StringEncoding.Base64);
+            encryptedText = key.sign(text).toString(StringEncoding.Base64);
         } catch (VirgilKeyIsNotFoundException e) {
             e.printStackTrace();
         } catch (CryptoException e) {

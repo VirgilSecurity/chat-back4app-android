@@ -27,13 +27,7 @@ import com.parse.ParseLiveQueryClient;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SubscriptionHandling;
-import com.virgilsecurity.sdk.highlevel.VirgilApi;
-import com.virgilsecurity.sdk.highlevel.VirgilApiContext;
-import com.virgilsecurity.sdk.highlevel.VirgilApiImpl;
 import com.virgilsecurity.sdk.highlevel.VirgilCard;
-import com.virgilsecurity.sdk.highlevel.VirgilCards;
-import com.virgilsecurity.sdk.storage.KeyStorage;
-import com.virgilsecurity.sdk.storage.VirgilKeyStorage;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -60,8 +54,6 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
     private static final int VISIBLE_THRESHOLD = 5;
 
     private ChatThread thread;
-    private VirgilCard meCard;
-    private VirgilCard youCard;
     private ChatThreadRVAdapter adapter;
     private List<Message> messages;
     private int page;
@@ -69,9 +61,8 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
     private Disposable networkTracker;
     private ParseLiveQueryClient parseLiveQueryClient;
     private ParseQuery<Message> parseQuery;
-
-    protected VirgilApi virgilApi;
-    protected VirgilApiContext virgilApiContext;
+    private VirgilCard meCard;
+    private VirgilCard youCard;
 
     @BindView(R.id.rvChat) RecyclerView rvChat;
     @BindView(R.id.etMessage) EditText etMessage;
@@ -100,7 +91,6 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
     @Override
     protected void postButterInit() {
         thread = getArguments().getParcelable(KEY_THREAD);
-        initVirgil();
 
         btnSend.setEnabled(false);
         btnSend.setBackground(ContextCompat.getDrawable(activity,
@@ -119,7 +109,7 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
 
         initMessageInput();
 
-        adapter = new ChatThreadRVAdapter(virgilApi, virgilApiContext);
+        adapter = new ChatThreadRVAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
         layoutManager.setReverseLayout(true);
         rvChat.setLayoutManager(layoutManager);
@@ -142,23 +132,13 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
         });
     }
 
-    private void initVirgil() {
-        KeyStorage keyStorage = new VirgilKeyStorage(activity.getFilesDir().getAbsolutePath());
-
-        virgilApiContext = new VirgilApiContext(getString(R.string.virgil_token));
-        virgilApiContext.setKeyStorage(keyStorage);
-
-        virgilApi = new VirgilApiImpl(virgilApiContext);
-    }
-
     private void getMessages() {
         if (meCard == null || youCard == null) {
             initCards();
         } else if (messages == null || messages.size() == 0) {
             showProgress(true);
             getPresenter().requestMessages(thread, 50, page,
-                                           Const.TableNames.CREATED_AT_CRITERIA,
-                                           virgilApi, virgilApiContext);
+                                           Const.TableNames.CREATED_AT_CRITERIA);
         }
     }
 
@@ -166,8 +146,7 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
         showProgress(true);
 
         getPresenter().requestGetCards(thread.getSenderUsername(),
-                                       thread.getRecipientUsername(),
-                                       virgilApi);
+                                       thread.getRecipientUsername());
     }
 
     private void initMessageInput() {
@@ -229,27 +208,11 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
         switch (v.getId()) {
             case R.id.btnSend:
                 String message = etMessage.getText().toString().trim();
-                if (meCard != null && youCard != null) {
-                    if (!message.isEmpty()) {
-                        VirgilCards cards = new VirgilCards(virgilApiContext);
-                        cards.add(meCard);
-                        cards.add(youCard);
-                        lockSendUi(true, true);
-                        getPresenter().requestSendMessage(message,
-                                                          thread,
-                                                          cards,
-                                                          virgilApi,
-                                                          virgilApiContext);
-                        isLoading = true;
-                    }
-                } else {
-                    if (!isLoading) {
-                        isLoading = true;
-                        showProgress(true);
-                        getMessages();
-                        lockSendUi(true, false);
-                    }
-                } // TODO: 12/14/17 block button until the cards are loaded and delete this part of code
+                if (!message.isEmpty()) {
+                    lockSendUi(true, true);
+                    getPresenter().requestSendMessage(message, thread);
+                    isLoading = true;
+                }
                 break;
         }
     }
@@ -377,13 +340,10 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
         }
 
         if (meCard != null && youCard != null) {
-//            adapter.setCards(meCard, youCard);
-
             if (messages == null) {
                 showProgress(false);
                 getPresenter().requestMessages(thread, 50, page,
-                                               Const.TableNames.CREATED_AT_CRITERIA,
-                                               virgilApi, virgilApiContext);
+                                               Const.TableNames.CREATED_AT_CRITERIA);
             } else {
                 showProgress(false);
                 srlRefresh.setRefreshing(false);
