@@ -498,7 +498,7 @@ public void onGetCardError(Throwable t) {
 ```java
 private VirgilApi virgilApi;
 ```
-  - Update construtor:
+  - Pass virgilApi to HolderMessage::
 ```java
 HolderMessage(View v) {
     super(v);
@@ -508,7 +508,7 @@ HolderMessage(View v) {
         virgilApi = AppVirgil.getInfoHolder().getVirgilApi();
 }
 ```
-  - Pass virgilApi to HolderMessage:
+  - Implement decrypt method:
 ```java
 String decrypt(String text) {
     String decryptedText = null;
@@ -533,7 +533,7 @@ void bind(Message message) {
 }
 ```
 
-That's all for encryption and decryption. At last - you have to handle some exceptions that can be thrown while you work with Virgil SDK. To do that - add handling for `VirgilKeyIsNotFoundException`, `VirgilKeyIsAlreadyExistsException` and `KeyEntryNotFoundException` to `resolveError` method in `Utils` class. So the part of the `resolveError` method that contains new handlers will looks like:
+That's all for encryption and decryption. At last - you have to update `resolveError(Throwable t)` method in `Utils` class to handle some exceptions that can happen during the work with Virgil Security sdk:
 ```java
 ...
 } else if (t instanceof ParseException) {
@@ -562,8 +562,15 @@ That's all for encryption and decryption. At last - you have to handle some exce
 ```
 
 
-## Final project
-If you missed pieces from the puzzle, open the E2EE project branch. You can insert your application credentials in this code (as you did during the article) and build the project.
+## Where to go from here?
+
+[Final project][_final_project]. If you missed pieces from the puzzle, open the E2EE project branch. You can insert your application credentials in this code (as you did during the article) and build the project.
+
+Don’t forget to subscribe to our [Youtube channel][_youtube].  Where you find video series on how to do End-to-End Encryption.
+
+Also, use Virgil Security to verify the integrity of data at any point. Data Integrity is essential to anyone who wants to guarantee that their data has not been tampered with. [Our tutorial][_data_integrity] provides mode details.
+
+More information about what you can build with Virgil Security you will find [here][_virgil_www]. 
 
 
 
@@ -573,9 +580,7 @@ End-to-End Encryption is a way to meet the technical requirements for HIPAA. If 
 
 
 
-## Any questions?
-
-Shortly following your Virgil signup, we invite you to our Slack community where you can ask questions or share your learnings with others. Also, feel free to post questions to the Back4app community groups, we’re listening there too!
+Follow our posts on Back4App. In the next tutorial, we will be helping two people or IoT devices to communicate with end-to-end encryption with [PFS][_pfs] enabled. You’ll find out how to protect previously intercepted traffic from being decrypted even if the main private key is compromised. 
 
 
 
@@ -599,4 +604,8 @@ Shortly following your Virgil signup, we invite you to our Slack community where
 [_ChatThreadRVAdapter.java]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/chat/thread/ChatThreadRVAdapter.java
 [_ChatThreadFragment.java]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/chat/thread/ChatThreadFragment.java
 [_LogInFragment.java]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/java/com/android/virgilsecurity/virgilback4app/auth/LogInFragment.java
-
+[_youtube]: https://www.youtube.com/channel/UCU8BhA1nVzKKRiU5P4N3D6A/featured
+[_final_project]: https://github.com/VirgilSecurity/chat-back4app-android/tree/e2ee
+[_data_integrity]: https://developer.virgilsecurity.com/docs/java/get-started/data-integrity?utm_source=back4app&utm_medium=blog&utm_campaign=e2eechat
+[_virgil_www]: https://virgilsecurity.com?utm_source=back4app&utm_medium=blog&utm_campaign=e2eechat
+[_pfs]: https://developer.virgilsecurity.com/docs/java/get-started/perfect-forward-secrecy?utm_source=back4app&utm_medium=blog&utm_campaign=e2eechat
