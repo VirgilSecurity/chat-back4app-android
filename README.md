@@ -168,6 +168,39 @@ client.publishCard(cardRequest)
 
 ### Step 2: Update Android app with E2EE code
 
+**Let’s update your InfoHolder Class**
+
+- Add new classes:
+```java
+private VirgilApi virgilApi;
+private VirgilApiContext virgilApiContext;
+private KeyStorage keyStorage;
+ ```
+- Update constructor to initialize created classes:
+```java
+public InfoHolder(Context context) {
+    keyStorage = new VirgilKeyStorage(context.getFilesDir().getAbsolutePath());
+
+    virgilApiContext = new VirgilApiContext(context.getString(R.string.virgil_token));
+    virgilApiContext.setKeyStorage(keyStorage);
+
+    virgilApi = new VirgilApiImpl(virgilApiContext);
+}
+```
+- Add getters for new classes, so you will be able to access it all-through the application:
+```java
+public VirgilApi getVirgilApi() {
+    return virgilApi;
+}
+
+public VirgilApiContext getVirgilApiContext() {
+    return virgilApiContext;
+}
+
+public KeyStorage getKeyStorage() {
+    return keyStorage;
+}
+```
 **Add Virgil’s Android SDK to your project:**
 
 - In the app-level gradle at /app/[build.gradle][_build.gradle_app_level]:
@@ -190,39 +223,7 @@ virgilSecurity = “4.5.0@aar”
 ```
 Note: for simplicity, we re-used the access token you created for the server app. Don’t do this in production: create a separate token for your mobile app with Search-only permissions!
 
-**Init VirgilApi**
-To init VirgilApi you need to update InfoHolder class.
-  - Add VirgilApi, VirgilApiContext and KeyStorage fields:
-```java
-private VirgilApi virgilApi;
-private VirgilApiContext virgilApiContext;
-private KeyStorage keyStorage;
- ```
-  - Next - you have to update constructor, so all fields will be initialized:
-```java
-public InfoHolder(Context context) {
-    keyStorage = new VirgilKeyStorage(context.getFilesDir().getAbsolutePath());
 
-    virgilApiContext = new VirgilApiContext(context.getString(R.string.virgil_token));
-    virgilApiContext.setKeyStorage(keyStorage);
-
-    virgilApi = new VirgilApiImpl(virgilApiContext);
-}
-```
-  - At last you need to add getters for new fields, so you will be able to access it all-through the application:
-```java
-public VirgilApi getVirgilApi() {
-    return virgilApi;
-}
-
-public VirgilApiContext getVirgilApiContext() {
-    return virgilApiContext;
-}
-
-public KeyStorage getKeyStorage() {
-    return keyStorage;
-}
-```
 We're ready to use Virgil SDK now!
 
 ### Let’s look at what’s changed in the app
