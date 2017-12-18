@@ -196,8 +196,7 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
                 String message = etMessage.getText().toString().trim();
                 if (!message.isEmpty()) {
                     lockSendUi(true, true);
-                    getPresenter().requestSendMessage(message,
-                                                      thread);
+                    getPresenter().requestSendMessage(message, thread);
                     isLoading = true;
                 }
                 break;
@@ -315,30 +314,6 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
                                                 subscribeToLiveQuery();
                                             }
                                         });
-    }
-
-    public void onGetCardSuccess(Object virgilCard) {
-//        youCard = virgilCard;
-//
-//        adapter.setCards(meCard, youCard);
-
-        if (messages == null) {
-            showProgress(false);
-            getPresenter().requestMessages(thread, 50, page,
-                                           Const.TableNames.CREATED_AT_CRITERIA);
-        } else {
-            showProgress(false);
-            srlRefresh.setRefreshing(false);
-            lockSendUi(false, false);
-        }
-    }
-
-    public void onGetCardError(Throwable t) {
-        showProgress(false);
-        srlRefresh.setRefreshing(false);
-        lockSendUi(false, false);
-
-        Utils.toast(this, Utils.resolveError(t));
     }
 
     private void showProgress(boolean show) {

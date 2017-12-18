@@ -11,7 +11,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
-        
+
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -41,7 +41,6 @@ ext {
     butterKnife = "8.8.1"
     networkTracker = "0.12.2"
     firebase = "11.6.2"
-    crashlytics = "2.7.1@aar"
     nucleus = "7.0.0"
     back4appCore = "1.16.3"
     back4appLiveQuery = "1.0.3"

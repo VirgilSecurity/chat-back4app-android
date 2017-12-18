@@ -41,7 +41,6 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
     protected View pbLoading;
 
     private AuthStateListener authStateListener;
-    private String identity;
 
     public static LogInFragment newInstance() {
 
@@ -59,7 +58,6 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
 
     @Override
     protected void postButterInit() {
-
         authStateListener = activity;
 
         etUsername.setFilters(new InputFilter[]{
@@ -96,6 +94,9 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         super.onResume();
 
         showProgress(!getPresenter().isDisposed());
+
+        if (ParseUser.getCurrentUser() != null)
+            authStateListener.onRegisteredInSuccesfully();
     }
 
     @OnClick({R.id.btnLogin, R.id.btnSignup})
@@ -103,7 +104,7 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         if (!Utils.validateUi(tilUserName))
             return;
 
-        identity = etUsername.getText().toString().toLowerCase(Locale.getDefault());
+        String identity = etUsername.getText().toString().toLowerCase(Locale.getDefault());
 
         switch (v.getId()) {
             case R.id.btnLogin:
@@ -133,7 +134,7 @@ public class LogInFragment extends BaseFragmentWithPresenter<SignInControlActivi
         Utils.toast(this, Utils.resolveError(throwable));
     }
 
-    public void onSignUpSuccess(Object card) {
+    public void onSignUpSuccess(Object o) {
         showProgress(false);
         authStateListener.onRegisteredInSuccesfully();
     }

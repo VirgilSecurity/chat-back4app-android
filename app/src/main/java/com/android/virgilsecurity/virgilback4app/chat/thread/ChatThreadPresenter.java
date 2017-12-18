@@ -17,7 +17,6 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
 
     private static final int GET_MESSAGES = 0;
     private static final int SEND_MESSAGE = 1;
-    private static final int GET_CARD = 2;
 
     private ChatThread thread;
     private int limit;
@@ -57,7 +56,8 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
         start(GET_MESSAGES);
     }
 
-    void requestSendMessage(String text, ChatThread thread) {
+    void requestSendMessage(String text,
+                            ChatThread thread) {
         this.text = text;
         this.thread = thread;
 
@@ -67,12 +67,10 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
     void disposeAll() {
         stop(GET_MESSAGES);
         stop(SEND_MESSAGE);
-        stop(GET_CARD);
     }
 
     boolean isDisposed() {
         return isDisposed(GET_MESSAGES)
-                || isDisposed(SEND_MESSAGE)
-                || isDisposed(GET_CARD);
+                || isDisposed(SEND_MESSAGE);
     }
 }

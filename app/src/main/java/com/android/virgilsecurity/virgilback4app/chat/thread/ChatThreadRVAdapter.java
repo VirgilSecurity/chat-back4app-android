@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
  * -__o
  */
 
-public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ChatThreadRVAdapter extends RecyclerView.Adapter<ChatThreadRVAdapter.HolderMessage> {
 
     @IntDef({MessageType.ME, MessageType.YOU})
     private @interface MessageType {
@@ -34,47 +34,36 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private List<Message> items;
 
     ChatThreadRVAdapter() {
-
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        RecyclerView.ViewHolder viewHolder;
+    public HolderMessage onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        HolderMessage viewHolder;
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
 
         switch (viewType) {
             case MessageType.ME:
-                viewHolder = new HolderMe(inflater.inflate(R.layout.layout_holder_me,
-                                                           viewGroup,
-                                                           false));
+                viewHolder = new HolderMessage(inflater.inflate(R.layout.layout_holder_me,
+                                                                viewGroup,
+                                                                false));
                 break;
             case MessageType.YOU:
-                viewHolder = new HolderYou(inflater.inflate(R.layout.layout_holder_you,
-                                                            viewGroup,
-                                                            false));
+                viewHolder = new HolderMessage(inflater.inflate(R.layout.layout_holder_you,
+                                                                viewGroup,
+                                                                false));
                 break;
             default:
-                viewHolder = new HolderMe(inflater.inflate(R.layout.layout_holder_me,
-                                                           viewGroup,
-                                                           false));
+                viewHolder = new HolderMessage(inflater.inflate(R.layout.layout_holder_me,
+                                                                viewGroup,
+                                                                false));
                 break;
         }
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        switch (viewHolder.getItemViewType()) {
-            case MessageType.ME:
-                ((HolderMe) viewHolder).bind(items.get(position));
-                break;
-            case MessageType.YOU:
-                ((HolderYou) viewHolder).bind(items.get(position));
-                break;
-            default:
-                ((HolderMe) viewHolder).bind(items.get(position));
-                break;
-        }
+    public void onBindViewHolder(HolderMessage viewHolder, int position) {
+        viewHolder.bind(items.get(position));
     }
 
     @Override public int getItemViewType(int position) {
@@ -111,25 +100,11 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         notifyDataSetChanged();
     }
 
-    static class HolderMe extends RecyclerView.ViewHolder {
+    static class HolderMessage extends RecyclerView.ViewHolder {
 
         @BindView(R.id.tvMessage) TextView tvMessage;
 
-        HolderMe(View v) {
-            super(v);
-            ButterKnife.bind(this, v);
-        }
-
-        void bind(Message message) {
-            tvMessage.setText(message.getBody());
-        }
-    }
-
-    static class HolderYou extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.tvMessage) TextView tvMessage;
-
-        HolderYou(View v) {
+        HolderMessage(View v) {
             super(v);
             ButterKnife.bind(this, v);
         }

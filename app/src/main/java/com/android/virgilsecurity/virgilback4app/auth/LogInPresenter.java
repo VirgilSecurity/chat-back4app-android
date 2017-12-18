@@ -2,8 +2,14 @@ package com.android.virgilsecurity.virgilback4app.auth;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Base64;
 
+import com.android.virgilsecurity.virgilback4app.AppVirgil;
+import com.android.virgilsecurity.virgilback4app.util.InfoHolder;
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -19,15 +25,20 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
     private static final int SIGN_UP = 0;
     private static final int LOG_IN = 1;
 
+    private InfoHolder infoHolder;
+
     private String identity;
-    private String password = "Nfhu728HquHUiwdnquokl83219JAlodkpwqjqpsnv";
+    private String password;
 
     @Override
     protected void onCreate(@Nullable Bundle savedState) {
         super.onCreate(savedState);
 
+        infoHolder = AppVirgil.getInfoHolder();
+
         restartableFirst(SIGN_UP, () ->
-                                 RxParse.signUp(identity, password)
+                                 RxParse.signUp(identity,
+                                                password)
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread()),
                          LogInFragment::onSignUpSuccess,
@@ -35,9 +46,10 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
         );
 
         restartableFirst(LOG_IN, () ->
-                         RxParse.logIn(identity, password)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread()),
+                                 RxParse.logIn(identity,
+                                               password)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread()),
                          LogInFragment::onLoginSuccess,
                          LogInFragment::onLoginError
         );
@@ -45,6 +57,8 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
 
     void requestSignUp(String identity) {
         this.identity = identity;
+
+        password = generatePassword((identity + "NhJfia342hJAsnd82jSaF823jnk").getBytes());
 
         start(SIGN_UP);
     }
@@ -63,5 +77,25 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
     boolean isDisposed() {
         return isDisposed(SIGN_UP)
                 || isDisposed(LOG_IN);
+    }
+
+    /**
+     * Generates SHA-256 password from base[]
+     *
+     * @param privateKey byte[] representation of private key
+     * @return
+     */
+    private static String generatePassword(byte[] privateKey) {
+        MessageDigest sha;
+        byte[] hash = new byte[0];
+
+        try {
+            sha = MessageDigest.getInstance("SHA-256");
+            hash = sha.digest(privateKey);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return Base64.encodeToString(hash, Base64.DEFAULT);
     }
 }

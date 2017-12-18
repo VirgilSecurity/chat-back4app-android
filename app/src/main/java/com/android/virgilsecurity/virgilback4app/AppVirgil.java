@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.model.Message;
+import com.android.virgilsecurity.virgilback4app.util.InfoHolder;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -13,6 +14,8 @@ import com.parse.ParseObject;
  */
 
 public class AppVirgil extends Application {
+
+    private static InfoHolder infoHolder;
 
     @Override
     public void onCreate() {
@@ -26,5 +29,15 @@ public class AppVirgil extends Application {
                                  .clientKey(getString(R.string.back4app_client_key))
                                  .server(getString(R.string.back4app_server_url))
                                  .build());
+
+        infoHolder = new InfoHolder(this);
+
+    }
+
+    public static InfoHolder getInfoHolder() {
+        if (infoHolder != null)
+            return infoHolder;
+        else
+            throw new RuntimeException("Init InfoHolder in Application class first");
     }
 }
