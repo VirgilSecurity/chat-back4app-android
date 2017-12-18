@@ -170,13 +170,13 @@ client.publishCard(cardRequest)
 
 **Let’s update your InfoHolder Class:**
 
-- Add new classes:
+- Add new fields:
 ```java
 private VirgilApi virgilApi;
 private VirgilApiContext virgilApiContext;
 private KeyStorage keyStorage;
  ```
-- Update constructor to initialize created classes:
+- Update constructor to initialize created fileds:
 ```java
 public InfoHolder(Context context) {
     keyStorage = new VirgilKeyStorage(context.getFilesDir().getAbsolutePath());
@@ -187,7 +187,7 @@ public InfoHolder(Context context) {
     virgilApi = new VirgilApiImpl(virgilApiContext);
 }
 ```
-- Add getters for new classes, so you will be able to access it all-through the application:
+- Add getters for new fields, so you will be able to access it all-through the application:
 ```java
 public VirgilApi getVirgilApi() {
     return virgilApi;
@@ -300,10 +300,13 @@ void requestLogIn(String identity) {
 
 #### Create and Publish Virgil Card
 
-As you already created VirgilCard few moments ago and passed it to the signUp method - you have to handle new argument and publish Virgil Card using it.
-We pass exported Virgil Card to the Back4App code that will intercept the create user request and publish the Virgil card on Virgil’s Card Service.
+As you already created VirgilCard few moments ago and passed it to the signUp method - you have to handle new argument and publish Virgil Card.
+
+We pass exported Virgil Card to the Back4App code that will intercept the create user request and publish the Virgil Card on Virgil Cards Service.
+
 Now you need to send this Card request to the App Server where it has to be signed with your application's Private Key (AppKey).
-The VirgilCard object has a convenience method called export that returns the base64-encoded string representation of the request suitable for transfer (../virgilsecurity/virgilback4app/util/RxParse.java):
+
+The VirgilCard object has a convenience method called export that returns the base64-encoded string representation of the request suitable for transfer (../virgilsecurity/virgilback4app/util/RxParse.javaRxParse class):
 ```java
 public static Observable<VirgilCard> signUp(String username,
                                             String password,
@@ -330,23 +333,23 @@ Now your project automatically sends the Virgil Card exported to base64 to the B
 
 **We encrypt messages with the recipient user's Virgil card.**
 
-Let's add some code to ecnrypt data to the ../virgilsecurity/virgilback4app/chat/thread/ChatThreadPresenter class in few steps:
+Let's add some code to ecnrypt data to the ../virgilsecurity/virgilback4app/chat/thread/ChatThreadPresenter class:
 
-  - Add VirgilApi and List of VirgilCard's which will be filled with sender and receiver's cards. To find those cards you have to add next fields:
+  - Add some new fields:
 ```java
 private VirgilApi virgilApi;
 private String identitySender;
 private String identityRecipient;
 private List<VirgilCard> cards;
 ```
-  - Init VirgilApi in onCreate method:
+  - Init VirgilApi:
 ```java
 @Override protected void onCreate(Bundle savedState) {
     super.onCreate(savedState);
 
     virgilApi = AppVirgil.getInfoHolder().getVirgilApi();
 ```
-  - Implement method that will encrypt given message with sender and recepient's `Public Key`'s:
+  - Add method that encrypts data:
 ```java
 private String encrypt(String text, List<VirgilCard> cards) {
     String encryptedText = null;
@@ -369,8 +372,10 @@ RxParse.sendMessage(encrypt(text, cards),
                     thread)
 ```
 That’s almost it! But as you might have noticed - we need sender and receiver’s Virgil Cards.
+
 So let’s go on updating `ChatThreadPresenter` class to be able to get Virgil Cards from Virgil Card Service.
-  - Implement `requestGetCards` method:
+  
+  - Add request method:
 ```java
 void requestGetCards(String identitySender, String identityRecipient) {
     this.identitySender = identitySender;
@@ -379,7 +384,7 @@ void requestGetCards(String identitySender, String identityRecipient) {
     start(GET_CARDS);
 }
 ```
-  - In onCreate method add restartableFirst to connect presenter with fragment with callbacks:
+  - Add restartable to connect presenter with fragment:
 ```java
 restartableFirst(GET_CARDS, () ->
                            Observable.zip(findCard(identitySender).toObservable()
@@ -392,7 +397,7 @@ restartableFirst(GET_CARDS, () ->
                    ChatThreadFragment::onGetCardSuccess,
                    ChatThreadFragment::onGetCardError);
 ```
-  - Implement method that will find Virgil Card via its identity on Virgil Card Service:
+  - Add method that will find Virgil Card via its identity on Virgil Cards Service:
 ```java
 private Single<VirgilCard> findCard(String identity) {
     return Single.create(e -> {
@@ -405,7 +410,7 @@ private Single<VirgilCard> findCard(String identity) {
     });
 }
 ```
-  - Update isDisposed() and disposeAll() methods:
+  - Update `isDisposed()` and `disposeAll()` methods:
 ```java
 void disposeAll() {
     stop(GET_MESSAGES);
@@ -419,13 +424,15 @@ boolean isDisposed() {
             || isDisposed(GET_CARDS);
 }
 ```
-Now you have to update corresponding class that works with UI - ChatThreadFragment to handle get cards request results.
-  - You have to store sender and receiver's Virgil Cards temporary, so user will be able to encrypt messages without requesting cards each click on Send button:
+
+Now you have to update ChatThreadFragment class to handle get cards request.
+
+  - First you have to add fields:
 ```java
 private VirgilCard meCard;
 private VirgilCard youCard;
 ```
-  - Implement `initCards` method where you request sender and receiver's Virgil Cards:
+  - Implement `initCards()` method:
 ```java
 private void initCards() {
     showProgress(true);
@@ -434,7 +441,7 @@ private void initCards() {
                                    thread.getRecipientUsername());
 }
 ```
-  - As for now you need to get Virgil Cards first - let's update `getMessages` method:
+  - Update getMessages() method to check whether Virgil Cards are already fetched:
 ```java
 private void getMessages() {
     if (meCard == null || youCard == null) {
@@ -446,7 +453,7 @@ private void getMessages() {
     }
 }
 ```
-  - At last you have to handle successful and unsuccessful Virgil Cards fetching:
+  - Add callbacks for successful and unsuccessful Virgil Cards fetching:
 ```java
 public void onGetCardSuccess(Pair<VirgilCard, VirgilCard> cards) {
     if (cards.first.getIdentity().equals(ParseUser.getCurrentUser().getUsername())) {
@@ -481,16 +488,17 @@ public void onGetCardError(Throwable t) {
 
 **Decrypt the Encrypted Message in the ChatThreadRVAdapter class**
 
-**Milestones:**
+**General logics:**
+
   - We first load the user’s private key from Android’s secure storage
-  - Then use it to decrypt the message received:
+  - Then use it to decrypt the message received
+
   
-Let's update `HolderMessage` class that nested in `ChatThreadRVAdapter` class with some code so you will be able to decrypt previously encrypted message.
-  - You will need VirgilApi to decrypt data, so add next field:
+  - Add VirgilApi field::
 ```java
 private VirgilApi virgilApi;
 ```
-  - Update construtor to init VirgilApi field:
+  - Update construtor:
 ```java
 HolderMessage(View v) {
     super(v);
@@ -500,7 +508,7 @@ HolderMessage(View v) {
         virgilApi = AppVirgil.getInfoHolder().getVirgilApi();
 }
 ```
-  - Implement method to decrypt encrypted message:
+  - Pass virgilApi to HolderMessage:
 ```java
 String decrypt(String text) {
     String decryptedText = null;
