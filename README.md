@@ -490,10 +490,9 @@ public void onGetCardError(Throwable t) {
 
 **General logics:**
 
-  - We first load the user’s private key from Android’s secure storage
-  - Then use it to decrypt the message received
+- We first load the user’s private key from Android’s secure storage
+- Then use it to decrypt the message received
 
-  
   - Add VirgilApi field::
 ```java
 private VirgilApi virgilApi;
