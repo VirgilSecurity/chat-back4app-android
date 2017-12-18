@@ -16,6 +16,8 @@ import com.virgilsecurity.sdk.highlevel.VirgilCard;
 import com.virgilsecurity.sdk.highlevel.VirgilCards;
 import com.virgilsecurity.sdk.highlevel.VirgilKey;
 
+import java.util.List;
+
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -41,6 +43,7 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
     private VirgilApi virgilApi;
     private String identitySender;
     private String identityRecipient;
+    private List<VirgilCard> cards;
 
     @Override protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
@@ -53,7 +56,7 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
                          ChatThreadFragment::onGetMessagesError);
 
         restartableFirst(SEND_MESSAGE, () ->
-                                 RxParse.sendMessage(encrypt(text),
+                                 RxParse.sendMessage(encrypt(text, cards),
                                                      thread)
                                         .observeOn(AndroidSchedulers.mainThread()),
                          ChatThreadFragment::onSendMessageSuccess,
@@ -88,9 +91,11 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
     }
 
     void requestSendMessage(String text,
-                            ChatThread thread) {
+                            ChatThread thread,
+                            List<VirgilCard> cards) {
         this.text = text;
         this.thread = thread;
+        this.cards = cards;
 
         start(SEND_MESSAGE);
     }
@@ -133,12 +138,12 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
      * @return encrypted data
      */
 
-    private String encrypt(String text) {
+    private String encrypt(String text, List<VirgilCard> cards) {
         String encryptedText = null;
 
         try {
             VirgilKey key = virgilApi.getKeys().load(ParseUser.getCurrentUser().getUsername());
-            encryptedText = key.sign(text).toString(StringEncoding.Base64);
+            encryptedText = key.signThenEncrypt(text, cards).toString(StringEncoding.Base64);
         } catch (VirgilKeyIsNotFoundException e) {
             e.printStackTrace();
         } catch (CryptoException e) {

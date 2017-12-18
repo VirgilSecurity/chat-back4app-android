@@ -209,8 +209,11 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
             case R.id.btnSend:
                 String message = etMessage.getText().toString().trim();
                 if (!message.isEmpty()) {
+                    List<VirgilCard> cards = new ArrayList<>();
+                    cards.add(meCard);
+                    cards.add(youCard);
                     lockSendUi(true, true);
-                    getPresenter().requestSendMessage(message, thread);
+                    getPresenter().requestSendMessage(message, thread, cards);
                     isLoading = true;
                 }
                 break;
