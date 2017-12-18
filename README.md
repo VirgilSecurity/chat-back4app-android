@@ -168,7 +168,7 @@ client.publishCard(cardRequest)
 
 ### Step 2: Update Android app with E2EE code
 
-**Let’s update your InfoHolder Class**
+**Let’s update your InfoHolder Class:**
 
 - Add new classes:
 ```java
@@ -238,19 +238,20 @@ We're ready to use Virgil SDK now!
 
 #### 1. Generate Private Key & Public Key then store Private Key
 
- Let’s make some updates to ../virgilsecurity/virgilback4app/auth/LogInPresenter class.
- - To store VirgilCard and VirgilKey add those as fields:
+Let’s make some updates to ../virgilsecurity/virgilback4app/auth/LogInPresenter class.
+
+- Add `VirgilCard` and `VirgilKey` fields:
 ```java
 private VirgilCard virgilCard;
 private VirgilKey virgilKey;
 ```
-  - Pass VirgilCard as argument to the signUp method. We will handle it later:
+- Pass `virgilCard` as argument to the **signUp** method:
 ```java
 RxParse.signUp(identity,
                password,
                virgilCard)
 ```
-  - Implement method where you will generate `Private Key` and `Public Key` then save `Private Key`:
+- Add method where we will generate private key and public key (for decrypting incoming chat messages) then saving it ../virgilsecurity/virgilback4app/auth/LogInPresenter:
 ```java
 private void generateKeyPair(String identity) {
     virgilKey = infoHolder.getVirgilApi().getKeys().generate();
@@ -262,7 +263,7 @@ private void generateKeyPair(String identity) {
     virgilCard = infoHolder.getVirgilApi().getCards().create(identity, virgilKey);
 }
 ```
-  - Now you have to call this method when requesting sign up and also to generate password using user's `Private Key`:
+- Now we have to call this method when requesting sign up and generate password using private key:
 ```java
 void requestSignUp(String identity) {
     this.identity = identity;
@@ -273,10 +274,8 @@ void requestSignUp(String identity) {
     start(SIGN_UP);
 }
 ```
-That's it for sign up!
 
-Let's handle log in now.
-This will be as simple as only generating password using user's `Private Key` before log in:
+When user will request log in - you have to generate password using private key loaded with user’s identity (currently - username):
 ```java
 void requestLogIn(String identity) {
     this.identity = identity;
