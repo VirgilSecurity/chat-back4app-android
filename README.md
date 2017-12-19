@@ -535,7 +535,8 @@ void bind(Message message) {
 }
 ```
 
-That's all for encryption and decryption. At last - you have to update `resolveError(Throwable t)` method in `Utils` class to handle some exceptions that can happen during the work with Virgil Security sdk:
+That's all for encryption and decryption. 
+At last - you have to update `resolveError` method in `Utils` class to handle some exceptions that can be thrown during the work with Virgil Security SDK. So add handling for `VirgilKeyIsNotFoundException`, `VirgilKeyIsAlreadyExistsException` and `KeyEntryNotFoundException` so corresponding part of `resolveError` will looks like:
 ```java
 ...
 } else if (t instanceof ParseException) {
