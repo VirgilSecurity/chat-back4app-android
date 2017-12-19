@@ -342,7 +342,7 @@ private String identitySender;
 private String identityRecipient;
 private List<VirgilCard> cards;
 ```
-  - Init VirgilApi:
+  - Init VirgilApi in the `onCreate` method:
 ```java
 @Override protected void onCreate(Bundle savedState) {
     super.onCreate(savedState);
@@ -366,7 +366,7 @@ private String encrypt(String text, List<VirgilCard> cards) {
     return encryptedText;
 }
 ```
-  - Encrypt message before sending:
+  - Find method `sendMessage` and call `encrypt` method on message text before sending, so it will looks like:
 ```java
 RxParse.sendMessage(encrypt(text, cards),
                     thread)
@@ -384,7 +384,7 @@ void requestGetCards(String identitySender, String identityRecipient) {
     start(GET_CARDS);
 }
 ```
-  - Add restartable to connect presenter with fragment:
+  - Add new `restartableFirst` to connect presenter with fragment to the `onCreate` method along with others `restartableFirst`'s:
 ```java
 restartableFirst(GET_CARDS, () ->
                            Observable.zip(findCard(identitySender).toObservable()
@@ -425,7 +425,7 @@ boolean isDisposed() {
 }
 ```
 
-Now you have to update ChatThreadFragment class to handle get cards request.
+Now you have to update `ChatThreadFragment` class to handle get cards request.
 
   - First you have to add fields:
 ```java
