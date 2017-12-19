@@ -581,7 +581,8 @@ void bind(Message message) {
 ```
 
 That's all for encryption and decryption.
-At last - you have to update `resolveError` method in `Utils` class to handle some exceptions that can be thrown during the work with Virgil Security SDK. So add handling for `VirgilKeyIsNotFoundException`, `VirgilKeyIsAlreadyExistsException`, `VirgilCardIsNotFoundException` and `KeyEntryNotFoundException` so corresponding part of `resolveError` method will looks like:
+At last - you have to:
+  - Update `resolveError` method in `Utils` class to handle some exceptions that can be thrown during the work with Virgil Security SDK. So add handling for `VirgilKeyIsNotFoundException`, `VirgilKeyIsAlreadyExistsException`, `VirgilCardIsNotFoundException` and `KeyEntryNotFoundException` so corresponding part of `resolveError` method will looks like:
 ```java
 ...
 } else if (t instanceof ParseException) {
@@ -603,13 +604,21 @@ At last - you have to update `resolveError` method in `Utils` class to handle so
     return "Username is already registered. Please, try another one.";
 } else if (t instanceof KeyEntryNotFoundException) {
     return "Username is not found on this device. Maybe you deleted your private key";
-} else if (t instanceof VirgilCardIsNotFoundException) {
-    return "Virgil Card is not found.\nYou can not start chat with user without Virgil Card.";
 } else {
     return "Something went wrong";
 }
 ...
 ```
+  - In `ChatThreadFragment` update `onGetCardError` method inserting next code in the very beginning of it:
+```java
+public void onGetCardError(Throwable t) {
+    if (t instanceof VirgilCardIsNotFoundException
+            || t instanceof VirgilCardServiceException) {
+        Utils.toast(this, "Virgil Card is not found.\nYou can not chat with user without Virgil Card");
+        activity.onBackPressed();
+    }
+...
+}
 
 ### Important! 
 You have to **Log Out** current user and register two new users, after that you can start e2ee chat with those two new users. The reason is that your first two users have got no `Virgil Card`'s, so you can not use encrypt\decrypt for them.
