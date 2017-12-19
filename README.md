@@ -211,7 +211,7 @@ implementation "com.virgilsecurity.sdk:sdk-android:$rootProject.ext.virgilSecuri
 
 - Add the following to the end of your project-level /[build.gradle][_build.gradle_project_level]:
 ```gradle
-virgilSecurity = “4.5.0@aar”
+virgilSecurity = "4.5.0@aar"
 ```
 
 **Enter your access token:**
