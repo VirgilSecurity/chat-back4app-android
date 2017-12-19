@@ -226,6 +226,7 @@ Note: for simplicity, we re-used the access token you created for the server app
 
 We're ready to use Virgil SDK now!
 
+### Let’s look at what’s changed in the app
 
 **For every chat user, the new E2EE app maintains a private & public key:**
 
@@ -485,7 +486,7 @@ public void onGetCardError(Throwable t) {
 }
 ```
 
-**Decrypt the Encrypted Message in the ChatThreadRVAdapter class**
+**Decrypt the Encrypted Message in the HolderMessage class (nested in the ChatThreadRVAdapter class)**
 
 **General logics:**
 
@@ -494,36 +495,37 @@ public void onGetCardError(Throwable t) {
 
 
 
-  - Add VirgilApi field::
+  - Add VirgilKey field:
 ```java
-private VirgilApi virgilApi;
+private Virgilkey virgilKey;
 ```
-  - Pass virgilApi to HolderMessage::
+  - Init VirgilKey field in HolderMessage constructor:
 ```java
 HolderMessage(View v) {
     super(v);
     ButterKnife.bind(this, v);
 
-    if (virgilApi != null)
-        virgilApi = AppVirgil.getInfoHolder().getVirgilApi();
-}
-```
-  - Implement decrypt method:
-```java
-String decrypt(String text) {
-    String decryptedText = null;
-
     try {
-        VirgilKey virgilKey = virgilApi.getKeys()
-                                       .load(ParseUser.getCurrentUser().getUsername());
-        decryptedText = virgilKey.decrypt(text).toString();
+        virgilKey = AppVirgil.getInfoHolder()
+                             .getVirgilApi()
+                             .getKeys()
+                             .load(ParseUser.getCurrentUser().getUsername());
     } catch (VirgilKeyIsNotFoundException e) {
         e.printStackTrace();
     } catch (CryptoException e) {
         e.printStackTrace();
     }
-
-    return decryptedText;
+}
+```
+  - Implement decrypt method:
+```java
+String decrypt(String text) {
+    try {
+        return virgilKey.decrypt(text).toString();
+    } catch (CryptoException e) {
+        e.printStackTrace();
+        return "";
+    }
 }
 ```
   - Decrypt message before displaying:
@@ -561,10 +563,6 @@ That's all for encryption and decryption. At last - you have to update `resolveE
 ...
 ```
 
-## HIPAA & GDPR compliance:
-
-End-to-End Encryption is a way to meet the technical requirements for HIPAA & GDPR. If you need more details, sign up for a free [Virgil account][_virgil_account], join our Slack community and ping us there: we’re happy to discuss your own privacy circumstances and help you understand what’s required to meet the technical HIPAA & GDPR requirements.
-
 
 ## Where to go from here?
 
@@ -575,6 +573,14 @@ Don’t forget to subscribe to our [Youtube channel][_youtube].  Where you find 
 Also, use Virgil Security to verify the integrity of data at any point. Data Integrity is essential to anyone who wants to guarantee that their data has not been tampered with. [Our tutorial][_data_integrity] provides mode details.
 
 More information about what you can build with Virgil Security you will find [here][_virgil_www]. 
+
+
+
+## HIPAA compliance:
+
+End-to-End Encryption is a way to meet the technical requirements for HIPAA. If you need more details, sign up for a free [Virgil account][_virgil_account], join our Slack community and ping us there: we’re happy to discuss your own privacy circumstances and help you understand what’s required to meet the technical HIPAA requirements.
+
+
 
 Follow our posts on Back4App. In the next tutorial, we will be helping two people or IoT devices to communicate with end-to-end encryption with [PFS][_pfs] enabled. You’ll find out how to protect previously intercepted traffic from being decrypted even if the main private key is compromised. 
 
