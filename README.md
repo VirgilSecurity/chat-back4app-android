@@ -348,6 +348,7 @@ private List<VirgilCard> cards;
     super.onCreate(savedState);
 
     virgilApi = AppVirgil.getInfoHolder().getVirgilApi();
+...
 ```
   - Add method that encrypts data:
 ```java
@@ -366,7 +367,7 @@ private String encrypt(String text, List<VirgilCard> cards) {
     return encryptedText;
 }
 ```
-  - Find method `sendMessage` and call `encrypt` method on message text before sending, so it will looks like:
+  - Find method `sendMessage` and update it calling `encrypt` method on message text before sending, so it will looks like:
 ```java
 RxParse.sendMessage(encrypt(text, cards),
                     thread)
@@ -384,7 +385,7 @@ void requestGetCards(String identitySender, String identityRecipient) {
     start(GET_CARDS);
 }
 ```
-  - Add new `restartableFirst` to connect presenter with fragment to the `onCreate` method along with others `restartableFirst`'s:
+  - Add new `restartableFirst` to connect presenter with fragment to the `onCreate` method along with others `restartableFirst`'s (`onGetCardSuccess` and `onGetCardError` methods will be implemented later):
 ```java
 restartableFirst(GET_CARDS, () ->
                            Observable.zip(findCard(identitySender).toObservable()
@@ -536,7 +537,7 @@ void bind(Message message) {
 ```
 
 That's all for encryption and decryption. 
-At last - you have to update `resolveError` method in `Utils` class to handle some exceptions that can be thrown during the work with Virgil Security SDK. So add handling for `VirgilKeyIsNotFoundException`, `VirgilKeyIsAlreadyExistsException` and `KeyEntryNotFoundException` so corresponding part of `resolveError` will looks like:
+At last - you have to update `resolveError` method in `Utils` class to handle some exceptions that can be thrown during the work with Virgil Security SDK. So add handling for `VirgilKeyIsNotFoundException`, `VirgilKeyIsAlreadyExistsException` and `KeyEntryNotFoundException` so corresponding part of `resolveError` method will looks like:
 ```java
 ...
 } else if (t instanceof ParseException) {
