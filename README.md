@@ -53,6 +53,9 @@ This is the simplest possible implementation of E2EE chat and it works perfectly
   - Git Repository URL: https://github.com/VirgilSecurity/chat-back4app-android
   - Check out the “clean-chat” branch
 ![Chat](img/checkout_clean_chat_arr.jpg)
+### Important! 
+Select "Project" type of file tree. It will be used all-through the tutorial:
+![Back4app credentials](img/select_project_view.png)
 
 ### 2) Set up the App with the Credentials from your new Back4App App’s Dashboard:
   - Open “Dashboard” of your app -> “App Settings” -> “Security & Keys”:
