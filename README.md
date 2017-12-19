@@ -575,8 +575,8 @@ void bind(Message message) {
 }
 ```
 
-That's all for encryption and decryption. 
-At last - you have to update `resolveError` method in `Utils` class to handle some exceptions that can be thrown during the work with Virgil Security SDK. So add handling for `VirgilKeyIsNotFoundException`, `VirgilKeyIsAlreadyExistsException` and `KeyEntryNotFoundException` so corresponding part of `resolveError` method will looks like:
+That's all for encryption and decryption.
+At last - you have to update `resolveError` method in `Utils` class to handle some exceptions that can be thrown during the work with Virgil Security SDK. So add handling for `VirgilKeyIsNotFoundException`, `VirgilKeyIsAlreadyExistsException`, `VirgilCardIsNotFoundException` and `KeyEntryNotFoundException` so corresponding part of `resolveError` method will looks like:
 ```java
 ...
 } else if (t instanceof ParseException) {
@@ -598,11 +598,15 @@ At last - you have to update `resolveError` method in `Utils` class to handle so
     return "Username is already registered. Please, try another one.";
 } else if (t instanceof KeyEntryNotFoundException) {
     return "Username is not found on this device. Maybe you deleted your private key";
+} else if (t instanceof VirgilCardIsNotFoundException) {
+    return "Virgil Card is not found.\nYou can not start chat with user without Virgil Card.";
 } else {
     return "Something went wrong";
 }
 ...
 ```
+
+## You have to **Log Out** current user and register two new users, after that you can start e2ee chat with those two new users. The reason is that your first two users have got no `Virgil Card`'s, so you can not use encrypt\decrypt for them.
 
 ## HIPAA & GDPR compliance:
 
