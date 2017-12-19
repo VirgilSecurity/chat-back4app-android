@@ -3,9 +3,9 @@
 
     <!-- Back4App -->
     <string name="back4app_server_url">https://parseapi.back4app.com/</string>
-    <string name="back4app_live_query_url">wss://virgilmsgrandroid.back4app.io/</string>
-    <string name="back4app_app_id">0YP4zSHDOZy5v50BvGe2ttGRkGbuXaaBTUnr6wfH</string>
-    <string name="back4app_client_key">Wu1T8l9AriZVqDbMoZQbz2AXKvh3sPnEqYabPez7</string>
+    <string name="back4app_live_query_url">wss://yourSubdomainName.back4app.io/</string>
+    <string name="back4app_app_id">your_back4app_app_id</string>
+    <string name="back4app_client_key">your_back4app_client_key</string>
 
     <!-- General -->
     <string name="no_internet">Please, check your internet state</string>
