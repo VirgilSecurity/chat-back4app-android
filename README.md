@@ -24,7 +24,7 @@ This blog post will show you how to ignore all these annoying details and quickl
 **For an intro, this is how we’ll upgrade Back4app’s messenger app to be End-to-End Encrypted:**
 1. During sign-up: we’ll generate the individual private & public keys for new users (remember: the recipient's public key encrypts messages and the matching recipient's private key decrypts them).
 2. Before sending messages, you’ll encrypt chat messages with the recipient's public key.
-3. When receiving messages, you’ll decrypt chat messages with the recipient's private key.
+3. After receiving messages, you’ll decrypt chat messages with the recipient's private key.
 
 
 ![Virgil E2EE](img/virgil_main.png)
