@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.android.virgilsecurity.virgilback4app.R;
 import com.parse.ParseException;
+import com.virgilsecurity.sdk.client.exceptions.VirgilCardIsNotFoundException;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsAlreadyExistsException;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
 import com.virgilsecurity.sdk.crypto.exceptions.KeyEntryNotFoundException;
@@ -109,6 +110,8 @@ public class Utils {
             return "Username is already registered. Please, try another one.";
         } else if (t instanceof KeyEntryNotFoundException) {
             return "Username is not found on this device. Maybe you deleted your private key";
+        } else if (t instanceof VirgilCardIsNotFoundException) {
+            return "Virgil Card is not found.\nYou can not start chat with user without Virgil Card.";
         } else {
             return "Something went wrong";
         }
