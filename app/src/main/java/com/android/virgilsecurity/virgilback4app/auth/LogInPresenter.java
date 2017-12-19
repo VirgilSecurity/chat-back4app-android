@@ -81,10 +81,13 @@ public class LogInPresenter extends RxPresenter<LogInFragment> {
             virgilKey = infoHolder.getVirgilApi().getKeys().load(identity);
         } catch (KeyEntryNotFoundException e) {
             getView().onLoginError(e);
+            return;
         } catch (VirgilKeyIsNotFoundException e) {
             getView().onLoginError(e);
+            return;
         } catch (CryptoException e) {
             getView().onLoginError(e);
+            return;
         }
         password = generatePassword(virgilKey.getPrivateKey().getValue());
 

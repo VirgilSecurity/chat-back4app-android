@@ -13,7 +13,6 @@ import com.android.virgilsecurity.virgilback4app.model.Message;
 import com.parse.ParseUser;
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
 import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
-import com.virgilsecurity.sdk.highlevel.VirgilApi;
 import com.virgilsecurity.sdk.highlevel.VirgilKey;
 
 import java.util.ArrayList;
@@ -37,10 +36,8 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<ChatThreadRVAdapte
     }
 
     private List<Message> items;
-    private VirgilApi virgilApi;
 
     ChatThreadRVAdapter() {
-        virgilApi = AppVirgil.getInfoHolder().getVirgilApi();
     }
 
     @Override
@@ -52,20 +49,17 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<ChatThreadRVAdapte
             case MessageType.ME:
                 viewHolder = new HolderMessage(inflater.inflate(R.layout.layout_holder_me,
                                                                 viewGroup,
-                                                                false),
-                                               virgilApi);
+                                                                false));
                 break;
             case MessageType.YOU:
                 viewHolder = new HolderMessage(inflater.inflate(R.layout.layout_holder_you,
                                                                 viewGroup,
-                                                                false),
-                                               virgilApi);
+                                                                false));
                 break;
             default:
                 viewHolder = new HolderMessage(inflater.inflate(R.layout.layout_holder_me,
                                                                 viewGroup,
-                                                                false),
-                                               virgilApi);
+                                                                false));
                 break;
         }
         return viewHolder;
@@ -112,15 +106,24 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<ChatThreadRVAdapte
 
     static class HolderMessage extends RecyclerView.ViewHolder {
 
-        private VirgilApi virgilApi;
+        private VirgilKey virgilKey;
 
         @BindView(R.id.tvMessage) TextView tvMessage;
 
-        HolderMessage(View v, VirgilApi virgilApi) {
+        HolderMessage(View v) {
             super(v);
             ButterKnife.bind(this, v);
 
-            this.virgilApi = virgilApi;
+            try {
+                virgilKey = AppVirgil.getInfoHolder()
+                                     .getVirgilApi()
+                                     .getKeys()
+                                     .load(ParseUser.getCurrentUser().getUsername());
+            } catch (VirgilKeyIsNotFoundException e) {
+                e.printStackTrace();
+            } catch (CryptoException e) {
+                e.printStackTrace();
+            }
         }
 
         void bind(Message message) {
@@ -134,19 +137,12 @@ public class ChatThreadRVAdapter extends RecyclerView.Adapter<ChatThreadRVAdapte
          * @return decrypted data
          */
         String decrypt(String text) {
-            String decryptedText = null;
-
             try {
-                VirgilKey virgilKey = virgilApi.getKeys()
-                                               .load(ParseUser.getCurrentUser().getUsername());
-                decryptedText = virgilKey.decrypt(text).toString();
-            } catch (VirgilKeyIsNotFoundException e) {
-                e.printStackTrace();
+                return virgilKey.decrypt(text).toString();
             } catch (CryptoException e) {
                 e.printStackTrace();
+                return "";
             }
-
-            return decryptedText;
         }
     }
 }

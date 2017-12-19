@@ -6,15 +6,12 @@ import android.util.Pair;
 import com.android.virgilsecurity.virgilback4app.AppVirgil;
 import com.android.virgilsecurity.virgilback4app.model.ChatThread;
 import com.android.virgilsecurity.virgilback4app.util.RxParse;
-import com.parse.ParseUser;
 import com.virgilsecurity.sdk.client.exceptions.VirgilCardIsNotFoundException;
-import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException;
 import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
 import com.virgilsecurity.sdk.highlevel.StringEncoding;
 import com.virgilsecurity.sdk.highlevel.VirgilApi;
 import com.virgilsecurity.sdk.highlevel.VirgilCard;
 import com.virgilsecurity.sdk.highlevel.VirgilCards;
-import com.virgilsecurity.sdk.highlevel.VirgilKey;
 
 import java.util.List;
 
@@ -137,20 +134,15 @@ public class ChatThreadPresenter extends RxPresenter<ChatThreadFragment> {
      * @param cards of recipients
      * @return encrypted data
      */
-
     private String encrypt(String text, List<VirgilCard> cards) {
-        String encryptedText = null;
-
         try {
-            VirgilKey key = virgilApi.getKeys().load(ParseUser.getCurrentUser().getUsername());
-            encryptedText = key.signThenEncrypt(text, cards).toString(StringEncoding.Base64);
-        } catch (VirgilKeyIsNotFoundException e) {
-            e.printStackTrace();
+            VirgilCards virgilCards = new VirgilCards(AppVirgil.getInfoHolder().getVirgilApiContext());
+            virgilCards.addAll(cards);
+            return virgilCards.encrypt(text).toString(StringEncoding.Base64);
         } catch (CryptoException e) {
             e.printStackTrace();
+            return "";
         }
-
-        return encryptedText;
     }
 
 }
