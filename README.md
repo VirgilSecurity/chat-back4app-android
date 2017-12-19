@@ -355,24 +355,36 @@ private List<VirgilCard> cards;
   - Add method that encrypts data:
 ```java
 private String encrypt(String text, List<VirgilCard> cards) {
-    String encryptedText = null;
-
     try {
-        VirgilKey key = virgilApi.getKeys().load(ParseUser.getCurrentUser().getUsername());
-        encryptedText = key.signThenEncrypt(text, cards).toString(StringEncoding.Base64);
-    } catch (VirgilKeyIsNotFoundException e) {
-        e.printStackTrace();
+        VirgilCards virgilCards = new VirgilCards(AppVirgil.getInfoHolder().getVirgilApiContext());
+        virgilCards.addAll(cards);
+        return virgilCards.encrypt(text).toString(StringEncoding.Base64);
     } catch (CryptoException e) {
         e.printStackTrace();
+        return "";
     }
-
-    return encryptedText;
 }
 ```
   - Find method `sendMessage` and update it calling `encrypt` method on message text before sending, so it will looks like:
 ```java
-RxParse.sendMessage(encrypt(text, cards),
-                    thread)
+        restartableFirst(SEND_MESSAGE, () ->
+                                 RxParse.sendMessage(encrypt(text, cards),
+                                                     thread)
+                                        .observeOn(AndroidSchedulers.mainThread()),
+                         ChatThreadFragment::onSendMessageSuccess,
+                         ChatThreadFragment::onSendMessageError);
+```
+  - Update `requestSendMessage` method passing to it `List<VirgilCard>` and initializing with it field:
+```java
+    void requestSendMessage(String text,
+                            ChatThread thread,
+                            List<VirgilCard> cards) {
+        this.text = text;
+        this.thread = thread;
+        this.cards = cards;
+
+        start(SEND_MESSAGE);
+    }
 ```
 That’s almost it! But as you might have noticed - we need sender and receiver’s Virgil Cards.
 
@@ -453,6 +465,24 @@ private void getMessages() {
         showProgress(true);
         getPresenter().requestMessages(thread, 50, page,
                                        Const.TableNames.CREATED_AT_CRITERIA);
+    }
+}
+```
+  - Update `onInterfaceClick` with creating List of `VirgilCard`'s and passing it to the `requestSendMessage` method:
+```java
+@OnClick({R.id.btnSend}) void onInterfaceClick(View v) {
+    switch (v.getId()) {
+        case R.id.btnSend:
+            String message = etMessage.getText().toString().trim();
+            if (!message.isEmpty()) {
+                List<VirgilCard> cards = new ArrayList<>();
+                cards.add(meCard);
+                cards.add(youCard);
+                lockSendUi(true, true);
+                getPresenter().requestSendMessage(message, thread, cards);
+                isLoading = true;
+            }
+            break;
     }
 }
 ```
