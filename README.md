@@ -337,6 +337,8 @@ Let's add some code to ecnrypt data to the ../virgilsecurity/virgilback4app/chat
 
   - Add some new fields:
 ```java
+private static final int GET_CARDS = 2;
+
 private VirgilApi virgilApi;
 private String identitySender;
 private String identityRecipient;
