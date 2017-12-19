@@ -53,7 +53,7 @@ This is the simplest possible implementation of E2EE chat and it works perfectly
   - Git Repository URL: https://github.com/VirgilSecurity/chat-back4app-android
   - Check out the “clean-chat” branch
 ![Chat](img/checkout_clean_chat_arr.jpg)
-### Important! 
+### Important!
 Select "Project" type of file tree. It will be used all-through the tutorial:
 
 <img src="img/select_project_view.png" width="260" height="100">
@@ -68,7 +68,7 @@ Select "Project" type of file tree. It will be used all-through the tutorial:
 <string name="back4app_client_key">your_back4app_client_key</string>
 ```
 
-### 3) Enable Live Query to get live updates for messages and chat threads: 
+### 3) Enable Live Query to get live updates for messages and chat threads:
   - Launch Data Management for your app and create two classes: `Message` and `ChatThread`:
 
     ![Create Class](img/create_class.jpeg)
@@ -111,7 +111,7 @@ And this is how we’ll get there:
 But before we begin, let’s clear 2 important terms for you: what’s a Virgil Key and a Virgil Card?
 
   - **Virgil Key** – this is how we call a user's private key. Remember, private keys can decrypt data that was encrypted using the matching public key.
-  - **Virgil Card** – Virgil Сards carry the user’s public key. Virgil cards are published to Virgil’s Cards Service (imagine this service like a telephone book) for other users to retrieve them: Alice needs to retrieve Bob’s Public Key in order to encrypt a message for Bob using that key. 
+  - **Virgil Card** – Virgil Сards carry the user’s public key. Virgil cards are published to Virgil’s Cards Service (imagine this service like a telephone book) for other users to retrieve them: Alice needs to retrieve Bob’s Public Key in order to encrypt a message for Bob using that key.
 
 ### Step 1: Set up your App Server
 
@@ -122,9 +122,9 @@ You’ll need some minimal server code to make the sample work. This piece of se
 - Extract the archive and open `main.js` with your favorite editor;
 - Go back to your [Virgil developer account][_virgil_dashboard] and create a new application. Make sure that you save the Private Key that is generated for your application. Also, copy the new app’s base64-encoded AppKey string before you complete the app creation:
 ![Encoded string](img/encoded_string.jpeg)
-- Edit main.js, find the function `resolveAppKEy()` and replace: 
+- Edit main.js, find the function `resolveAppKEy()` and replace:
   - `YOUR_VIRGIL_APP_PRIVATE_KEY` with the Base64 AppKey on your clipboard
-  - `YOUR_VIRGIL_APP_PRIVATE_KEY_PASSWORD` with the password you’ve set for your new Virgil app: 
+  - `YOUR_VIRGIL_APP_PRIVATE_KEY_PASSWORD` with the password you’ve set for your new Virgil app:
     ```javascript
     function resolveAppKey() {
       try {
@@ -401,7 +401,7 @@ private String encrypt(String text, List<VirgilCard> cards) {
 That’s almost it! But as you might have noticed - we need sender and receiver’s Virgil Cards.
 
 So let’s go on updating `ChatThreadPresenter` class to be able to get Virgil Cards from Virgil Card Service.
-  
+
   - Add request method:
 ```java
 void requestGetCards(String identitySender, String identityRecipient) {
