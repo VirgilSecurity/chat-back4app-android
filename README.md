@@ -2,13 +2,13 @@
 
 **Ahoy Back4app community!**
 
-This is a guest post by Virgil Security: we’re the tech behind [Twilio’s End-to-End Encrypted Messaging][_twilio]. We’ve been asked by our friends @ Back4app to show you how to build an End-to-End encrypted chat app on top of Back4app.
+This is a guest post by Virgil Security: we’re the tech behind [Twilio’s End-to-End Encrypted Messaging][_twilio]. We’ve been asked by our friends @ Back4app to show you how to build an End-to-End Encrypted chat app on top of Back4app.
 
 In this post, we’ll walk you through the steps to make [Back4app’s Android Simple Messenger app][_back4app] End-to-End Encrypted! Are you ready? Or if you don’t care about the details, you can simply skip to the end of the post and download the final product.
 
 ## What is End-to-End Encryption?
 
-First, let’s start with a quick refresher of what E2EE is and how it works. E2EE is simple: when you type in a chat message, it gets encrypted on your mobile device (or in your browser) and gets decrypted only when your chat partner receives it and wants to display it in chat window.
+First, let’s start with a quick refresher of what E2EE (End-to-End Encryption) is and how it works. E2EE is simple: when you type in a chat message, it gets encrypted on your mobile device (or in your browser) and gets decrypted only when your chat partner receives it and wants to display it in chat window.
 
 ![Virgil Chat](img/chat_example.png)
 
@@ -344,7 +344,7 @@ Now your project automatically sends the Virgil Card exported to base64 to the B
 
 **We encrypt messages with the recipient user's Virgil card.**
 
-Let's add some code to ecnrypt data to the ../virgilsecurity/virgilback4app/chat/thread/ChatThreadPresenter class:
+Let's add some code to encrypt data to the ../virgilsecurity/virgilback4app/chat/thread/ChatThreadPresenter class:
 
   - Add some new fields:
 ```java
@@ -622,11 +622,11 @@ public void onGetCardError(Throwable t) {
 ```
 
 ### Important!
-You have to **Log Out** current user and register two new users, after that you can start e2ee chat with those two new users. The reason is that your first two users have got no `Virgil Card`'s, so you can not use encrypt\decrypt for them.
+You have to **Log Out** current user and register two new users, after that you can start E2EE chat with those two new users. The reason is that your first two users have got no `Virgil Card`'s, so you can not use encrypt\decrypt for them.
 
 ## HIPAA & GDPR compliance:
 
-End-to-End Encryption is a way to meet the technical requirements for HIPAA & GDPR. If you need more details, sign up for a free [Virgil account][_virgil_account], join our Slack community and ping us there: we’re happy to discuss your own privacy circumstances and help you understand what’s required to meet the technical HIPAA & GDPR requirements.
+End-to-End Encryption is a way to meet the technical requirements for HIPAA (the United States' Health Insurance Portability and Accountability Act of 1996) & GDPR (the European Union's General Data Protection Regulation). If you need more details, sign up for a free [Virgil account][_virgil_account], join our Slack community and ping us there: we’re happy to discuss your own privacy circumstances and help you understand what’s required to meet the technical HIPAA & GDPR requirements.
 
 
 ## Where to go from here?
@@ -639,7 +639,7 @@ Also, use Virgil Security to verify the integrity of data at any point. Data Int
 
 More information about what you can build with Virgil Security you will find [here][_virgil_www].
 
-**Follow our posts on Back4App.** In the next tutorial, we will be helping two people or IoT devices to communicate with end-to-end encryption with [PFS][_pfs] enabled. You’ll find out how to protect previously intercepted traffic from being decrypted even if the main private key is compromised.
+**Follow our posts on Back4App.** In the next tutorial, we will be helping two people or IoT devices to communicate with End-to-End Encryption with [PFS][_pfs] enabled. You’ll find out how to protect previously intercepted traffic from being decrypted even if the main private key is compromised.
 
 
 
