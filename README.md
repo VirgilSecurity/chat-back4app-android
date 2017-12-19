@@ -226,7 +226,7 @@ Note: for simplicity, we re-used the access token you created for the server app
 
 We're ready to use Virgil SDK now!
 
-### Let’s look at what’s changed in the app
+
 
 **For every chat user, the new E2EE app maintains a private & public key:**
 
@@ -567,6 +567,10 @@ At last - you have to update `resolveError` method in `Utils` class to handle so
 ...
 ```
 
+## HIPAA & GDPR compliance:
+
+End-to-End Encryption is a way to meet the technical requirements for HIPAA & GDPR. If you need more details, sign up for a free [Virgil account][_virgil_account], join our Slack community and ping us there: we’re happy to discuss your own privacy circumstances and help you understand what’s required to meet the technical HIPAA & GDPR requirements.
+
 
 ## Where to go from here?
 
@@ -578,15 +582,7 @@ Also, use Virgil Security to verify the integrity of data at any point. Data Int
 
 More information about what you can build with Virgil Security you will find [here][_virgil_www]. 
 
-
-
-## HIPAA compliance:
-
-End-to-End Encryption is a way to meet the technical requirements for HIPAA. If you need more details, sign up for a free [Virgil account][_virgil_account], join our Slack community and ping us there: we’re happy to discuss your own privacy circumstances and help you understand what’s required to meet the technical HIPAA requirements.
-
-
-
-Follow our posts on Back4App. In the next tutorial, we will be helping two people or IoT devices to communicate with end-to-end encryption with [PFS][_pfs] enabled. You’ll find out how to protect previously intercepted traffic from being decrypted even if the main private key is compromised. 
+**Follow our posts on Back4App.** In the next tutorial, we will be helping two people or IoT devices to communicate with end-to-end encryption with [PFS][_pfs] enabled. You’ll find out how to protect previously intercepted traffic from being decrypted even if the main private key is compromised. 
 
 
 
