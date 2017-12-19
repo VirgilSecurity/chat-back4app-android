@@ -542,7 +542,7 @@ public void onGetCardError(Throwable t) {
 
   - Add VirgilKey field:
 ```java
-private Virgilkey virgilKey;
+private VirgilKey virgilKey;
 ```
   - Init VirgilKey field in HolderMessage constructor:
 ```java
