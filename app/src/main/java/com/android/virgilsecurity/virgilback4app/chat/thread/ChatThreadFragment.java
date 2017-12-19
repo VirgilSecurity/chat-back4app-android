@@ -27,6 +27,8 @@ import com.parse.ParseLiveQueryClient;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SubscriptionHandling;
+import com.virgilsecurity.sdk.client.exceptions.VirgilCardIsNotFoundException;
+import com.virgilsecurity.sdk.client.exceptions.VirgilCardServiceException;
 import com.virgilsecurity.sdk.highlevel.VirgilCard;
 
 import java.net.URI;
@@ -356,6 +358,11 @@ public class ChatThreadFragment extends BaseFragmentWithPresenter<ChatThreadActi
     }
 
     public void onGetCardError(Throwable t) {
+        if (t instanceof VirgilCardIsNotFoundException
+                || t instanceof VirgilCardServiceException) {
+            Utils.toast(this, "Virgil Card is not found.\nYou can not chat with user without Virgil Card");
+            activity.onBackPressed();
+        }
         showProgress(false);
         srlRefresh.setRefreshing(false);
         lockSendUi(false, false);
