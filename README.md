@@ -2,9 +2,9 @@
 
 **Ahoy Back4app community!**
 
-This is a guest post by Virgil Security: we’re the tech behind [Twilio’s End-to-End Encrypted Messaging][_twilio]. We’ve been asked by our friends @ Back4app to show you how to build an End-to-End Encrypted chat app on top of Back4app.
+This is a guest post from the team at [Virgil Security, Inc.][_virgil_www]: we’re the crypto tech behind [Twilio’s End-to-End Encrypted Messaging][_twilio]. Our friends @ Back4app asked us to show you how to build an End-to-End Encrypted chat app on top of Back4app.
 
-In this post, we’ll walk you through the steps to make [Back4app’s Android Simple Messenger app][_back4app] End-to-End Encrypted! Are you ready? Or if you don’t care about the details, you can simply skip to the end of the post and download the final product.
+In this post, we’ll walk you through the steps to make [Back4app’s Android Simple Messenger app][_back4app] End-to-End Encrypted! Are you ready? PS: If you don’t care about the details, simply skip to the end of the post and download the final product.
 
 ## What is End-to-End Encryption?
 
@@ -12,28 +12,28 @@ First, let’s start with a quick refresher of what E2EE (End-to-End Encryption)
 
 ![Virgil Chat](img/chat_example.png)
 
-So essentially, the message remains encrypted while travels over wifi, the internet, gets on the web server, goes into the database and on the way back to your chat partner. In other words, none of the networks or servers have a clue of what the two of you are chatting about.
+The message remains encrypted while it travels over Wi-Fi and the Internet, through the cloud / web server, into a database, and on the way back to your chat partner. In other words, none of the networks or servers have a clue of what the two of you are chatting about.
 
 ![Virgil Chat Server](img/chat_example_server.png)
 
-What’s difficult in End-to-End Encryption is the task of managing the encryption keys: managing them in a way that only the users involved in the chat can access them and nobody else. And when I write “nobody else”, I really mean it: even insiders of your cloud provider or even you, the developer are out; [no accidental mistakes][_mistakes] or legally enforced peeking are possible. Writing crypto, especially for multiple platforms is hard: generating true random numbers, picking the right algorithms, choosing the right encryption modes are just a few examples that make most of us developers just end up NOT doing it.
+What’s difficult in End-to-End Encryption is the task of managing the encryption keys in a way that only the users involved in the chat can access them and nobody else. And when I write “nobody else”, I really mean it: even insiders of your cloud provider or even you, the developer, are out; [no accidental mistakes][_mistakes] or legally enforced peeking are possible. Writing crypto, especially for multiple platforms is hard: generating true random numbers, picking the right algorithms, and choosing the right encryption modes are just a few examples that make most developers wave their hands in the air and end up just NOT doing it.
 
-This blog post is about how to ignore all these annoying details and just End-to-End Encrypt using Virgil’s SDK.
+This blog post will show you how to ignore all these annoying details and quickly and simply End-to-End Encrypt using Virgil’s SDK.
 
 
 **For an intro, this is how we’ll upgrade Back4app’s messenger app to be End-to-End Encrypted:**
-1. During sign-up: we’ll generate individual private & public key for new users (remember: public key encrypts messages, the matching private key decrypts them).
-2. You’ll encrypt chat messages with the destination user’s public key before they’re sent,
-3. When receiving messages, you’ll decrypt them with your user’s private key.
+1. During sign-up: we’ll generate the individual private & public keys for new users (remember: the recipient's public key encrypts messages and the matching recipient's private key decrypts them).
+2. Before sending messages, you’ll encrypt chat messages with the recipient's public key.
+3. When receiving messages, you’ll decrypt chat messages with the recipient's private key.
 
 
 ![Virgil E2EE](img/virgil_main.png)
 
-We’ll publish the users’ public keys to Virgil’s Cards Service for chat users to be able to look up each other and be able to encrypt messages for each other; the private keys will be kept on the user devices.
+We’ll publish the users’ public keys to Virgil’s Cards Service so that chat users are able to look up each other and able to encrypt messages for each other.  The private keys will stay on the user devices.
 
 **Keep it simple**
 
-This is the simplest possible implementation of E2EE chat and it works perfectly for simple chat apps between 2 users where conversations are short-lived and the message history is OK to be lost if a device is lost with the private key on it. For a busier, Slack-like chat app where history is important and users are joining and leaving channels all the time, we’ll build a Part II for this post: [sign up here if you’re interested][_next_post] and we’ll ping you once we have it.
+This is the simplest possible implementation of E2EE chat and it works perfectly for simple chat apps between 2 users where conversations are short-lived and it's okay to lose the message history if a device is lost with the private key on it. For a busier, Slack-like, chat app where history is important and users are joining and leaving channels all the time, we’ll build a Part II for this post: [sign up here if you’re interested][_next_post] and we’ll ping you once we finish it.
 
 **OK, enough talking! Let’s get down to coding.**
 
@@ -108,10 +108,10 @@ And this is how we’ll get there:
   - **Step 1:** we’ll set up a minimal Back4App server app that will approve the creation of new users at registration time: otherwise, you’ll end up with a bunch of spam cards. Later, you can introduce an email/SMS verification by customizing this app!
   - **Step 2:** we’ll modify the messenger app by adding E2EE code; I’ll do my best to explain every step along the way, hopefully simply enough that you can continue playing with it and reuse in your own project!
 
-But before we begin, let’s clear 2 important terms for you: what’s a Virgil Key and a Virgil Card?
+But before we begin, let’s clear two important terms for you: what’s a Virgil Key and a Virgil Card?
 
-  - **Virgil Key** – this is how we call a user's private key. Remember, private keys can decrypt data that was encrypted using the matching public key.
-  - **Virgil Card** – Virgil Сards carry the user’s public key. Virgil cards are published to Virgil’s Cards Service (imagine this service like a telephone book) for other users to retrieve them: Alice needs to retrieve Bob’s Public Key in order to encrypt a message for Bob using that key. 
+  - **Virgil Key** – this is what we call a user's private key. Remember, private keys can decrypt data that was encrypted using the matching public key.
+  - **Virgil Card** – Virgil Сards carry the user’s public key. Virgil cards are published to Virgil’s Cards Service (imagine this service is like a telephone book) for other users to retrieve them: Alice needs to retrieve Bob’s public key in order to encrypt a message for Bob using that key. 
 
 ### Step 1: Set up your App Server
 
@@ -236,7 +236,7 @@ We're ready to use Virgil SDK now!
 **For every chat user, the new E2EE app maintains a private & public key:**
 
 1. We generate the private & public key pair as part of signup
-2. Store the private Key in the key storage on the device
+2. Store the private key in the key storage on the device
 3. Publish the public key in Virgil’s Card Service as a “Virgil Card” for other users to download & encrypt messages with it.
 
 
@@ -262,7 +262,7 @@ restartableFirst(SIGN_UP, () ->
                  LogInFragment::onSignUpError
 );
 ```
-- Add method where we will generate private key and public key (for decrypting incoming chat messages) then saving it ../virgilsecurity/virgilback4app/auth/LogInPresenter:
+- Add method where we will generate the private key and the public key (for decrypting incoming chat messages) then saving it ../virgilsecurity/virgilback4app/auth/LogInPresenter:
 ```java
 private void generateKeyPair(String identity) {
     virgilKey = infoHolder.getVirgilApi().getKeys().generate();
@@ -533,10 +533,10 @@ public void onGetCardError(Throwable t) {
 
 **Decrypt the Encrypted Message in the HolderMessage class (nested in the ChatThreadRVAdapter class)**
 
-**General logics:**
+**General logic:**
 
 1. We first load the user’s private key from Android’s secure storage
-2. Then use it to decrypt the message received
+2. Then we use it to decrypt the message received
 
 
 
@@ -581,7 +581,7 @@ void bind(Message message) {
 ```
 
 That's all for encryption and decryption.
-At last - you have to:
+And finally - you have to:
   - Update `resolveError` method in `Utils` class to handle some exceptions that can be thrown during the work with Virgil Security SDK. So add handling for `VirgilKeyIsNotFoundException`, `VirgilKeyIsAlreadyExistsException`, `VirgilCardIsNotFoundException` and `KeyEntryNotFoundException` so corresponding part of `resolveError` method will looks like:
 ```java
 ...
@@ -622,7 +622,7 @@ public void onGetCardError(Throwable t) {
 ```
 
 ### Important! 
-You have to **Log Out** current user and register two new users, after that you can start E2EE chat with those two new users. The reason is that your first two users have got no `Virgil Card`'s, so you can not use encrypt\decrypt for them.
+You have to **Log Out** the current user and register two new users, after that you can start E2EE chat with those two new users. The reason is that your first two users have no `Virgil Card`'s, so you can not use encrypt\decrypt for them.
 
 ## HIPAA & GDPR compliance:
 
@@ -633,11 +633,11 @@ End-to-End Encryption is a way to meet the technical requirements for HIPAA (the
 
 [Final project][_final_project]. If you missed pieces from the puzzle, open the E2EE project branch. You can insert your application credentials in this code (as you did during the article) and build the project.
 
-Don’t forget to subscribe to our [Youtube channel][_youtube].  Where you find video series on how to do End-to-End Encryption.
+Don’t forget to subscribe to our [Youtube channel][_youtube].  There you will find a video series on how to do End-to-End Encryption.
 
-Also, use Virgil Security to verify the integrity of data at any point. Data Integrity is essential to anyone who wants to guarantee that their data has not been tampered with. [Our tutorial][_data_integrity] provides mode details.
+Also, use Virgil Security to verify the integrity of data at any point. Data Integrity is essential to anyone who wants to guarantee that their data has not been tampered with. [Our tutorial][_data_integrity] provides more details.
 
-More information about what you can build with Virgil Security you will find [here][_virgil_www]. 
+You can find more information about what you can build with Virgil Security [here][_virgil_www]. 
 
 **Follow our posts on Back4App.** In the next tutorial, we will be helping two people or IoT devices to communicate with End-to-End Encryption with [PFS][_pfs] enabled. You’ll find out how to protect previously intercepted traffic from being decrypted even if the main private key is compromised. 
 
