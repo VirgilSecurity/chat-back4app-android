@@ -606,7 +606,8 @@ At last - you have to update `resolveError` method in `Utils` class to handle so
 ...
 ```
 
-#### You have to **Log Out** current user and register two new users, after that you can start e2ee chat with those two new users. The reason is that your first two users have got no `Virgil Card`'s, so you can not use encrypt\decrypt for them.
+### Important! 
+You have to **Log Out** current user and register two new users, after that you can start e2ee chat with those two new users. The reason is that your first two users have got no `Virgil Card`'s, so you can not use encrypt\decrypt for them.
 
 ## HIPAA & GDPR compliance:
 
