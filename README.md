@@ -59,8 +59,8 @@ This is the simplest possible implementation of E2EE chat and it works perfectly
   ![Back4app credentials](img/back4app_dashboard.png)
   - Return to your  `/app/src/main/res/values/strings.xml` file in the project and paste your “App Id” into “back4app_app_id” and “Client Key” into “back4app_client_key”.
 ```xml
-<string name="back4app_server_url">https://parseapi.back4app.com/</string>
-<string name="back4app_app_id">0YP4zSHDOZy5v5123e2ttGRkG123aaBTUnr6wfH</string>
+<string name="back4app_app_id">your_back4app_app_id</string>
+<string name="back4app_client_key">your_back4app_client_key</string>
 ```
 
 ### 3) Enable Live Query to get live updates for messages and chat threads: 
@@ -218,8 +218,8 @@ virgilSecurity = "4.5.0@aar"
 
 - Open /app/src/main/res/values/strings.xml and add copy & paste your Virgil token and App ID from the Virgil app dashboard:
 ```xml
-<string name="virgil_token">AT.8641c450a983a3435aebe7994fd41235fs0babea997d29b3e8eewed7b35beab72be3</string>
-<string name="virgil_app_id">bd7bf7e832f16e2b3f61fa32dw282cbfc6b3d31f90778ab0e15faa775e7b7db3</string>
+<string name="virgil_token">your_virgil_token</string>
+<string name="virgil_app_id">your_virgil_app_id</string>
 ```
 Note: for simplicity, we re-used the access token you created for the server app. Don’t do this in production: create a separate token for your mobile app with Search-only permissions!
 
