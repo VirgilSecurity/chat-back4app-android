@@ -245,11 +245,17 @@ Let’s make some updates to ../virgilsecurity/virgilback4app/auth/LogInPresente
 private VirgilCard virgilCard;
 private VirgilKey virgilKey;
 ```
-- Pass `virgilCard` as argument to the **signUp** method:
+- Update `signUp` method passing `virgilCard` as argument, so it will looks like:
 ```java
-RxParse.signUp(identity,
-               password,
-               virgilCard)
+restartableFirst(SIGN_UP, () ->
+                         RxParse.signUp(identity,
+                                        password,
+                                        virgilCard)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread()),
+                 LogInFragment::onSignUpSuccess,
+                 LogInFragment::onSignUpError
+);
 ```
 - Add method where we will generate private key and public key (for decrypting incoming chat messages) then saving it ../virgilsecurity/virgilback4app/auth/LogInPresenter:
 ```java
