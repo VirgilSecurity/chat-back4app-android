@@ -351,6 +351,7 @@ private List<VirgilCard> cards;
 
     virgilApi = AppVirgil.getInfoHolder().getVirgilApi();
 ...
+}
 ```
   - Add method that encrypts data:
 ```java
