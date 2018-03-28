@@ -25,6 +25,18 @@ public abstract class BaseFragment<A extends Activity> extends NucleusSupportFra
 
     protected abstract void postButterInit();
 
+    @Override public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        this.activity = (A) activity;
+    }
+
+    @Override public void onAttach(Context context) {
+        super.onAttach(context);
+
+        activity = (A) context;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
