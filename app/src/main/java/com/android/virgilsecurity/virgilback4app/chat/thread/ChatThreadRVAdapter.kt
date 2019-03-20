@@ -36,8 +36,8 @@ class ChatThreadRVAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         viewHolder = when (viewType) {
             MessageType.ME -> HolderMessageMe(inflater.inflate(R.layout.layout_holder_me,
-                                                                viewGroup,
-                                                                false))
+                                                               viewGroup,
+                                                               false))
             MessageType.YOU -> HolderMessageYou(inflater.inflate(R.layout.layout_holder_you,
                                                                  viewGroup,
                                                                  false))
@@ -51,7 +51,7 @@ class ChatThreadRVAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val decryptedText = eThree.decrypt(items[position].body, interlocutorPublicKey)
 
-        when(viewHolder) {
+        when (viewHolder) {
             is HolderMessageMe -> viewHolder.bind(decryptedText)
             is HolderMessageYou -> viewHolder.bind(decryptedText)
         }

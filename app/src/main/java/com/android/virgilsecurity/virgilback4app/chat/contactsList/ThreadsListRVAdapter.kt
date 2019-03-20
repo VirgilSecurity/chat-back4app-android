@@ -63,6 +63,6 @@ class ThreadsListRVAdapter internal constructor(private val context: Context) : 
 
     interface ClickListener {
 
-        fun onItemClicked(position: Int, user: ChatThread)
+        fun onItemClicked(position: Int, thread: ChatThread)
     }
 }

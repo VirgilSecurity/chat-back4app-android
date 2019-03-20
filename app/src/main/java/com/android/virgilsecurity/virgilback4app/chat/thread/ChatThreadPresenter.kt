@@ -91,9 +91,9 @@ class ChatThreadPresenter(context: Context) {
         compositeDisposable += disposable
     }
 
-    fun requestGetCards(identity: String,
-                        onSuccess: (PublicKey) -> Unit,
-                        onError: (Throwable) -> Unit) {
+    fun requestPublicKey(identity: String,
+                         onSuccess: (PublicKey) -> Unit,
+                         onError: (Throwable) -> Unit) {
 
         val disposable = rxEthree.findPublicKey(identity)
                 .subscribeOn(Schedulers.io())

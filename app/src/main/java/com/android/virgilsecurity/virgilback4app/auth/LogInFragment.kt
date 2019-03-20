@@ -103,10 +103,10 @@ class LogInFragment : BaseFragment<SignInControlActivity>(), View.OnClickListene
             etUsername.isEnabled = false
             btnSignIn.isEnabled = false
             btnSignIn.background = ContextCompat.getDrawable(activity,
-                                                               R.drawable.bg_rect_primary_pressed)
+                                                             R.drawable.bg_rect_primary_pressed)
             btnSignUp.isEnabled = false
             btnSignUp.background = ContextCompat.getDrawable(activity,
-                                                               R.drawable.bg_rect_primary_pressed)
+                                                             R.drawable.bg_rect_primary_pressed)
 
             pbLoading.visibility = View.VISIBLE
         } else {

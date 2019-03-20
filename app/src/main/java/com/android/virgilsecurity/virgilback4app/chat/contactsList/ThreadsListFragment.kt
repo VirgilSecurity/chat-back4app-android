@@ -46,8 +46,8 @@ class ThreadsListFragment : BaseFragment<ThreadsListActivity>() {
 
         adapter = ThreadsListRVAdapter(activity)
         adapter.setClickListener(object : ThreadsListRVAdapter.ClickListener {
-            override fun onItemClicked(position: Int, user: ChatThread) {
-                onStartThreadListener!!.onStartThread(user)
+            override fun onItemClicked(position: Int, thread: ChatThread) {
+                onStartThreadListener!!.onStartThread(thread)
             }
         })
 

@@ -17,10 +17,7 @@ import com.android.virgilsecurity.virgilback4app.model.Message
 import com.android.virgilsecurity.virgilback4app.util.Const
 import com.android.virgilsecurity.virgilback4app.util.Utils
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
-import com.parse.OkHttp3SocketClientFactory
-import com.parse.ParseLiveQueryClient
-import com.parse.ParseQuery
-import com.parse.SubscriptionHandling
+import com.parse.*
 import com.virgilsecurity.sdk.client.exceptions.VirgilCardIsNotFoundException
 import com.virgilsecurity.sdk.client.exceptions.VirgilCardServiceException
 import com.virgilsecurity.sdk.crypto.PublicKey
@@ -57,7 +54,7 @@ class ChatThreadFragment : BaseFragment<ChatThreadActivity>() {
 
         btnSend.isEnabled = false
         btnSend.background = ContextCompat.getDrawable(activity,
-                                                         R.drawable.bg_btn_chat_send_pressed)
+                                                       R.drawable.bg_btn_chat_send_pressed)
 
         srlRefresh.setOnRefreshListener {
             tvEmpty.visibility = View.INVISIBLE
@@ -103,7 +100,14 @@ class ChatThreadFragment : BaseFragment<ChatThreadActivity>() {
 
         presenter = ChatThreadPresenter(activity)
         showProgress(true)
-        presenter.requestGetCards(thread.recipientUsername, ::onGetCardSuccess, ::onGetCardError)
+        val recipient = if (thread.recipientUsername == ParseUser.getCurrentUser().username)
+            thread.senderUsername
+        else
+            thread.recipientUsername
+
+        presenter.requestPublicKey(recipient,
+                                   ::onGetPublicKeySuccess,
+                                   ::onGetPublicKeyError)
 
         btnSend.setOnClickListener {
             val message = etMessage.text.toString().trim { it <= ' ' }
@@ -209,7 +213,7 @@ class ChatThreadFragment : BaseFragment<ChatThreadActivity>() {
         if (lock) {
             btnSend.isEnabled = false
             btnSend.background = ContextCompat.getDrawable(activity,
-                                                             R.drawable.bg_btn_chat_send_pressed)
+                                                           R.drawable.bg_btn_chat_send_pressed)
             if (lockInput) {
                 etMessage.isEnabled = false
                 val inputManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -268,7 +272,7 @@ class ChatThreadFragment : BaseFragment<ChatThreadActivity>() {
         Utils.toast(this, Utils.resolveError(t))
     }
 
-    private fun onGetCardSuccess(publicKey: PublicKey) {
+    private fun onGetPublicKeySuccess(publicKey: PublicKey) {
         showProgress(false)
         adapter.interlocutorPublicKey = publicKey
         presenter.requestMessages(thread,
@@ -279,7 +283,7 @@ class ChatThreadFragment : BaseFragment<ChatThreadActivity>() {
                                   ::onGetMessagesError)
     }
 
-    private fun onGetCardError(t: Throwable) {
+    private fun onGetPublicKeyError(t: Throwable) {
         if (t is VirgilCardIsNotFoundException || t is VirgilCardServiceException) {
             Utils.toast(this,
                         "Virgil Card is not found.\nYou can not chat with user without Virgil Card")

@@ -76,9 +76,9 @@ object RxParse {
         queryResult.skip = limit * page
         queryResult.orderByDescending(sortCriteria)
 
-        queryResult.findInBackground { users, exception ->
-            if (users != null) {
-                e.onSuccess(users)
+        queryResult.findInBackground { threads, exception ->
+            if (threads != null) {
+                e.onSuccess(threads)
             } else {
                 e.onError(exception)
             }

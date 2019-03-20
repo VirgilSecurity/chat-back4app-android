@@ -26,11 +26,11 @@ class ThreadsListFragmentPresenter(context: Context) {
     private val rxEthree = RxEthree(context)
 
     fun requestThreads(currentUser: ParseUser,
-                                limit: Int,
-                                page: Int,
-                                sortCriteria: String,
-                                onSuccess: (List<ChatThread>) -> Unit,
-                                onError: (Throwable) -> Unit) {
+                       limit: Int,
+                       page: Int,
+                       sortCriteria: String,
+                       onSuccess: (List<ChatThread>) -> Unit,
+                       onError: (Throwable) -> Unit) {
         this.currentUser = currentUser
         this.limit = limit
         this.sortCriteria = sortCriteria
@@ -54,8 +54,8 @@ class ThreadsListFragmentPresenter(context: Context) {
     }
 
     fun requestThreadsPagination(page: Int,
-                                          onSuccess: (List<ChatThread>) -> Unit,
-                                          onError: (Throwable) -> Unit) {
+                                 onSuccess: (List<ChatThread>) -> Unit,
+                                 onError: (Throwable) -> Unit) {
         val disposable = RxParse.getMyThreads(this.currentUser,
                                               this.limit,
                                               page,

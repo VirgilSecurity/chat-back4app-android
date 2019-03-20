@@ -32,8 +32,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/ddble_margin"
-            android:visibility="gone"
             android:text="@string/no_internet"
-            android:textColor="@color/oxford_blue" />
+            android:textColor="@color/oxford_blue"
+            android:visibility="gone" />
     </LinearLayout>
 </FrameLayout>

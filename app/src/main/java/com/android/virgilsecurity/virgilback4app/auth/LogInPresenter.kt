@@ -3,6 +3,8 @@ package com.android.virgilsecurity.virgilback4app.auth
 import android.content.Context
 import android.util.Base64
 import com.android.virgilsecurity.virgilback4app.AppVirgil
+import com.android.virgilsecurity.virgilback4app.util.AuthRx
+import com.android.virgilsecurity.virgilback4app.util.Preferences
 import com.android.virgilsecurity.virgilback4app.util.RxEthree
 import com.android.virgilsecurity.virgilback4app.util.RxParse
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,6 +24,7 @@ class LogInPresenter(context: Context) {
 
     private val compositeDisposable = CompositeDisposable()
     private val rxEthree = RxEthree(context)
+    private val preferences = Preferences.instance(context)
 
     fun requestSignUp(identity: String, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
         val password = generatePassword(identity.toByteArray())
@@ -41,6 +44,10 @@ class LogInPresenter(context: Context) {
         compositeDisposable += disposable
     }
 
+    /**
+     * Sign In user in Back4App, exchange Back4App User's sessionToken for Virgil Jwt,
+     * then initialize and register [EThree].
+     */
     fun requestSignIn(identity: String,
                       onSuccess: () -> Unit,
                       onError: (Throwable) -> Unit) {
@@ -50,6 +57,8 @@ class LogInPresenter(context: Context) {
         val disposable = RxParse.logIn(identity, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
+                .flatMap { AuthRx.virgilJwt(it.sessionToken) }
+                .map { preferences.setVirgilToken(it) }
                 .flatMap { rxEthree.initEthree() }
                 .flatMap { rxEthree.registerEthree().toSingle { it } }
                 .observeOn(AndroidSchedulers.mainThread())

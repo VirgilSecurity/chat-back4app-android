@@ -10,6 +10,7 @@ import com.android.virgilsecurity.virgilback4app.base.BaseActivity
 import com.android.virgilsecurity.virgilback4app.chat.thread.ChatThreadActivity
 import com.android.virgilsecurity.virgilback4app.model.ChatThread
 import com.android.virgilsecurity.virgilback4app.util.Const
+import com.android.virgilsecurity.virgilback4app.util.Preferences
 import com.android.virgilsecurity.virgilback4app.util.Utils
 import com.android.virgilsecurity.virgilback4app.util.customElements.CreateThreadDialog
 import com.android.virgilsecurity.virgilback4app.util.customElements.OnFinishTimer
@@ -91,6 +92,7 @@ class ThreadsListActivity : BaseActivity(), ThreadsListFragment.OnStartThreadLis
                     dlDrawer.closeDrawer(Gravity.START)
                     presenter.disposeAll()
                     showBaseLoading(true)
+                    Preferences.instance(this).clearVirgilToken()
                     ParseUser.logOutInBackground { e ->
                         runOnUiThread { showBaseLoading(false) }
                         if (e == null) {
