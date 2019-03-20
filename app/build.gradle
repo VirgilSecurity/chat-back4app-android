@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 26
@@ -32,31 +34,32 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:$rootProject.ext.constraintLayout"
     implementation "com.android.support:design:$rootProject.ext.supportLibrary"
 
-    // RxJava
-    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.ext.rxJava"
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$rootProject.ext.kotlinVersion"
+
+    // Rx
+    implementation "io.reactivex.rxjava2:rxkotlin:$rootProject.ext.rxKotlin"
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.ext.rxAndroid"
 
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofit"
     implementation "com.google.code.gson:gson:$rootProject.ext.gson"
 
-    // ButterKnife
-    implementation "com.jakewharton:butterknife:$rootProject.ext.butterKnife"
-    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterKnife"
-
     // Network Tracker
     implementation "com.github.pwittchen:reactivenetwork-rx2:$rootProject.ext.networkTracker"
-
-    // Nucleus
-    implementation "info.android15.nucleus5:nucleus:$rootProject.ext.nucleus"
-    implementation "info.android15.nucleus5:nucleus-support-v4:$rootProject.ext.nucleus"
-    implementation "info.android15.nucleus5:nucleus-support-v7:$rootProject.ext.nucleus"
 
     // Back4App
     implementation "com.parse:parse-android:$rootProject.ext.back4appCore"
     implementation 'com.parse:parse-livequery-android:1.0.4'
 
+    // Fuel
+    implementation "com.github.kittinunf.fuel:fuel:$rootProject.ext.fuel"
+    implementation "com.github.kittinunf.fuel:fuel-rxjava:$rootProject.ext.fuel"
+
     // Virgil Security
-    implementation "com.virgilsecurity.sdk:crypto-android:$rootProject.ext.virgilSecurity"
-    implementation "com.virgilsecurity.sdk:sdk-android:$rootProject.ext.virgilSecurity"
+    implementation "com.virgilsecurity:ethree-kotlin:$rootProject.ext.ethree"
+}
+
+androidExtensions {
+    experimental = true
 }
