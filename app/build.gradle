@@ -3,11 +3,11 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.android.virgilsecurity.virgilback4app"
-        minSdkVersion 17
-        targetSdkVersion 26
+        minSdkVersion 21
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -58,8 +58,4 @@ dependencies {
 
     // Virgil Security
     implementation "com.virgilsecurity:ethree-kotlin:$rootProject.ext.ethree"
-}
-
-androidExtensions {
-    experimental = true
 }

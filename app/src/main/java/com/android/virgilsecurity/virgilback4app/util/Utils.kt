@@ -41,7 +41,7 @@ object Utils {
 
     fun toast(fragment: Fragment, stringResId: Int) {
         Toast.makeText(fragment.activity,
-                       fragment.activity.getString(stringResId),
+                       fragment.activity!!.getString(stringResId),
                        Toast.LENGTH_SHORT).show()
     }
 

@@ -16,7 +16,6 @@ import com.parse.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_contacts.*
-import okhttp3.OkHttpClient
 import java.net.URI
 import java.net.URISyntaxException
 import java.util.*
@@ -56,7 +55,7 @@ class ThreadsListFragment : BaseFragment<ThreadsListActivity>() {
         rvContacts.adapter = adapter
         rvContacts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
                 val totalItemCount = layoutManager.itemCount
@@ -133,10 +132,10 @@ class ThreadsListFragment : BaseFragment<ThreadsListActivity>() {
         if (parseLiveQueryClient == null) {
             try {
                 parseLiveQueryClient = ParseLiveQueryClient.Factory
-                        .getClient(URI(getString(R.string.back4app_live_query_url)),
-                                   OkHttp3SocketClientFactory(OkHttpClient()))
+                        .getClient(URI(getString(R.string.back4app_live_query_url)))
             } catch (e: URISyntaxException) {
                 e.printStackTrace()
+                throw IllegalStateException("initLiveQuery error")
             }
 
             val parseThreadSender = ParseQuery.getQuery<ChatThread>(ChatThread::class.java)
@@ -154,9 +153,8 @@ class ThreadsListFragment : BaseFragment<ThreadsListActivity>() {
         val subscriptionHandling = parseLiveQueryClient!!.subscribe(parseQueryResult)
         subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE
         ) { query, thread ->
-            Utils.log("Log", query.toString() + thread.toString())
             activity.runOnUiThread {
-                if (adapter.contains(thread)) {
+                if (!adapter.contains(thread)) {
                     adapter.addItem(0, thread)
                     rvContacts.smoothScrollToPosition(0)
 

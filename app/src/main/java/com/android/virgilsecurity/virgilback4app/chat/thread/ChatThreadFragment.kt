@@ -24,7 +24,6 @@ import com.virgilsecurity.sdk.crypto.PublicKey
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_chat_thread.*
-import okhttp3.OkHttpClient
 import java.net.URI
 import java.net.URISyntaxException
 import java.util.concurrent.TimeUnit
@@ -50,7 +49,7 @@ class ChatThreadFragment : BaseFragment<ChatThreadActivity>() {
         get() = R.layout.fragment_chat_thread
 
     override fun postCreateInit() {
-        thread = arguments.getParcelable(KEY_THREAD)
+        thread = arguments?.getParcelable(KEY_THREAD)!!
 
         btnSend.isEnabled = false
         btnSend.background = ContextCompat.getDrawable(activity,
@@ -79,7 +78,7 @@ class ChatThreadFragment : BaseFragment<ChatThreadActivity>() {
         rvChat.adapter = adapter
         rvChat.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
                 val totalItemCount = layoutManager.itemCount
@@ -100,18 +99,18 @@ class ChatThreadFragment : BaseFragment<ChatThreadActivity>() {
 
         presenter = ChatThreadPresenter(activity)
         showProgress(true)
-        val recipient = if (thread.recipientUsername == ParseUser.getCurrentUser().username)
-            thread.senderUsername
+        val recipientId = if (thread.recipientUsername == ParseUser.getCurrentUser().username)
+            thread.senderId
         else
-            thread.recipientUsername
+            thread.recipientId
 
-        presenter.requestPublicKey(recipient,
+        presenter.requestPublicKey(recipientId,
                                    ::onGetPublicKeySuccess,
                                    ::onGetPublicKeyError)
 
         btnSend.setOnClickListener {
             val message = etMessage.text.toString().trim { it <= ' ' }
-            if (!message.isEmpty()) {
+            if (message.isNotEmpty()) {
                 lockSendUi(lock = true, lockInput = true)
                 presenter.requestSendMessage(message,
                                              thread,
@@ -175,10 +174,10 @@ class ChatThreadFragment : BaseFragment<ChatThreadActivity>() {
         if (parseLiveQueryClient == null) {
             try {
                 parseLiveQueryClient = ParseLiveQueryClient.Factory
-                        .getClient(URI(getString(R.string.back4app_live_query_url)),
-                                   OkHttp3SocketClientFactory(OkHttpClient()))
+                        .getClient(URI(getString(R.string.back4app_live_query_url)))
             } catch (e: URISyntaxException) {
                 e.printStackTrace()
+                throw IllegalStateException("initLiveQuery error")
             }
 
             parseQuery = ParseQuery.getQuery<Message>(Message::class.java)
@@ -191,7 +190,6 @@ class ChatThreadFragment : BaseFragment<ChatThreadActivity>() {
 
         subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE
         ) { _, message ->
-            Utils.log("SubscriptionHandling", message.body)
             activity.runOnUiThread {
                 adapter.addItem(0, message)
                 rvChat.smoothScrollToPosition(0)

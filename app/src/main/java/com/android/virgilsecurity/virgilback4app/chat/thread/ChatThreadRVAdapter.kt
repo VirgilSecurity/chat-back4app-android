@@ -22,7 +22,7 @@ class ChatThreadRVAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var eThree: EThree = AppVirgil.eThree
     lateinit var interlocutorPublicKey: PublicKey
 
-    @IntDef(MessageType.ME.toLong(), MessageType.YOU.toLong())
+    @IntDef(MessageType.ME, MessageType.YOU)
     private annotation class MessageType {
         companion object {
             const val ME = 0

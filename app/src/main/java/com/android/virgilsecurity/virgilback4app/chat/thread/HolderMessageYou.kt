@@ -2,14 +2,14 @@ package com.android.virgilsecurity.virgilback4app.chat.thread
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.layout_holder_you.*
+import android.widget.TextView
+import com.android.virgilsecurity.virgilback4app.R
 
 class HolderMessageYou(
-        override val containerView: View?
-) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+        itemView: View
+) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(text: String) {
-        tvMessage.text = text
+        itemView.findViewById<TextView>(R.id.tvMessage).text = text
     }
 }

@@ -30,7 +30,7 @@ class CreateThreadDialog(
     private var onCreateThreadDialogListener: OnCreateThreadDialogListener? = null
     private var message: String? = message
 
-    override fun onCreate(savedInstanceState: Bundle) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         requestWindowFeature(Window.FEATURE_NO_TITLE)

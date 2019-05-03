@@ -17,8 +17,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 
 class ChatThreadActivity : BaseActivity() {
 
-    override val layout: Int
-        get() = R.layout.activity_chat_thread
+    override val layout = R.layout.activity_chat_thread
 
     override fun postCreateInit() {
         val chatThread = intent.getParcelableExtra<ChatThread>(CHAT_THREAD)
