@@ -1,50 +1,34 @@
-# End-to-End Encrypted Chat & the road to HIPAA & GDPR compliance!
+# E3Kit Back4App Kotlin Demo
 
-**Ahoy Back4app community!**
+## Prerequisites
 
-This is a guest post from the team at [Virgil Security, Inc.][_virgil_www]: we’re the crypto tech behind [Twilio’s End-to-End Encrypted Messaging][_twilio]. Our friends @ Back4app asked us to show you how to build an End-to-End Encrypted chat app on top of Back4app.
+- [Android Studio][_android_studio] 3.4+.
+- Back4App cloud code functions [setted up](#set-up-back4App-cloud-code).
 
-In this post, we’ll walk you through the steps to make [Back4app’s Android Simple Messenger app][_back4app] End-to-End Encrypted! Are you ready? PS: If you don’t care about the details, simply skip to the end of the post and download the final product.
+## Set up Back4App cloud code functions
 
-## What is End-to-End Encryption?
+- [Download this archive][_main_js_package_json] that contains two files: `main.js` and `package.json`;
+- Extract the archive and open `main.js` with your favorite editor;
 
-First, let’s start with a quick refresher of what E2EE (End-to-End Encryption) is and how it works. E2EE is simple: when you type in a chat message, it gets encrypted on your mobile device (or in your browser) and gets decrypted only when your chat partner receives it and wants to display it in chat window.
+### Get Back4App credentials
 
-![Virgil Chat](img/chat_example.png)
+If you don't have an account yet, [sign up for one](https://back4app.com).
 
-The message remains encrypted while it travels over Wi-Fi and the Internet, through the cloud / web server, into a database, and on the way back to your chat partner. In other words, none of the networks or servers have a clue of what the two of you are chatting about.
+- Open Back4App “Dashboard” of your app -> “App Settings” -> “Security & Keys”;
+- Replace `PARSE_APP_ID` with your `Application ID` and `PARSE_REST_API_KEY` with your `REST API key`;
 
-![Virgil Chat Server](img/chat_example_server.png)
+### Get Virgil credentials
 
-What’s difficult in End-to-End Encryption is the task of managing the encryption keys in a way that only the users involved in the chat can access them and nobody else. And when I write “nobody else”, I really mean it: even insiders of your cloud provider or even you, the developer, are out; [no accidental mistakes][_mistakes] or legally enforced peeking are possible. Writing crypto, especially for multiple platforms is hard: generating true random numbers, picking the right algorithms, and choosing the right encryption modes are just a few examples that make most developers wave their hands in the air and end up just NOT doing it.
+If you don't have an account yet, [sign up for one](https://dashboard.virgilsecurity.com/signup).
 
-This blog post will show you how to ignore all these annoying details and quickly and simply End-to-End Encrypt using Virgil’s SDK.
+- Create an E2EE v5 application and replace `APP_ID` with your `Application ID`;
+- Create an API Key in `API KEYS` section and replace `API_KEY` with your Private API Key then replace `API_KEY_ID` with your Api Key ID.
 
+### Deploy cloud code function
 
-**For an intro, this is how we’ll upgrade Back4app’s messenger app to be End-to-End Encrypted:**
-1. During sign-up: we’ll generate the individual private & public keys for new users (remember: the recipient's public key encrypts messages and the matching recipient's private key decrypts them).
-2. Before sending messages, you’ll encrypt chat messages with the recipient's public key.
-3. After receiving messages, you’ll decrypt chat messages with the recipient's private key.
-
-
-![Virgil E2EE](img/virgil_main.png)
-
-We’ll publish the users’ public keys to Virgil’s Cards Service so that chat users are able to look up each other and able to encrypt messages for each other.  The private keys will stay on the user devices.
-
-**Keep it simple**
-
-This is the simplest possible implementation of E2EE chat and it works perfectly for simple chat apps between 2 users where conversations are short-lived and it's okay to lose the message history if a device is lost with the private key on it. For a busier, Slack-like, chat app where history is important and users are joining and leaving channels all the time, we’ll build a Part II for this post: [sign up here if you’re interested][_next_post] and we’ll ping you once we finish it.
-
-**OK, enough talking! Let’s get down to coding.**
-
-- We’ll start by guiding you through the Android app’s setup,
-- Then, we’ll make you add the E2EE code and explain what each code block does.
-
-**Prerequisites:**
-
-- Sign up for a [Back4app account][_back4app_account] and create a new app;
-- Sign up for a [Virgil Security account][_virgil_account] (we’ll create the app later)
-- You’ll need [Android Studio][_android_studio] for the coding work, we used 3.0.1.
+- Open Back4App “Dashboard” of your app -> Core -> Cloud code functions;
+- Click `+ADD` and select your `main.js` and `package.json`, after that move both of them to the `cloud` folder;
+- Click `DEPLOY`;
 
 ## Let’s set up the Back4app messenger app
 
@@ -655,7 +639,7 @@ You can find more information about what you can build with Virgil Security [her
 [_build.gradle_project_level]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/build.gradle
 [_string.xml]: https://github.com/VirgilSecurity/chat-back4app-android/blob/e2ee/app/src/main/res/values/strings.xml
 [_virgil_dashboard]: https://developer.virgilsecurity.com/account/dashboard?utm_source=back4app&utm_medium=blog&utm_campaign=e2eechat
-[_main_js_package_json]: https://gist.github.com/vadimavdeev/0df867740156ca787908a4f2b62997b8/archive/80a7f913fdb81fa8e05f23cec30ac992aff70ee3.zip
+[_main_js_package_json]: https://gist.github.com/xlwknx/2ce304284d9f1e47d7e3c9af4f9dd56c/archive/64b48e7310ad13f3643f607a14416335bc47b26a.zip
 [_youtube]: https://www.youtube.com/channel/UCU8BhA1nVzKKRiU5P4N3D6A/featured
 [_final_project]: https://github.com/VirgilSecurity/chat-back4app-android/tree/e2ee
 [_data_integrity]: https://developer.virgilsecurity.com/docs/java/get-started/data-integrity?utm_source=back4app&utm_medium=blog&utm_campaign=e2eechat
