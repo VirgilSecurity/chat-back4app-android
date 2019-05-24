@@ -36,18 +36,18 @@ Don't forget to setup [Back4App cloud code function](#set-up-back4app-cloud-code
 
 - Open Android Studio -> File -> New -> Project from Version Control -> Git
 - Enter https://github.com/VirgilSecurity/chat-back4app-android
-```
-Setup Back4App credentials:
-```
+
+### Setup Back4App credentials:
+
 - Open Back4App “Dashboard” of your app -> “App Settings” -> “Security & Keys”;
 - Go to `/app/src/main/res/values/strings.xml` file in your android project and replace `your_back4app_app_id` with your “Application ID” and `your_back4app_client_key` with your `Client Key`.
-```
-Setup DB:
-```
+
+### Setup DB:
+
 - Open Back4App “Dashboard” -> “Core” and create classes of `Custom` type named `Message` and `ChatThread`;
-```
-Setup live query:
-```
+
+### Setup live query:
+
 - Go to Back4App your apps list;
 - Press the “Server Settings” button on your Application;
 - Find the “Web Hosting and Live Query” block;
