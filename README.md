@@ -15,7 +15,7 @@
 If you don't have an account yet, [sign up for one](https://back4app.com).
 
 - Open Back4App “Dashboard” of your app -> “App Settings” -> “Security & Keys”;
-- Replace `PARSE_APP_ID` with your `Application ID` and `PARSE_REST_API_KEY` with your `REST API key`;
+- Go to `/app/src/main/res/values/strings.xml` file in your android project and replace `PARSE_APP_ID` with your `Application ID` and `PARSE_REST_API_KEY` with your `REST API key`;
 
 ### Get Virgil credentials
 
