@@ -26,7 +26,7 @@ If you don't have an account yet, [sign up for one](https://dashboard.virgilsecu
 
 ### Deploy cloud code function
 
-- Open Back4App “Dashboard” of your app -> Core -> Cloud code functions;
+- Open Back4App “Dashboard” of your app -> “Core” -> Cloud code functions;
 - Click `+ADD` and select your `main.js` and `package.json`, after that move both of them to the `cloud` folder;
 - Click `DEPLOY`;
 
@@ -44,15 +44,15 @@ Don't forget to setup [Back4App cloud code function](#set-up-back4app-cloud-code
 
 ### Setup DB:
 
-- Open Back4App “Dashboard” -> “Core” and create classes of `Custom` type named `Message` and `ChatThread`;
+- Open Back4App “Dashboard” -> “Core” -> “Database Browser” -> `Create a class` and create classes of `Custom` type named `Message` and `ChatThread`;
 
 ### Setup live query:
 
 - Go to Back4App your apps list;
 - Press the “Server Settings” button on your Application;
 - Find the “Web Hosting and Live Query” block;
-- Open the Live Query Settings  and check the “Activate Hosting” option;
-- Choose a name for your subdomain to activate Live Query for the 2 classes you created: `Message` and `ChatThread`;
+- Open the `Live Query` Settings and check the “Activate Hosting” option as well as “Activate Live Query”;
+- Choose *any* name for your `Subdomain` and activate Live Query for the 2 classes you've created: `Message` and `ChatThread`;
 - Copy your new subdomain name and click the SAVE button;
 - Go to `/app/src/main/res/values/strings.xml` and replace `yourSubdomainName` with the one you've created in the step above;
 
