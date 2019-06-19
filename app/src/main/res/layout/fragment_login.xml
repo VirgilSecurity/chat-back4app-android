@@ -15,8 +15,8 @@
             android:id="@+id/ivLogo"
             android:layout_width="230dp"
             android:layout_height="90dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,9 +29,9 @@
             android:id="@+id/flBtnContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/default_margin"
             android:layout_marginStart="@dimen/default_margin"
             android:layout_marginTop="@dimen/ddble_margin"
+            android:layout_marginEnd="@dimen/default_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivLogo">
@@ -60,37 +60,37 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center_vertical|end"
-                android:layout_marginEnd="6dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginEnd="6dp"
                 android:visibility="invisible" />
         </FrameLayout>
 
         <Button
-            android:id="@+id/btnLogin"
+            android:id="@+id/btnSignIn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="2dp"
             android:layout_marginStart="@dimen/default_margin"
             android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginEnd="2dp"
             android:background="@drawable/bg_log_in_buttons"
             android:text="@string/login"
             android:textColor="@color/snow"
-            app:layout_constraintEnd_toStartOf="@+id/btnSignup"
+            app:layout_constraintEnd_toStartOf="@+id/btnSignUp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/flBtnContainer" />
 
         <Button
-            android:id="@+id/btnSignup"
+            android:id="@+id/btnSignUp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/default_margin"
             android:layout_marginStart="2sp"
             android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginEnd="@dimen/default_margin"
             android:background="@drawable/bg_log_in_buttons"
             android:text="@string/signup"
             android:textColor="@color/snow"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btnLogin"
+            app:layout_constraintStart_toEndOf="@id/btnSignIn"
             app:layout_constraintTop_toBottomOf="@+id/flBtnContainer" />
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

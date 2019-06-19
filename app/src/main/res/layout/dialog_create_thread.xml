@@ -10,16 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/half_default_margin"
         android:paddingTop="@dimen/half_default_margin"
+        android:paddingBottom="@dimen/half_default_margin"
         android:visibility="visible">
 
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/half_default_margin"
             android:paddingStart="@dimen/default_margin"
+            android:paddingBottom="@dimen/half_default_margin"
             android:textColor="@color/oxford_blue"
             android:textSize="@dimen/increased_text"
             tools:text="Title" />
@@ -44,9 +44,9 @@
             style="@style/TextInputBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/default_text"
             android:layout_marginStart="@dimen/default_margin"
             android:layout_marginTop="@dimen/half_default_margin"
+            android:layout_marginEnd="@dimen/default_text"
             android:hint="@string/username"
             android:inputType="text"
             android:maxLines="1"
@@ -87,8 +87,8 @@
         android:id="@+id/llLoadingRoot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/default_margin"
         android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginBottom="@dimen/default_margin"
         android:orientation="vertical"
         android:visibility="gone">
 

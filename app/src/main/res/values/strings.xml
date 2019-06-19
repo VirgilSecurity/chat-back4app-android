@@ -1,10 +1,6 @@
 <resources>
     <string name="app_name">VirgilBack4App</string>
 
-    <!-- Virgil -->
-    <string name="virgil_token">your_virgil_token</string>
-    <string name="virgil_app_id">your_virgil_app_id</string>
-
     <!-- Back4App -->
     <string name="back4app_server_url">https://parseapi.back4app.com/</string>
     <string name="back4app_live_query_url">wss://yourSubdomainName.back4app.io/</string>
