@@ -21,8 +21,8 @@ If you don't have an account yet, [sign up for one](https://back4app.com).
 
 If you don't have an account yet, [sign up for one](https://dashboard.virgilsecurity.com/signup).
 
-- Create an E2EE v5 application and replace `APP_ID` with your `Application ID`;
-- Create an API Key in `API KEYS` section and replace `API_KEY` with your Private API Key then replace `API_KEY_ID` with your Api Key ID.
+- Create an application and generate a `.env` file under the E3Kit section in the left side bar;
+- Copy the values of `APP_ID`, `APP_KEY`, and `APP_KEY_ID` from the `.env` file and replace them in your `main.js` file in the appropriate places.
 
 ### Deploy cloud code function
 
@@ -59,4 +59,4 @@ Don't forget to setup [Back4App cloud code function](#set-up-back4app-cloud-code
 After these steps you will be able to hit the Run button in Android Studio and get the sample to work. Use emulator or real device to test it out.
 
 [_android_studio]: https://developer.android.com/studio/index.html
-[_main_js_package_json]: https://gist.github.com/xlwknx/2ce304284d9f1e47d7e3c9af4f9dd56c/archive/64b48e7310ad13f3643f607a14416335bc47b26a.zip
+[_main_js_package_json]: https://gist.github.com/cardoso/a18028d8c74891aed66fe82363cef98b/archive/1a38f808e96ea9362e1f3f2c0ec059be4321ba4e.zip
