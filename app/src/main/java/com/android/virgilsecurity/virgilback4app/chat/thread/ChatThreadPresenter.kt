@@ -6,7 +6,7 @@ import com.android.virgilsecurity.virgilback4app.model.ChatThread
 import com.android.virgilsecurity.virgilback4app.model.Message
 import com.android.virgilsecurity.virgilback4app.util.RxEthree
 import com.android.virgilsecurity.virgilback4app.util.RxParse
-import com.virgilsecurity.sdk.crypto.PublicKey
+import com.virgilsecurity.sdk.cards.Card
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -25,7 +25,7 @@ class ChatThreadPresenter(context: Context) {
     private lateinit var sortCriteria: String
     private val compositeDisposable = CompositeDisposable()
     private val eThree = AppVirgil.eThree
-    private lateinit var publicKey: PublicKey
+    private lateinit var userCard: Card
     private val rxEthree = RxEthree(context)
 
     fun requestMessages(thread: ChatThread, limit: Int,
@@ -75,7 +75,7 @@ class ChatThreadPresenter(context: Context) {
                            onSuccess: () -> Unit,
                            onError: (Throwable) -> Unit) {
 
-        val encryptedText = eThree.encrypt(text, listOf(publicKey))
+        val encryptedText = eThree.authEncrypt(text, userCard)
         val disposable = RxParse.sendMessage(encryptedText, thread)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -91,16 +91,16 @@ class ChatThreadPresenter(context: Context) {
         compositeDisposable += disposable
     }
 
-    fun requestPublicKey(identity: String,
-                         onSuccess: (PublicKey) -> Unit,
-                         onError: (Throwable) -> Unit) {
+    fun requestCard(identity: String,
+                    onSuccess: (Card) -> Unit,
+                    onError: (Throwable) -> Unit) {
 
-        val disposable = rxEthree.findPublicKey(identity)
+        val disposable = rxEthree.findCard(identity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                     onSuccess = {
-                        publicKey = it
+                        userCard = it
                         onSuccess(it)
                     },
                     onError = {

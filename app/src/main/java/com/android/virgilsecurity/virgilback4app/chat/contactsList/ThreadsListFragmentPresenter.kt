@@ -74,8 +74,8 @@ class ThreadsListFragmentPresenter(context: Context) {
         compositeDisposable += disposable
     }
 
-    fun requestEthreeInit(onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
-        val disposable = rxEthree.initEthree()
+    fun requestEthreeInit(currentUser: ParseUser, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
+        val disposable = rxEthree.initEthree(currentUser.username)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(

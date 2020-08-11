@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "axios": "^0.19.2",
+    "virgil-crypto": "4.2.2",
+    "virgil-sdk": "6.1.2"
+  }
+}

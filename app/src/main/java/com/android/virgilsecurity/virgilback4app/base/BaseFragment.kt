@@ -3,11 +3,11 @@ package com.android.virgilsecurity.virgilback4app.base
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 
 /**
  * Created by Danylo Oliinyk on 16.11.17 at Virgil Security.
@@ -22,16 +22,16 @@ abstract class BaseFragment<A : Activity> : Fragment() {
 
     protected abstract fun postCreateInit()
 
-    override fun onAttach(activity: Activity?) {
+    override fun onAttach(activity: Activity) {
         super.onAttach(activity)
 
-        this.activity = (activity as A?)!!
+        this.activity = activity as A
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        activity = (context as A?)!!
+        activity = context as A
     }
 
     override fun onCreateView(inflater: LayoutInflater,

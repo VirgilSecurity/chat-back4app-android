@@ -1,16 +1,16 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.android.virgilsecurity.virgilback4app"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables.useSupportLibrary = true
     }
@@ -30,9 +30,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Support libraries
-    implementation "com.android.support:appcompat-v7:$rootProject.ext.supportLibrary"
-    implementation "com.android.support.constraint:constraint-layout:$rootProject.ext.constraintLayout"
-    implementation "com.android.support:design:$rootProject.ext.supportLibrary"
+    implementation "androidx.appcompat:appcompat:1.1.0"
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation "com.google.android.material:material:1.1.0"
+//    implementation "com.android.support.constraint:constraint-layout:$rootProject.ext.constraintLayout"
+//    implementation "com.android.support:design:$rootProject.ext.supportLibrary"
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$rootProject.ext.kotlinVersion"
@@ -49,13 +52,13 @@ dependencies {
     implementation "com.github.pwittchen:reactivenetwork-rx2:$rootProject.ext.networkTracker"
 
     // Back4App
-    implementation "com.parse:parse-android:$rootProject.ext.back4appCore"
-    implementation 'com.parse:parse-livequery-android:1.0.4'
+    implementation "com.github.parse-community.Parse-SDK-Android:parse:$rootProject.ext.back4appCore"
+    implementation "com.github.parse-community:ParseLiveQuery-Android:$rootProject.ext.back4appLiveQuery"
 
     // Fuel
     implementation "com.github.kittinunf.fuel:fuel:$rootProject.ext.fuel"
     implementation "com.github.kittinunf.fuel:fuel-rxjava:$rootProject.ext.fuel"
 
     // Virgil Security
-    implementation "com.virgilsecurity:ethree-kotlin:$rootProject.ext.ethree"
+    implementation "com.virgilsecurity:ethree:$rootProject.ext.ethree"
 }

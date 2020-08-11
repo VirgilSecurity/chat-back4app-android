@@ -7,8 +7,8 @@
 
 ## Set up Back4App cloud code functions
 
-- [Download this archive][_main_js_package_json] that contains two files: `main.js` and `package.json`;
-- Extract the archive and open `main.js` with your favorite editor;
+- Find `main.js` and `package.json` in `scripts` directory;
+- Open `main.js` with your favorite editor;
 
 ### Get Back4App credentials
 
@@ -59,4 +59,3 @@ Don't forget to setup [Back4App cloud code function](#set-up-back4app-cloud-code
 After these steps you will be able to hit the Run button in Android Studio and get the sample to work. Use emulator or real device to test it out.
 
 [_android_studio]: https://developer.android.com/studio/index.html
-[_main_js_package_json]: https://gist.github.com/cardoso/a18028d8c74891aed66fe82363cef98b/archive/1a38f808e96ea9362e1f3f2c0ec059be4321ba4e.zip

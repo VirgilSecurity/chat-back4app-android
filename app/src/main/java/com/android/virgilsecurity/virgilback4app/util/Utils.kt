@@ -1,15 +1,15 @@
 package com.android.virgilsecurity.virgilback4app.util
 
-import android.app.FragmentTransaction
 import android.content.Context
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
 import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 
 import com.android.virgilsecurity.virgilback4app.R
+import com.google.android.material.textfield.TextInputLayout
 import com.parse.ParseException
 import com.virgilsecurity.sdk.client.exceptions.VirgilCardIsNotFoundException
 import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsAlreadyExistsException
@@ -75,6 +75,7 @@ object Utils {
     }
 
     fun resolveError(t: Throwable): String {
+        Log.e("Utils", "resolving error", t)
         return when (t) {
             is HttpException -> when (t.code()) {
                 Const.Http.BAD_REQUEST -> "Bad Request"

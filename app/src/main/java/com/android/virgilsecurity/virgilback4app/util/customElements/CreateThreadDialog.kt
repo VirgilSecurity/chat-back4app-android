@@ -3,13 +3,13 @@ package com.android.virgilsecurity.virgilback4app.util.customElements
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.support.transition.TransitionManager
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import androidx.transition.TransitionManager
 import com.android.virgilsecurity.virgilback4app.R
 import com.android.virgilsecurity.virgilback4app.util.UsernameInputFilter
 import com.android.virgilsecurity.virgilback4app.util.Utils
