@@ -25,8 +25,8 @@ This blog post will show you how to ignore all these annoying details and quickl
 
 **For an intro, this is how we’ll upgrade Back4app’s messenger app to be End-to-End Encrypted:**
 1. During sign-up: we’ll generate the individual private & public keys for new users (remember: the recipient's public key encrypts messages and the matching recipient's private key decrypts them).
-2. Before sending messages, you’ll encrypt chat messages with the recipient's public key.
-3. After receiving messages, you’ll decrypt chat messages with the recipient's private key.
+2. Before sending messages, you’ll encrypt and sign chat messages with the recipient's public key.
+3. After receiving messages, you’ll verify anf decrypt chat messages with the recipient's private key.
 
 
 ![Virgil E2EE](img/virgil_main.png)
@@ -48,7 +48,7 @@ This is the simplest possible implementation of E2EE chat and it works perfectly
 - Sign up for a [Virgil Security account][_virgil_account] (we’ll create the app later)
 - You’ll need [Android Studio][_android_studio] for the coding work, we used 3.0.1.
 
-## Let’s set up the Back4app messenger app
+## Let’s set up E3Kit Back4App Kotlin Demo
 
 ### 1) Import Project in Android Studio
 
