@@ -37,12 +37,7 @@ We’ll publish the users’ public keys to Virgil Cards Service so that chat us
 
 This is the simplest possible implementation of E2EE chat and it works perfectly for simple chat apps between 2 users where conversations are short-lived and it's okay to lose the message history if a device is lost with the private key on it.
 
-**OK, enough talking! Let’s get down to coding.**
-
-- We’ll start by guiding you through the Android app’s setup,
-- Then, we’ll help you add the E2EE code and explain what each code block does.
-
-**Prerequisites:**
+## Prerequisites
 
 - Sign up for a [Back4app account][_back4app_account] and create a new app (Note: this demo is for Parse 3 server version);
 - Sign up for a [Virgil Security account][_virgil_account] (we’ll create the app later)
@@ -50,586 +45,103 @@ This is the simplest possible implementation of E2EE chat and it works perfectly
 
 ## Let’s set up E3Kit Back4App Kotlin Demo
 
-### 1) Import Project in Android Studio
+### 1) Set up Back4App cloud code functions
 
-  - File -> New -> Project from Version Control -> Git
-  - Git Repository URL: https://github.com/VirgilSecurity/chat-back4app-android
-  - Make sure you're in the “master” branch
+- Find `main.js` and `package.json` in `scripts` directory;
+- Open `main.js` with your favorite editor.
+
+#### 1.1) Get Back4App credentials
+
+If you don't have an account yet, [sign up for one](https://back4app.com).
+
+- Open Back4App “Dashboard” of your app -> “App Settings” -> “Security & Keys”;
+![Back4app credentials for cloud](img/back4app_dashboard_cloud_credentials.png)
+- Replace `PARSE_APP_ID` with your `Application ID` and `PARSE_REST_API_KEY` with your `REST API key`;
+
+```java
+const PARSE_APP_ID = "YOUR_PARSE_APP_ID";
+const PARSE_REST_API_KEY = "YOUR_PARSE_REST_API_KEY";
+```
+
+#### 1.2) Get Virgil credentials
+
+If you don't have an account yet, [sign up for one](https://dashboard.virgilsecurity.com/signup).
+
+- Create an application and generate a `.env` file under the E3Kit section in the left side bar;
+![Virgil App credentials](img/virgil_app.png)
+![Virgil App credentials](img/virgil_env.png)
+![Virgil App credentials](img/virgil_creds.png)
+- Copy the values of `APP_ID`, `APP_KEY`, and `APP_KEY_ID` from the `.env` file and replace them in your `main.js` file in the appropriate places.
+
+```java
+const APP_ID = "YOUR_VIRGIL_APP_ID";
+const APP_KEY = "YOUR_VIRGIL_APP_KEY";
+const APP_KEY_ID = "YOUR_VIRGIL_APP_ID";
+```
+
+#### 1.3) Deploy cloud code function
+
+- Open Back4App “Dashboard” of your app -> “Core” -> Cloud code functions;
+![Deploy cloud function](img/cloud_func.png)
+- Click `+ADD` and select your `main.js` and `package.json`, after that move both of them to the `cloud` folder;
+- Click `DEPLOY`;
+
+### 2) Start Back4app Kotlin Demo app
+
+Don't forget to setup [Back4App cloud code function](#set-up-back4app-cloud-code-functions) first. It is a mandatory part of this demo. After this, go through the following steps:
+
+#### 2.1) Import Project in Android Studio
+
+- Open Android Studio -> File -> New -> Project from Version Control -> Git
+- Git Repository URL: https://github.com/VirgilSecurity/chat-back4app-android
+- Make sure you're in the “master” branch
 ![Back4App chat master branch](img/branch.png)
 
-**Important!**
-Select "Project" type of file tree. It will be used all-through the tutorial:
+#### 2.2) Setup Back4App credentials
 
-<img src="img/select_project_view.png" width="260" height="100">
-
-
-### 2) Set up the App with the credentials from your new Back4App App’s Dashboard
-
-  - Open “Dashboard” of your app -> “App Settings” -> “Security & Keys”:
-  ![Back4app credentials](img/back4app_dashboard.png)
-  - Return to your  `/app/src/main/res/values/strings.xml` file in the project and paste your “App Id” into `back4app_app_id` and “Client Key” into `back4app_client_key`.
+- Open Back4App “Dashboard” of your app -> “App Settings” -> “Security & Keys”;
+![Back4app credentials](img/back4app_dashboard.png)
+- Go to `/app/src/main/res/values/strings.xml` file in your android project and replace `your_back4app_app_id` with your “Application ID” and `your_back4app_client_key` with your `Client Key`.
 
 ```xml
 <string name="back4app_app_id">your_back4app_app_id</string>
 <string name="back4app_client_key">your_back4app_client_key</string>
 ```
 
-### 3) Enable Live Query to get live updates for messages and chat threads
+#### 2.3) Setup DB
 
-  - Launch Data Management for your app and create two classes: `Message` and `ChatThread`:
+- Open Back4App “Dashboard” -> “Core” -> “Database Browser” -> `Create a class` and create classes of `Custom` type named `Message` and `ChatThread`;
+![Create Class](img/create_class.jpeg)
 
-    ![Create Class](img/create_class.jpeg)
+#### 2.4) Setup live query
 
-  - Go back to your [Back4App account][_back4app_admin]
-  - Press the “Server Settings” button on your Application
-  - Find the “Web Hosting and Live Query” block
-  - Open the Live Query Settings  and check the “Activate Hosting” option.
-  - Choose a name for your subdomain to activate Live Query for the 2 classes you created: `Message` and `ChatThread`.
-  - Copy your new subdomain name and click the SAVE button:
-  ![Enablle Live Query](img/live_query.jpeg)
+- Go to Back4App your apps list;
+- Press the “Server Settings” button on your Application;
+- Find the “Web Hosting and Live Query” block;
+- Open the `Live Query` Settings and check the “Activate Hosting” option as well as “Activate Live Query”;
+![Enablle Live Query](img/live_query.jpeg)
+- Choose *any* name for your `Subdomain` and activate Live Query for the 2 classes you've created: `Message` and `ChatThread`;
+- Copy your new subdomain name and click the SAVE button;
+- Go to `/app/src/main/res/values/strings.xml` and replace `yourSubdomainName` with the one you've created in the step above.
 
-Return to `/app/src/main/res/values/strings.xml` and paste "Subdomain name" you have entered above into the `back4app_live_query_url` instead of "yourSubdomainName":
 ```xml
 <string name="back4app_live_query_url">wss://yourSubdomainName.back4app.io/</string>
 ```
 
-### Now you can build and run your app on your device or emulator
+After these steps you will be able to hit the Run button in Android Studio and get the sample to work. Use emulator or real device to test it out.
 
-![Enablle Live Query](img/emulator.jpeg)
+### Running the demo
 
-If it all worked out, you should see the chat messenger app pop up. Register two users and send a few messages to each other: you should see new data showing up in the Message class at Back4App dashboard.
-
-**Note that currently you can see on the server what your users are chatting about:**
-
-![DB](img/back4app_messages_no_encrypt.png)
-
-**Next**: Close your chat interface and move on to the next step – adding E2EE encryption.
-
-## Now, let’s End-to-End Encrypt those messages!
-
-By the end of this part, this is how your chat messages will look like on the server: can you spot the difference?
+To see the result of running the demo, you'll need to:
+1. Sign up 2 users;
+2. Start a conversation between them and send a couple of messages;
+![Chat screenshot](img/chat_screenshot.png)
+3. Open Back4App “Dashboard” -> “Core” -> “Database Browser” -> "Message".
 
 ![DB 2](img/encrypted_db.png)
 
-And this is how we’ll get there:
-  - **Step 1:** we’ll set up a minimal Back4App server app that will approve the creation of new users at registration time: otherwise, you’ll end up with a bunch of spam cards. Later, you can introduce an email/SMS verification by customizing this app!
-  - **Step 2:** we’ll modify the messenger app by adding E2EE code; I’ll do my best to explain every step along the way, hopefully simply enough that you can continue playing with it and reuse in your own project!
+You can see the messages that users have sent to each other, but you won't be able to read their contents because they are end-to-end encrypted.
 
-But before we begin, let’s clear two important terms for you: what’s a private key and a Virgil Card?
-
-  - **Private key** – the part of a key pair that can decrypt data that was encrypted using the matching public key. It is stored on user's device.
-  - **Virgil Card** – Virgil Сards carry the user’s public key. Virgil cards are published to Virgil’s Cards Service (imagine this service is like a telephone book) for other users to retrieve them: Alice needs to retrieve Bob’s public key in order to encrypt a message for Bob using that key. 
-
-### Step 1: Set up your App Server
-
-You’ll need some minimal server code to make the sample work. This piece of server code will enable you to verify new users before they can start using Virgil’s crypto service. To keep this app server simple, we created one for you: it will automatically approve all new users. Later, you can add your own SMS/email verification code, so that you won’t end up with a ton of false users.
-
-**Let’s get started:**
-- [Download this archive][_main_js_package_json] that contains two files: `main.js` and `package.json`;
-- Extract the archive and open `main.js` with your favorite editor;
-- Go back to your [Virgil developer account][_virgil_dashboard] and create a new application. Make sure that you save the Private Key that is generated for your application. Also, copy the new app’s base64-encoded AppKey string before you complete the app creation:
-![Encoded string](img/encoded_string.jpeg)
-- Edit main.js, find the function `resolveAppKEy()` and replace: 
-  - `YOUR_VIRGIL_APP_PRIVATE_KEY` with the Base64 AppKey on your clipboard
-  - `YOUR_VIRGIL_APP_PRIVATE_KEY_PASSWORD` with the password you’ve set for your new Virgil app: 
-    ```javascript
-    function resolveAppKey() {
-      try {
-        return virgil.crypto.importPrivateKey('MIGhMF0GCSqGSIb3DQEFDTBQMC8GCSqGSIb3DQEFDDAiBBAmU9m+EJOvLRxRaJP6d......',
-          'a0KEOifsd2Ean6fzQ'
-        );
-      } catch (e) {
-        return null;
-      }
-    }
-  ```
-- Now, go back to your Virgil dashboard and copy your new app’s **App ID**:
-![Access Token](img/access_token.jpeg)
-- Find the function `signCardRequest` and replace `YOUR_VIRGIL_APP_ID` with the ID on your clipboard:
-```javascript
-function signCardRequest(cardRequest) {
-  const signer = virgil.requestSigner(virgil.crypto);
-  signer.authoritySign(cardRequest, 'bd7bf7e832f16e2b3f6fd343s1f90778ab0e15515aa775e7b7db3', appKey);
-}
-```
-- Now, let’s get back to the Virgil dashboard and create a new token for your app:
-![Access Token](img/access_token.jpeg)
-- Choose any name, leave all settings as-is and generate the token:
- <img src="img/access_token2.jpeg" width="250" height="300">
-- As a result, you get the Access Token:
-  <img src="img/access_token3.jpeg" width="600" >
-- Copy the Token to the clipboard, find the function `signCardRequest(cardRequest, appKey)` and replace `YOUR_VIRGIL_APP_ACCESS_TOKEN` with the token on your clipboard:
-
-```javascript
-signCardRequest(cardRequest);
-const client = virgil.client('AT.8641c450a983a3435aebe79sad32abea997d29b3e8eed7b35beab72be3');
-client.publishCard(cardRequest)
-...
-```
-
-**Now, back to the Back4app dashboard:**
-- Go to your App Dashboard at Back4App website:
-  <img src="img/back4app_settings.jpeg" width="600" height="300">
-- Open “Server Settings” and find “Cloud Code”:
-
-  <img src="img/cloud_settings.jpeg" width="250" height="300">
-- Open Cloud “Settings”
-- Upload the main.js and package.json files in your Cloud Code settings and press “save” button:
-  <img src="img/back4app_cloud_code.jpeg" width="600" height="300">
-
-
-### Step 2: Update Android app with E2EE code
-
-**Let’s update your InfoHolder Class:**
-
-- Add new fields:
-```java
-private VirgilApi virgilApi;
-private VirgilApiContext virgilApiContext;
-private KeyStorage keyStorage;
- ```
-- Update constructor to initialize created fileds:
-```java
-public InfoHolder(Context context) {
-    keyStorage = new VirgilKeyStorage(context.getFilesDir().getAbsolutePath());
-
-    virgilApiContext = new VirgilApiContext(context.getString(R.string.virgil_token));
-    virgilApiContext.setKeyStorage(keyStorage);
-
-    virgilApi = new VirgilApiImpl(virgilApiContext);
-}
-```
-- Add getters for new fields, so you will be able to access it all-through the application:
-```java
-public VirgilApi getVirgilApi() {
-    return virgilApi;
-}
-
-public VirgilApiContext getVirgilApiContext() {
-    return virgilApiContext;
-}
-
-public KeyStorage getKeyStorage() {
-    return keyStorage;
-}
-```
-**Add Virgil’s Android SDK to your project:**
-
-- In the app-level gradle at /app/[build.gradle][_build.gradle_app_level]:
-```gradle
-implementation "com.virgilsecurity.sdk:crypto-android:$rootProject.ext.virgilSecurity"
-implementation "com.virgilsecurity.sdk:sdk-android:$rootProject.ext.virgilSecurity"
-```
-
-- Add the following to the end of your project-level /[build.gradle][_build.gradle_project_level]:
-```gradle
-virgilSecurity = "4.5.0@aar"
-```
-
-**Enter your access token:**
-
-- Open /app/src/main/res/values/strings.xml and add copy & paste your Virgil token and App ID from the Virgil app dashboard:
-```xml
-<string name="virgil_token">your_virgil_token</string>
-<string name="virgil_app_id">your_virgil_app_id</string>
-```
-Note: for simplicity, we re-used the access token you created for the server app. Don’t do this in production: create a separate token for your mobile app with Search-only permissions!
-
-
-We're ready to use Virgil SDK now!
-
-
-
-**For every chat user, the new E2EE app maintains a private & public key:**
-
-1. We generate the private & public key pair as part of signup
-2. Store the private key in the key storage on the device
-3. Publish the public key in Virgil’s Card Service as a “Virgil Card” for other users to download & encrypt messages with it.
-
-
-
-#### 1. Generate Private Key & Public Key then store Private Key
-
-Let’s make some updates to ../virgilsecurity/virgilback4app/auth/LogInPresenter class.
-
-- Add `VirgilCard` and `VirgilKey` fields:
-```java
-private VirgilCard virgilCard;
-private VirgilKey virgilKey;
-```
-- Update `signUp` method passing `virgilCard` as argument, so it will looks like:
-```java
-restartableFirst(SIGN_UP, () ->
-                         RxParse.signUp(identity,
-                                        password,
-                                        virgilCard)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread()),
-                 LogInFragment::onSignUpSuccess,
-                 LogInFragment::onSignUpError
-);
-```
-- Add method where we will generate the private key and the public key (for decrypting incoming chat messages) then saving it ../virgilsecurity/virgilback4app/auth/LogInPresenter:
-```java
-private void generateKeyPair(String identity) {
-    virgilKey = infoHolder.getVirgilApi().getKeys().generate();
-    try {
-        virgilKey.save(identity);
-    } catch (VirgilKeyIsAlreadyExistsException e) {
-        e.printStackTrace();
-    }
-    virgilCard = infoHolder.getVirgilApi().getCards().create(identity, virgilKey);
-}
-```
-- Now we have to call this method when requesting sign up and generate password using private key:
-```java
-void requestSignUp(String identity) {
-    this.identity = identity;
-
-    generateKeyPair(identity);
-    password = generatePassword(virgilKey.getPrivateKey().getValue());
-
-    start(SIGN_UP);
-}
-```
-
-When user will request log in - you have to generate password using private key loaded with user’s identity (currently - username):
-```java
-void requestLogIn(String identity) {
-    this.identity = identity;
-
-    try {
-        virgilKey = infoHolder.getVirgilApi().getKeys().load(identity);
-    } catch (KeyEntryNotFoundException e) {
-        getView().onLoginError(e);
-        return;
-    } catch (VirgilKeyIsNotFoundException e) {
-        getView().onLoginError(e);
-        return;
-    } catch (CryptoException e) {
-        getView().onLoginError(e);
-        return;
-    }
-    password = generatePassword(virgilKey.getPrivateKey().getValue());
-
-    start(LOG_IN);
-}
-```
-
-#### Create and Publish Virgil Card
-
-As you already created VirgilCard few moments ago and passed it to the signUp method - you have to handle new argument and publish Virgil Card.
-
-We pass exported Virgil Card to the Back4App code that will intercept the create user request and publish the Virgil Card on Virgil Cards Service.
-
-Now you need to send this Card request to the App Server where it has to be signed with your application's Private Key (AppKey).
-
-The VirgilCard object has a convenience method called export that returns the base64-encoded string representation of the request suitable for transfer (../virgilsecurity/virgilback4app/util/RxParse.javaRxParse class):
-```java
-public static Observable<VirgilCard> signUp(String username,
-                                            String password,
-                                            VirgilCard card) {
-    return Observable.create(e -> {
-        final ParseUser user = new ParseUser();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.put("csr", card.export());
-
-        user.signUpInBackground((exception) -> {
-            if (exception == null) {
-                e.onNext(card);
-                e.onComplete();
-            } else {
-                e.onError(exception);
-            }
-        });
-    });
-}
-```
-
-Now your project automatically sends the Virgil Card exported to base64 to the Back4App, after that Cloud Code intercepts and publishes it.
-
-**We encrypt messages with the recipient user's Virgil card.**
-
-Let's add some code to encrypt data to the ../virgilsecurity/virgilback4app/chat/thread/ChatThreadPresenter class:
-
-  - Add some new fields:
-```java
-private static final int GET_CARDS = 2;
-
-private VirgilApi virgilApi;
-private String identitySender;
-private String identityRecipient;
-private List<VirgilCard> cards;
-```
-  - Init VirgilApi in the `onCreate` method:
-```java
-@Override protected void onCreate(Bundle savedState) {
-    super.onCreate(savedState);
-
-    virgilApi = AppVirgil.getInfoHolder().getVirgilApi();
-...
-}
-```
-  - Add method that encrypts data:
-```java
-private String encrypt(String text, List<VirgilCard> cards) {
-    try {
-        VirgilCards virgilCards = new VirgilCards(AppVirgil.getInfoHolder().getVirgilApiContext());
-        virgilCards.addAll(cards);
-        return virgilCards.encrypt(text).toString(StringEncoding.Base64);
-    } catch (CryptoException e) {
-        e.printStackTrace();
-        return "";
-    }
-}
-```
-  - Find method `sendMessage` and update it calling `encrypt` method on message text before sending, so it will looks like:
-```java
-        restartableFirst(SEND_MESSAGE, () ->
-                                 RxParse.sendMessage(encrypt(text, cards),
-                                                     thread)
-                                        .observeOn(AndroidSchedulers.mainThread()),
-                         ChatThreadFragment::onSendMessageSuccess,
-                         ChatThreadFragment::onSendMessageError);
-```
-  - Update `requestSendMessage` method passing to it `List<VirgilCard>` and initializing with it field:
-```java
-    void requestSendMessage(String text,
-                            ChatThread thread,
-                            List<VirgilCard> cards) {
-        this.text = text;
-        this.thread = thread;
-        this.cards = cards;
-
-        start(SEND_MESSAGE);
-    }
-```
-That’s almost it! But as you might have noticed - we need sender and receiver’s Virgil Cards.
-
-So let’s go on updating `ChatThreadPresenter` class to be able to get Virgil Cards from Virgil Card Service.
-  
-  - Add request method:
-```java
-void requestGetCards(String identitySender, String identityRecipient) {
-    this.identitySender = identitySender;
-    this.identityRecipient = identityRecipient;
-
-    start(GET_CARDS);
-}
-```
-  - Add new `restartableFirst` to connect presenter with fragment to the `onCreate` method along with others `restartableFirst`'s (`onGetCardSuccess` and `onGetCardError` methods will be implemented later):
-```java
-restartableFirst(GET_CARDS, () ->
-                           Observable.zip(findCard(identitySender).toObservable()
-                                                            .subscribeOn(Schedulers.io()),
-                                          findCard(identityRecipient).toObservable()
-                                                            .subscribeOn(Schedulers.io()),
-                                          Pair::new)
-
-                                             .observeOn(AndroidSchedulers.mainThread()),
-                   ChatThreadFragment::onGetCardSuccess,
-                   ChatThreadFragment::onGetCardError);
-```
-  - Add method that will find Virgil Card via its identity on Virgil Cards Service:
-```java
-private Single<VirgilCard> findCard(String identity) {
-    return Single.create(e -> {
-        VirgilCards cards = virgilApi.getCards().find(identity);
-        if (cards.size() > 0) {
-            e.onSuccess(cards.get(0));
-        } else {
-            e.onError(new VirgilCardIsNotFoundException());
-        }
-    });
-}
-```
-  - Update `isDisposed()` and `disposeAll()` methods:
-```java
-void disposeAll() {
-    stop(GET_MESSAGES);
-    stop(SEND_MESSAGE);
-    stop(GET_CARDS);
-}
-
-boolean isDisposed() {
-    return isDisposed(GET_MESSAGES)
-            || isDisposed(SEND_MESSAGE)
-            || isDisposed(GET_CARDS);
-}
-```
-
-Now you have to update `ChatThreadFragment` class to handle get cards request.
-
-  - First you have to add fields:
-```java
-private VirgilCard meCard;
-private VirgilCard youCard;
-```
-  - Implement `initCards()` method:
-```java
-private void initCards() {
-    showProgress(true);
-
-    getPresenter().requestGetCards(thread.getSenderUsername(),
-                                   thread.getRecipientUsername());
-}
-```
-  - Update getMessages() method to check whether Virgil Cards are already fetched:
-```java
-private void getMessages() {
-    if (meCard == null || youCard == null) {
-        initCards();
-    } else if (messages == null || messages.size() == 0) {
-        showProgress(true);
-        getPresenter().requestMessages(thread, 50, page,
-                                       Const.TableNames.CREATED_AT_CRITERIA);
-    }
-}
-```
-  - Update `onInterfaceClick` with creating List of `VirgilCard`'s and passing it to the `requestSendMessage` method:
-```java
-@OnClick({R.id.btnSend}) void onInterfaceClick(View v) {
-    switch (v.getId()) {
-        case R.id.btnSend:
-            String message = etMessage.getText().toString().trim();
-            if (!message.isEmpty()) {
-                List<VirgilCard> cards = new ArrayList<>();
-                cards.add(meCard);
-                cards.add(youCard);
-                lockSendUi(true, true);
-                getPresenter().requestSendMessage(message, thread, cards);
-                isLoading = true;
-            }
-            break;
-    }
-}
-```
-  - Add callbacks for successful and unsuccessful Virgil Cards fetching:
-```java
-public void onGetCardSuccess(Pair<VirgilCard, VirgilCard> cards) {
-    if (cards.first.getIdentity().equals(ParseUser.getCurrentUser().getUsername())) {
-        meCard = cards.first;
-        youCard = cards.second;
-    } else {
-        meCard = cards.second;
-        youCard = cards.first;
-    }
-
-    if (meCard != null && youCard != null) {
-        if (messages == null) {
-            showProgress(false);
-            getPresenter().requestMessages(thread, 50, page,
-                                           Const.TableNames.CREATED_AT_CRITERIA);
-        } else {
-            showProgress(false);
-            srlRefresh.setRefreshing(false);
-            lockSendUi(false, false);
-        }
-    }
-}
-
-public void onGetCardError(Throwable t) {
-    showProgress(false);
-    srlRefresh.setRefreshing(false);
-    lockSendUi(false, false);
-
-    Utils.toast(this, Utils.resolveError(t));
-}
-```
-
-**Decrypt the Encrypted Message in the HolderMessage class (nested in the ChatThreadRVAdapter class)**
-
-**General logic:**
-
-1. We first load the user’s private key from Android’s secure storage
-2. Then we use it to decrypt the message received
-
-
-
-  - Add VirgilKey field:
-```java
-private VirgilKey virgilKey;
-```
-  - Init VirgilKey field in HolderMessage constructor:
-```java
-HolderMessage(View v) {
-    super(v);
-    ButterKnife.bind(this, v);
-
-    try {
-        virgilKey = AppVirgil.getInfoHolder()
-                             .getVirgilApi()
-                             .getKeys()
-                             .load(ParseUser.getCurrentUser().getUsername());
-    } catch (VirgilKeyIsNotFoundException e) {
-        e.printStackTrace();
-    } catch (CryptoException e) {
-        e.printStackTrace();
-    }
-}
-```
-  - Implement decrypt method:
-```java
-String decrypt(String text) {
-    try {
-        return virgilKey.decrypt(text).toString();
-    } catch (CryptoException e) {
-        e.printStackTrace();
-        return "";
-    }
-}
-```
-  - Decrypt message before displaying:
-```java
-void bind(Message message) {
-    tvMessage.setText(decrypt(message.getBody()));
-}
-```
-
-That's all for encryption and decryption.
-And finally - you have to:
-  - Update `resolveError` method in `Utils` class to handle some exceptions that can be thrown during the work with Virgil Security SDK. So add handling for `VirgilKeyIsNotFoundException`, `VirgilKeyIsAlreadyExistsException`, `VirgilCardIsNotFoundException` and `KeyEntryNotFoundException` so corresponding part of `resolveError` method will looks like:
-```java
-...
-} else if (t instanceof ParseException) {
-    ParseException exception = (ParseException) t;
-
-    switch (exception.getCode()) {
-        case ParseException.USERNAME_TAKEN:
-            return "Username is already registered.\nPlease, try another one. (Parse)";
-        case ParseException.OBJECT_NOT_FOUND:
-            return "Username is not registered yet";
-        case 60042: // Custom exception in RxParse.class
-            return exception.getMessage();
-        default:
-            return "Oops.. Something went wrong ):";
-    }
-} else if (t instanceof VirgilKeyIsNotFoundException) {
-    return "Username is not registered yet";
-} else if (t instanceof VirgilKeyIsAlreadyExistsException) {
-    return "Username is already registered. Please, try another one.";
-} else if (t instanceof KeyEntryNotFoundException) {
-    return "Username is not found on this device. Maybe you deleted your private key";
-} else {
-    return "Something went wrong";
-}
-...
-```
-  - In `ChatThreadFragment` update `onGetCardError` method inserting next code in the very beginning of it:
-```java
-public void onGetCardError(Throwable t) {
-    if (t instanceof VirgilCardIsNotFoundException
-            || t instanceof VirgilCardServiceException) {
-        Utils.toast(this, "Virgil Card is not found.\nYou can not chat with user without Virgil Card");
-        activity.onBackPressed();
-    }
-...
-}
-```
-
-### Important! 
-You have to **Log Out** the current user and register two new users, after that you can start E2EE chat with those two new users. The reason is that your first two users have no `Virgil Card`'s, so you can not use encrypt\decrypt for them.
 
 ## HIPAA & GDPR compliance:
 
