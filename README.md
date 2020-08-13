@@ -6,7 +6,7 @@ We’re the crypto tech behind [Twilio’s End-to-End Encrypted Messaging][_twil
 
 In this post, we’ll walk you through the steps to make [Back4app Android Simple Messenger app][_back4app] End-to-End Encrypted! Are you ready?
 
-PS: If you don’t care about the details, simply skip to the end of the post and download the final product.
+PS: If you don’t care about the details, simply skip to the practice part.
 
 ## What is End-to-End Encryption?
 
