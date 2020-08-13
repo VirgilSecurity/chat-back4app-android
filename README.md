@@ -94,8 +94,6 @@ Don't forget to setup [Back4App cloud code function](#set-up-back4app-cloud-code
 
 - Open Android Studio -> File -> New -> Project from Version Control -> Git
 - Git Repository URL: https://github.com/VirgilSecurity/chat-back4app-android
-- Make sure you're in the “master” branch
-![Back4App chat master branch](img/branch.png)
 
 #### 2.2) Setup Back4App credentials
 
