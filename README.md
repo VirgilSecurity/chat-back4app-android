@@ -88,7 +88,7 @@ const APP_KEY_ID = "YOUR_VIRGIL_APP_ID";
 
 ### 2) Start Back4app Kotlin Demo app
 
-Don't forget to setup [Back4App cloud code function](#set-up-back4app-cloud-code-functions) first. It is a mandatory part of this demo. After this, go through the following steps:
+Don't forget to setup [Back4App cloud code function](#1-set-up-back4app-cloud-code-functions) first. It is a mandatory part of this demo. After this, go through the following steps:
 
 #### 2.1) Import Project in Android Studio
 
