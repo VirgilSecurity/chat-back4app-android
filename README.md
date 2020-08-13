@@ -2,7 +2,7 @@
 
 **Ahoy Back4app community!**
 
-This is a guest post from the team at [Virgil Security, Inc.][_virgil_www]: we’re the crypto tech behind [Twilio’s End-to-End Encrypted Messaging][_twilio]. Our friends @ Back4app asked us to show you how to build an End-to-End Encrypted chat app on top of Back4app.
+We’re the crypto tech behind [Twilio’s End-to-End Encrypted Messaging][_twilio]. Our friends @ Back4app asked us to show you how to build an End-to-End Encrypted chat app on top of Back4app.
 
 In this post, we’ll walk you through the steps to make [Back4app Android Simple Messenger app][_back4app] End-to-End Encrypted! Are you ready?
 
