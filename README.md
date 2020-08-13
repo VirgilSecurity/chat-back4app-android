@@ -73,7 +73,7 @@ If you don't have an account yet, [sign up for one](https://dashboard.virgilsecu
 <img width="480px" src="img/virgil_env.png" alt="Virgil App credentials">
 - Copy the values of `APP_ID`, `APP_KEY`, and `APP_KEY_ID` from the `.env` file
 <img width="250px" src="img/virgil_creds.png" alt="Virgil App credentials">
-- Replace the copied values in your `main.js` file in the appropriate places.
+- Replace the copied values in your `main.js` file in the appropriate places (`main.js` of `scripts` directory).
 
 ```java
 const APP_ID = "YOUR_VIRGIL_APP_ID";
@@ -85,7 +85,7 @@ const APP_KEY_ID = "YOUR_VIRGIL_APP_ID";
 
 - Open Back4App “Dashboard” of your app -> “Core” -> Cloud code functions;
 ![Deploy cloud function](img/cloud_func.png)
-- Click `+ADD` and select your `main.js` and `package.json`, after that move both of them to the `cloud` folder;
+- Click `+ADD` and select your `main.js` and `package.json` (from `scripts` directory), after that move both of them to the `cloud` folder;
 - Click `DEPLOY`;
 
 ### 2) Start Back4app Kotlin Demo app
