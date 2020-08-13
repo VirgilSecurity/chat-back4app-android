@@ -4,7 +4,7 @@
 
 This is a guest post from the team at [Virgil Security, Inc.][_virgil_www]: we’re the crypto tech behind [Twilio’s End-to-End Encrypted Messaging][_twilio]. Our friends @ Back4app asked us to show you how to build an End-to-End Encrypted chat app on top of Back4app.
 
-In this post, we’ll walk you through the steps to make [Back4app Android Simple Messenger app][_back4app] End-to-End Encrypted! Are you ready? 
+In this post, we’ll walk you through the steps to make [Back4app Android Simple Messenger app][_back4app] End-to-End Encrypted! Are you ready?
 
 PS: If you don’t care about the details, simply skip to the end of the post and download the final product.
 
@@ -67,11 +67,13 @@ const PARSE_REST_API_KEY = "YOUR_PARSE_REST_API_KEY";
 
 If you don't have an account yet, [sign up for one](https://dashboard.virgilsecurity.com/signup).
 
-- Create an application and generate a `.env` file under the E3Kit section in the left side bar;
-![Virgil App credentials](img/virgil_app.png)
-![Virgil App credentials](img/virgil_env.png)
-![Virgil App credentials](img/virgil_creds.png)
-- Copy the values of `APP_ID`, `APP_KEY`, and `APP_KEY_ID` from the `.env` file and replace them in your `main.js` file in the appropriate places.
+- Create an application on Virgil dashboard:
+<img width="480px" src="img/virgil_app.png" alt="Virgil App credentials">
+- Open the created application, navigate to E3Kit section and and generate a `.env` file under the E3Kit section in the left side bar:
+<img width="480px" src="img/virgil_env.png" alt="Virgil App credentials">
+- Copy the values of `APP_ID`, `APP_KEY`, and `APP_KEY_ID` from the `.env` file
+<img width="250px" src="img/virgil_creds.png" alt="Virgil App credentials">
+- Replace the copied values in your `main.js` file in the appropriate places.
 
 ```java
 const APP_ID = "YOUR_VIRGIL_APP_ID";
@@ -133,7 +135,8 @@ After these steps you will be able to hit the Run button in Android Studio and g
 To see the result of running the demo, you'll need to:
 1. Sign up 2 users;
 2. Start a conversation between them and send a couple of messages;
-![Chat screenshot](img/chat_screenshot.png)
+<img width="300px" src="img/chat_screenshot.png" alt="Chat screenshot">
+
 3. Open Back4App “Dashboard” -> “Core” -> “Database Browser” -> "Message".
 
 ![DB 2](img/encrypted_db.png)
