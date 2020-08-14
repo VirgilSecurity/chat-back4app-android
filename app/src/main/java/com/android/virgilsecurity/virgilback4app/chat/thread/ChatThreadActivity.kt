@@ -1,8 +1,8 @@
 package com.android.virgilsecurity.virgilback4app.chat.thread
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.android.virgilsecurity.virgilback4app.R
 import com.android.virgilsecurity.virgilback4app.base.BaseActivity
 import com.android.virgilsecurity.virgilback4app.model.ChatThread

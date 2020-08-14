@@ -7,9 +7,7 @@ import com.android.virgilsecurity.virgilback4app.util.AuthRx
 import com.android.virgilsecurity.virgilback4app.util.Preferences
 import com.android.virgilsecurity.virgilback4app.util.RxEthree
 import com.android.virgilsecurity.virgilback4app.util.RxParse
-import com.parse.Parse
 import com.parse.ParseUser
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -38,7 +36,7 @@ class LogInPresenter(context: Context) {
                 .toSingle { ParseUser.getCurrentUser() }
                 .flatMap { AuthRx.virgilJwt(it.sessionToken) }
                 .map { preferences.setVirgilToken(it) }
-                .flatMap { rxEthree.initEthree() }
+                .flatMap { rxEthree.initEthree(identity) }
                 .map { AppVirgil.eThree = it }
                 .flatMap { rxEthree.registerEthree().toSingle { Unit } }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -69,7 +67,7 @@ class LogInPresenter(context: Context) {
                 .observeOn(Schedulers.io())
                 .flatMap { AuthRx.virgilJwt(it.sessionToken) }
                 .map { preferences.setVirgilToken(it) }
-                .flatMap { rxEthree.initEthree() }
+                .flatMap { rxEthree.initEthree(identity, true) }
                 .map { AppVirgil.eThree = it }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(

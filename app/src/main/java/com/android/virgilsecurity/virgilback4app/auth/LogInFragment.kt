@@ -1,11 +1,11 @@
 package com.android.virgilsecurity.virgilback4app.auth
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.android.virgilsecurity.virgilback4app.R
 import com.android.virgilsecurity.virgilback4app.base.BaseFragment
 import com.android.virgilsecurity.virgilback4app.util.UsernameInputFilter
@@ -26,7 +26,7 @@ class LogInFragment : BaseFragment<SignInControlActivity>(), View.OnClickListene
     override val layout: Int
         get() = R.layout.fragment_login
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
 
         authStateListener = activity

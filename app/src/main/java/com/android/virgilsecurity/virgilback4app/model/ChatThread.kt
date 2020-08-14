@@ -13,22 +13,22 @@ import com.parse.ParseObject
 class ChatThread : ParseObject() {
 
     var senderUsername: String
-        get() = getString(Const.TableNames.SENDER_USERNAME)
+        get() = getString(Const.TableNames.SENDER_USERNAME) ?: Const.TableNames.SENDER_USERNAME
         set(username) = put(Const.TableNames.SENDER_USERNAME, username)
 
     var senderId: String
-        get() = getString(Const.TableNames.SENDER_ID)
+        get() = getString(Const.TableNames.SENDER_ID) ?: Const.TableNames.SENDER_ID
         set(senderId) = put(Const.TableNames.SENDER_ID, senderId)
 
     var recipientUsername: String
-        get() = getString(Const.TableNames.RECIPIENT_USERNAME)
+        get() = getString(Const.TableNames.RECIPIENT_USERNAME) ?: Const.TableNames.RECIPIENT_USERNAME
         set(username) = put(Const.TableNames.RECIPIENT_USERNAME, username)
 
     var recipientId: String
-        get() = getString(Const.TableNames.RECIPIENT_ID)
+        get() = getString(Const.TableNames.RECIPIENT_ID) ?: Const.TableNames.RECIPIENT_ID
         set(recipientId) = put(Const.TableNames.RECIPIENT_ID, recipientId)
 
     var createdAtDate: String
-        get() = getString(Const.TableNames.CREATED_AT_DATE)
+        get() = getString(Const.TableNames.CREATED_AT_DATE) ?: Const.TableNames.CREATED_AT_DATE
         set(createdAtDate) = put(Const.TableNames.CREATED_AT_DATE, createdAtDate)
 }

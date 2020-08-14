@@ -3,13 +3,13 @@ package com.android.virgilsecurity.virgilback4app.chat.thread
 import android.content.Context
 import android.net.NetworkInfo
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.virgilsecurity.virgilback4app.R
 import com.android.virgilsecurity.virgilback4app.base.BaseFragment
 import com.android.virgilsecurity.virgilback4app.model.ChatThread
@@ -17,10 +17,13 @@ import com.android.virgilsecurity.virgilback4app.model.Message
 import com.android.virgilsecurity.virgilback4app.util.Const
 import com.android.virgilsecurity.virgilback4app.util.Utils
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
-import com.parse.*
+import com.parse.ParseQuery
+import com.parse.ParseUser
+import com.parse.livequery.ParseLiveQueryClient
+import com.parse.livequery.SubscriptionHandling
+import com.virgilsecurity.sdk.cards.Card
 import com.virgilsecurity.sdk.client.exceptions.VirgilCardIsNotFoundException
 import com.virgilsecurity.sdk.client.exceptions.VirgilCardServiceException
-import com.virgilsecurity.sdk.crypto.PublicKey
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_chat_thread.*
@@ -104,9 +107,9 @@ class ChatThreadFragment : BaseFragment<ChatThreadActivity>() {
         else
             thread.recipientId
 
-        presenter.requestPublicKey(recipientId,
-                                   ::onGetPublicKeySuccess,
-                                   ::onGetPublicKeyError)
+        presenter.requestCard(recipientId,
+                                   ::onGetCardSuccess,
+                                   ::onGetCardError)
 
         btnSend.setOnClickListener {
             val message = etMessage.text.toString().trim { it <= ' ' }
@@ -270,9 +273,9 @@ class ChatThreadFragment : BaseFragment<ChatThreadActivity>() {
         Utils.toast(this, Utils.resolveError(t))
     }
 
-    private fun onGetPublicKeySuccess(publicKey: PublicKey) {
+    private fun onGetCardSuccess(card: Card) {
         showProgress(false)
-        adapter.interlocutorPublicKey = publicKey
+        adapter.interlocutorCard = card
         presenter.requestMessages(thread,
                                   50,
                                   page,
@@ -281,7 +284,7 @@ class ChatThreadFragment : BaseFragment<ChatThreadActivity>() {
                                   ::onGetMessagesError)
     }
 
-    private fun onGetPublicKeyError(t: Throwable) {
+    private fun onGetCardError(t: Throwable) {
         if (t is VirgilCardIsNotFoundException || t is VirgilCardServiceException) {
             Utils.toast(this,
                         "Virgil Card is not found.\nYou can not chat with user without Virgil Card")

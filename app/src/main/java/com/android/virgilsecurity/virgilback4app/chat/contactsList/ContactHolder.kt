@@ -1,9 +1,9 @@
 package com.android.virgilsecurity.virgilback4app.chat.contactsList
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.android.virgilsecurity.virgilback4app.R
 import com.android.virgilsecurity.virgilback4app.model.ChatThread
 import com.parse.ParseUser

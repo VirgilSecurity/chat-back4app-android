@@ -1,9 +1,9 @@
 package com.android.virgilsecurity.virgilback4app.chat.contactsList
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import com.android.virgilsecurity.virgilback4app.R
 import com.android.virgilsecurity.virgilback4app.auth.SignInControlActivity
 import com.android.virgilsecurity.virgilback4app.base.BaseActivity
@@ -43,10 +43,10 @@ class ThreadsListActivity : BaseActivity(), ThreadsListFragment.OnStartThreadLis
                                          THREADS_FRAGMENT)
         hideKeyboard()
         showHamburger(true, View.OnClickListener {
-            if (!dlDrawer.isDrawerOpen(Gravity.START))
-                dlDrawer.openDrawer(Gravity.START)
+            if (!dlDrawer.isDrawerOpen(GravityCompat.START))
+                dlDrawer.openDrawer(GravityCompat.START)
             else
-                dlDrawer.closeDrawer(Gravity.START)
+                dlDrawer.closeDrawer(GravityCompat.START)
         })
         presenter = ThreadsListActivityPresenter()
     }
@@ -64,7 +64,7 @@ class ThreadsListActivity : BaseActivity(), ThreadsListFragment.OnStartThreadLis
         nvNavigation.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.itemNewChat -> {
-                    dlDrawer.closeDrawer(Gravity.START)
+                    dlDrawer.closeDrawer(GravityCompat.START)
                     createThreadDialog = CreateThreadDialog(this, R.style.NotTransBtnsDialogTheme,
                                                             getString(R.string.create_thread),
                                                             getString(R.string.enter_username))
@@ -89,7 +89,7 @@ class ThreadsListActivity : BaseActivity(), ThreadsListFragment.OnStartThreadLis
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.itemLogOut -> {
-                    dlDrawer.closeDrawer(Gravity.START)
+                    dlDrawer.closeDrawer(GravityCompat.START)
                     presenter.disposeAll()
                     showBaseLoading(true)
                     Preferences.instance(this).clearVirgilToken()

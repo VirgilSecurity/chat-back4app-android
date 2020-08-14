@@ -13,18 +13,18 @@ import com.parse.ParseObject
 class Message : ParseObject() {
 
     var senderId: String
-        get() = getString(Const.TableNames.SENDER_ID)
+        get() = getString(Const.TableNames.SENDER_ID) ?: Const.TableNames.SENDER_ID
         set(senderId) = put(Const.TableNames.SENDER_ID, senderId)
 
     var threadId: String
-        get() = getString(Const.TableNames.THREAD_ID)
+        get() = getString(Const.TableNames.THREAD_ID) ?: Const.TableNames.THREAD_ID
         set(userId) = put(Const.TableNames.THREAD_ID, userId)
 
     var body: String
-        get() = getString(Const.TableNames.MESSAGE_BODY)
+        get() = getString(Const.TableNames.MESSAGE_BODY) ?: Const.TableNames.MESSAGE_BODY
         set(body) = put(Const.TableNames.MESSAGE_BODY, body)
 
     var timestamp: String
-        get() = getString(Const.TableNames.TIMESTAMP)
+        get() = getString(Const.TableNames.TIMESTAMP) ?: Const.TableNames.TIMESTAMP
         set(timestamp) = put(Const.TableNames.TIMESTAMP, timestamp)
 }

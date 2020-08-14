@@ -2,9 +2,9 @@ package com.android.virgilsecurity.virgilback4app.chat.contactsList
 
 import android.net.NetworkInfo
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.virgilsecurity.virgilback4app.AppVirgil
 import com.android.virgilsecurity.virgilback4app.R
 import com.android.virgilsecurity.virgilback4app.base.BaseFragment
@@ -12,7 +12,10 @@ import com.android.virgilsecurity.virgilback4app.model.ChatThread
 import com.android.virgilsecurity.virgilback4app.util.Const
 import com.android.virgilsecurity.virgilback4app.util.Utils
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
-import com.parse.*
+import com.parse.ParseQuery
+import com.parse.ParseUser
+import com.parse.livequery.ParseLiveQueryClient
+import com.parse.livequery.SubscriptionHandling
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_contacts.*
@@ -99,7 +102,7 @@ class ThreadsListFragment : BaseFragment<ThreadsListActivity>() {
                                      ::onGetThreadsSuccess,
                                      ::onGetThreadsError)
         } else {
-            presenter.requestEthreeInit(::onInitEthreeSuccess, ::onInitEthreeError)
+            presenter.requestEthreeInit(ParseUser.getCurrentUser(), ::onInitEthreeSuccess, ::onInitEthreeError)
         }
     }
 

@@ -1,15 +1,15 @@
 package com.android.virgilsecurity.virgilback4app.chat.thread
 
-import android.support.annotation.IntDef
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.IntDef
+import androidx.recyclerview.widget.RecyclerView
 import com.android.virgilsecurity.virgilback4app.AppVirgil
 import com.android.virgilsecurity.virgilback4app.R
 import com.android.virgilsecurity.virgilback4app.model.Message
 import com.parse.ParseUser
-import com.virgilsecurity.android.ethree.kotlin.interaction.EThree
-import com.virgilsecurity.sdk.crypto.PublicKey
+import com.virgilsecurity.android.ethree.interaction.EThree
+import com.virgilsecurity.sdk.cards.Card
 
 /**
  * Created by Danylo Oliinyk on 11/23/17 at Virgil Security.
@@ -20,7 +20,7 @@ class ChatThreadRVAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: MutableList<Message> = mutableListOf()
     private var eThree: EThree = AppVirgil.eThree
-    lateinit var interlocutorPublicKey: PublicKey
+    lateinit var interlocutorCard: Card
 
     @IntDef(MessageType.ME, MessageType.YOU)
     private annotation class MessageType {
@@ -49,13 +49,16 @@ class ChatThreadRVAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        val decryptedText = eThree.decrypt(items[position].body, interlocutorPublicKey)
-
         when (viewHolder) {
-            is HolderMessageMe -> viewHolder.bind(decryptedText)
-            is HolderMessageYou -> viewHolder.bind(decryptedText)
+            is HolderMessageMe -> {
+                val decryptedText = eThree.authDecrypt(items[position].body)
+                viewHolder.bind(decryptedText)
+            }
+            is HolderMessageYou -> {
+                val decryptedText = eThree.authDecrypt(items[position].body, interlocutorCard)
+                viewHolder.bind(decryptedText)
+            }
         }
-
     }
 
     override fun getItemViewType(position: Int): Int {
