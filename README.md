@@ -41,7 +41,7 @@ This is the simplest possible implementation of E2EE chat and it works perfectly
 
 - Sign up for a [Back4app account][_back4app_account] and create a new app (Note: this demo is for Parse 3 server version);
 - Sign up for a [Virgil Security account][_virgil_account] (we’ll create the app later)
-- You’ll need [Android Studio][_android_studio] for the coding work, we used 3.0.1.
+- You’ll need [Android Studio][_android_studio] for the coding work, we used 4.0.
 
 ## Let’s set up E3Kit Back4App Kotlin Demo
 

@@ -21,9 +21,6 @@ import com.parse.ParseQuery
 import com.parse.ParseUser
 import com.parse.livequery.ParseLiveQueryClient
 import com.parse.livequery.SubscriptionHandling
-import com.virgilsecurity.sdk.cards.Card
-import com.virgilsecurity.sdk.client.exceptions.VirgilCardIsNotFoundException
-import com.virgilsecurity.sdk.client.exceptions.VirgilCardServiceException
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_chat_thread.*
@@ -107,9 +104,12 @@ class ChatThreadFragment : BaseFragment<ChatThreadActivity>() {
         else
             thread.recipientId
 
-        presenter.requestCard(recipientId,
-                                   ::onGetCardSuccess,
-                                   ::onGetCardError)
+        presenter.requestMessages(thread,
+                                  50,
+                                  page,
+                                  Const.TableNames.CREATED_AT_CRITERIA,
+                                  ::onGetMessagesSuccess,
+                                  ::onGetMessagesError)
 
         btnSend.setOnClickListener {
             val message = etMessage.text.toString().trim { it <= ' ' }
@@ -270,30 +270,6 @@ class ChatThreadFragment : BaseFragment<ChatThreadActivity>() {
         lockSendUi(lock = false, lockInput = true)
         lockSendUi(lock = true, lockInput = false)
         isLoading = false
-        Utils.toast(this, Utils.resolveError(t))
-    }
-
-    private fun onGetCardSuccess(card: Card) {
-        showProgress(false)
-        adapter.interlocutorCard = card
-        presenter.requestMessages(thread,
-                                  50,
-                                  page,
-                                  Const.TableNames.CREATED_AT_CRITERIA,
-                                  ::onGetMessagesSuccess,
-                                  ::onGetMessagesError)
-    }
-
-    private fun onGetCardError(t: Throwable) {
-        if (t is VirgilCardIsNotFoundException || t is VirgilCardServiceException) {
-            Utils.toast(this,
-                        "Virgil Card is not found.\nYou can not chat with user without Virgil Card")
-            activity.onBackPressed()
-        }
-        showProgress(false)
-        srlRefresh.isRefreshing = false
-        lockSendUi(lock = false, lockInput = false)
-
         Utils.toast(this, Utils.resolveError(t))
     }
 

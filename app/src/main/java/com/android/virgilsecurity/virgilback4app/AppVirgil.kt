@@ -5,7 +5,6 @@ import com.android.virgilsecurity.virgilback4app.model.ChatThread
 import com.android.virgilsecurity.virgilback4app.model.Message
 import com.parse.Parse
 import com.parse.ParseObject
-import com.virgilsecurity.android.ethree.interaction.EThree
 
 /**
  * Created by Danylo Oliinyk on 16.11.17 at Virgil Security.
@@ -29,10 +28,4 @@ class AppVirgil : Application() {
 
     }
 
-    companion object {
-
-        lateinit var eThree: EThree
-
-        fun isEthreeInitialized() = ::eThree.isInitialized
-    }
 }

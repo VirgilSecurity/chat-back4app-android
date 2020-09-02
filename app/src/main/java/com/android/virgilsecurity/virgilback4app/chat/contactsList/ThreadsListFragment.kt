@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.virgilsecurity.virgilback4app.AppVirgil
 import com.android.virgilsecurity.virgilback4app.R
 import com.android.virgilsecurity.virgilback4app.base.BaseFragment
 import com.android.virgilsecurity.virgilback4app.model.ChatThread
@@ -65,13 +64,13 @@ class ThreadsListFragment : BaseFragment<ThreadsListActivity>() {
                 val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
 
                 if (adapter.itemCount > 13 &&
-                    !isLoading &&
-                    totalItemCount <= lastVisibleItem + VISIBLE_THRESHOLD) {
+                        !isLoading &&
+                        totalItemCount <= lastVisibleItem + VISIBLE_THRESHOLD) {
 
                     page++
                     presenter.requestThreadsPagination(page,
-                                                       ::onGetThreadsSuccess,
-                                                       ::onGetThreadsError)
+                            ::onGetThreadsSuccess,
+                            ::onGetThreadsError)
                     showProgress(true)
                 }
             }
@@ -86,24 +85,20 @@ class ThreadsListFragment : BaseFragment<ThreadsListActivity>() {
             showProgress(true)
             adapter.clearItems()
             presenter.requestThreads(ParseUser.getCurrentUser(),
-                                     20, page, Const.TableNames.CREATED_AT_CRITERIA,
-                                     ::onGetThreadsSuccess,
-                                     ::onGetThreadsError)
+                    20, page, Const.TableNames.CREATED_AT_CRITERIA,
+                    ::onGetThreadsSuccess,
+                    ::onGetThreadsError)
         }
 
         presenter = ThreadsListFragmentPresenter(activity)
 
         showProgress(true)
-        if (AppVirgil.isEthreeInitialized()) {
-            presenter.requestThreads(ParseUser.getCurrentUser(),
-                                     20,
-                                     page,
-                                     Const.TableNames.CREATED_AT_CRITERIA,
-                                     ::onGetThreadsSuccess,
-                                     ::onGetThreadsError)
-        } else {
-            presenter.requestEthreeInit(ParseUser.getCurrentUser(), ::onInitEthreeSuccess, ::onInitEthreeError)
-        }
+        presenter.requestThreads(ParseUser.getCurrentUser(),
+                20,
+                page,
+                Const.TableNames.CREATED_AT_CRITERIA,
+                ::onGetThreadsSuccess,
+                ::onGetThreadsError)
     }
 
     override fun onPause() {
@@ -143,12 +138,12 @@ class ThreadsListFragment : BaseFragment<ThreadsListActivity>() {
 
             val parseThreadSender = ParseQuery.getQuery<ChatThread>(ChatThread::class.java)
             parseThreadSender.whereEqualTo(Const.TableNames.SENDER_ID,
-                                           ParseUser.getCurrentUser().objectId)
+                    ParseUser.getCurrentUser().objectId)
             val parseThreadRecipient = ParseQuery.getQuery<ChatThread>(ChatThread::class.java)
             parseThreadRecipient.whereEqualTo(Const.TableNames.RECIPIENT_ID,
-                                              ParseUser.getCurrentUser().objectId)
+                    ParseUser.getCurrentUser().objectId)
             parseQueryResult = ParseQuery.or(Arrays.asList(parseThreadSender,
-                                                           parseThreadRecipient))
+                    parseThreadRecipient))
         }
     }
 
@@ -173,23 +168,6 @@ class ThreadsListFragment : BaseFragment<ThreadsListActivity>() {
             parseLiveQueryClient!!.unsubscribe(parseQueryResult)
             parseLiveQueryClient = null
         }
-    }
-
-    private fun onInitEthreeSuccess() {
-        presenter.requestThreads(ParseUser.getCurrentUser(),
-                                 20,
-                                 page,
-                                 Const.TableNames.CREATED_AT_CRITERIA,
-                                 ::onGetThreadsSuccess,
-                                 ::onGetThreadsError)
-    }
-
-    private fun onInitEthreeError(throwable: Throwable) {
-        showProgress(false)
-        if (adapter.itemCount == 0)
-            tvError.visibility = View.VISIBLE
-
-        Utils.toast(activity, Utils.resolveError(throwable))
     }
 
     private fun onGetThreadsSuccess(threads: List<ChatThread>) {

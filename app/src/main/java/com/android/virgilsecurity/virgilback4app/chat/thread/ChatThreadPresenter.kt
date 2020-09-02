@@ -1,12 +1,9 @@
 package com.android.virgilsecurity.virgilback4app.chat.thread
 
 import android.content.Context
-import com.android.virgilsecurity.virgilback4app.AppVirgil
 import com.android.virgilsecurity.virgilback4app.model.ChatThread
 import com.android.virgilsecurity.virgilback4app.model.Message
-import com.android.virgilsecurity.virgilback4app.util.RxEthree
 import com.android.virgilsecurity.virgilback4app.util.RxParse
-import com.virgilsecurity.sdk.cards.Card
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -24,9 +21,6 @@ class ChatThreadPresenter(context: Context) {
     private lateinit var thread: ChatThread
     private lateinit var sortCriteria: String
     private val compositeDisposable = CompositeDisposable()
-    private val eThree = AppVirgil.eThree
-    private lateinit var userCard: Card
-    private val rxEthree = RxEthree(context)
 
     fun requestMessages(thread: ChatThread, limit: Int,
                         page: Int, sortCriteria: String,
@@ -75,33 +69,12 @@ class ChatThreadPresenter(context: Context) {
                            onSuccess: () -> Unit,
                            onError: (Throwable) -> Unit) {
 
-        val encryptedText = eThree.authEncrypt(text, userCard)
-        val disposable = RxParse.sendMessage(encryptedText, thread)
+        val disposable = RxParse.sendMessage(text, thread)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                     onComplete = {
                         onSuccess()
-                    },
-                    onError = {
-                        onError(it)
-                    }
-                )
-
-        compositeDisposable += disposable
-    }
-
-    fun requestCard(identity: String,
-                    onSuccess: (Card) -> Unit,
-                    onError: (Throwable) -> Unit) {
-
-        val disposable = rxEthree.findCard(identity)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeBy(
-                    onSuccess = {
-                        userCard = it
-                        onSuccess(it)
                     },
                     onError = {
                         onError(it)

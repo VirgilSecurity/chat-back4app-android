@@ -1,9 +1,7 @@
 package com.android.virgilsecurity.virgilback4app.chat.contactsList
 
 import android.content.Context
-import com.android.virgilsecurity.virgilback4app.AppVirgil
 import com.android.virgilsecurity.virgilback4app.model.ChatThread
-import com.android.virgilsecurity.virgilback4app.util.RxEthree
 import com.android.virgilsecurity.virgilback4app.util.RxParse
 import com.parse.ParseUser
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -23,7 +21,6 @@ class ThreadsListFragmentPresenter(context: Context) {
     private lateinit var currentUser: ParseUser
     private lateinit var sortCriteria: String
     private val compositeDisposable = CompositeDisposable()
-    private val rxEthree = RxEthree(context)
 
     fun requestThreads(currentUser: ParseUser,
                        limit: Int,
@@ -65,23 +62,6 @@ class ThreadsListFragmentPresenter(context: Context) {
                 .subscribeBy(
                     onSuccess = {
                         onSuccess(it)
-                    },
-                    onError = {
-                        onError(it)
-                    }
-                )
-
-        compositeDisposable += disposable
-    }
-
-    fun requestEthreeInit(currentUser: ParseUser, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
-        val disposable = rxEthree.initEthree(currentUser.username)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeBy(
-                    onSuccess = {
-                        AppVirgil.eThree = it
-                        onSuccess()
                     },
                     onError = {
                         onError(it)

@@ -11,10 +11,6 @@ import androidx.fragment.app.FragmentTransaction
 import com.android.virgilsecurity.virgilback4app.R
 import com.google.android.material.textfield.TextInputLayout
 import com.parse.ParseException
-import com.virgilsecurity.sdk.client.exceptions.VirgilCardIsNotFoundException
-import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsAlreadyExistsException
-import com.virgilsecurity.sdk.client.exceptions.VirgilKeyIsNotFoundException
-import com.virgilsecurity.sdk.crypto.exceptions.KeyEntryNotFoundException
 
 import retrofit2.HttpException
 
@@ -92,10 +88,6 @@ object Utils {
                 60042 -> t.message ?: "No exception message" // Custom exception in RxParse.class
                 else -> "Oops.. Something went wrong ):"
             }
-            is VirgilKeyIsNotFoundException -> "Username is not registered yet"
-            is VirgilKeyIsAlreadyExistsException -> "Username is already registered. Please, try another one."
-            is KeyEntryNotFoundException -> "Username is not found on this device. Maybe you deleted your private key"
-            is VirgilCardIsNotFoundException -> "Virgil Card is not found.\nYou can not start chat with user without Virgil Card."
             else -> "Something went wrong"
         }
     }

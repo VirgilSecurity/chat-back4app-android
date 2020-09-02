@@ -4,12 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.IntDef
 import androidx.recyclerview.widget.RecyclerView
-import com.android.virgilsecurity.virgilback4app.AppVirgil
 import com.android.virgilsecurity.virgilback4app.R
 import com.android.virgilsecurity.virgilback4app.model.Message
 import com.parse.ParseUser
-import com.virgilsecurity.android.ethree.interaction.EThree
-import com.virgilsecurity.sdk.cards.Card
 
 /**
  * Created by Danylo Oliinyk on 11/23/17 at Virgil Security.
@@ -19,8 +16,6 @@ import com.virgilsecurity.sdk.cards.Card
 class ChatThreadRVAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: MutableList<Message> = mutableListOf()
-    private var eThree: EThree = AppVirgil.eThree
-    lateinit var interlocutorCard: Card
 
     @IntDef(MessageType.ME, MessageType.YOU)
     private annotation class MessageType {
@@ -51,12 +46,10 @@ class ChatThreadRVAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         when (viewHolder) {
             is HolderMessageMe -> {
-                val decryptedText = eThree.authDecrypt(items[position].body)
-                viewHolder.bind(decryptedText)
+                viewHolder.bind(items[position].body)
             }
             is HolderMessageYou -> {
-                val decryptedText = eThree.authDecrypt(items[position].body, interlocutorCard)
-                viewHolder.bind(decryptedText)
+                viewHolder.bind(items[position].body)
             }
         }
     }

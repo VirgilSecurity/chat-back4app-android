@@ -2,12 +2,8 @@ package com.android.virgilsecurity.virgilback4app.auth
 
 import android.content.Context
 import android.util.Base64
-import com.android.virgilsecurity.virgilback4app.AppVirgil
-import com.android.virgilsecurity.virgilback4app.util.AuthRx
 import com.android.virgilsecurity.virgilback4app.util.Preferences
-import com.android.virgilsecurity.virgilback4app.util.RxEthree
 import com.android.virgilsecurity.virgilback4app.util.RxParse
-import com.parse.ParseUser
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -20,11 +16,9 @@ import java.security.NoSuchAlgorithmException
  * Created by Danylo Oliinyk on 11/17/17 at Virgil Security.
  * -__o
  */
-
 class LogInPresenter(context: Context) {
 
     private val compositeDisposable = CompositeDisposable()
-    private val rxEthree = RxEthree(context)
     private val preferences = Preferences.instance(context)
 
     fun requestSignUp(identity: String, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
@@ -33,20 +27,14 @@ class LogInPresenter(context: Context) {
         val disposable = RxParse.signUp(identity, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .toSingle { ParseUser.getCurrentUser() }
-                .flatMap { AuthRx.virgilJwt(it.sessionToken) }
-                .map { preferences.setVirgilToken(it) }
-                .flatMap { rxEthree.initEthree(identity) }
-                .map { AppVirgil.eThree = it }
-                .flatMap { rxEthree.registerEthree().toSingle { Unit } }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
-                    onSuccess = {
-                        onSuccess()
-                    },
-                    onError = {
-                        onError(it)
-                    }
+                        onComplete = {
+                            onSuccess()
+                        },
+                        onError = {
+                            onError(it)
+                        }
                 )
 
         compositeDisposable += disposable
@@ -65,18 +53,14 @@ class LogInPresenter(context: Context) {
         val disposable = RxParse.logIn(identity, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap { AuthRx.virgilJwt(it.sessionToken) }
-                .map { preferences.setVirgilToken(it) }
-                .flatMap { rxEthree.initEthree(identity, true) }
-                .map { AppVirgil.eThree = it }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
-                    onSuccess = {
-                        onSuccess()
-                    },
-                    onError = {
-                        onError(it)
-                    }
+                        onSuccess = {
+                            onSuccess()
+                        },
+                        onError = {
+                            onError(it)
+                        }
                 )
 
         compositeDisposable += disposable
