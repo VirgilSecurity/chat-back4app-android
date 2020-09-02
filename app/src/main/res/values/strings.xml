@@ -3,9 +3,9 @@
 
     <!-- Back4App -->
     <string name="back4app_server_url">https://parseapi.back4app.com/</string>
-    <string name="back4app_live_query_url">wss://e3kit-kotlin.back4app.io/</string>
-    <string name="back4app_app_id">lUXKvKJYkVSeWrLHn3l77eM8pLqbOPQFYXUv8L1a</string>
-    <string name="back4app_client_key">IRjDlmeQb3X55hyWnm67VEtk2eZi2MZWrUPfbGvP</string>
+    <string name="back4app_live_query_url">wss://yourSubdomainName.back4app.io/</string>
+    <string name="back4app_app_id">your_back4app_app_id</string>
+    <string name="back4app_client_key">your_back4app_client_key</string>
 
     <!-- General -->
     <string name="no_internet">Please, check your internet state</string>
