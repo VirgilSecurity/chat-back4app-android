@@ -239,7 +239,7 @@ object AuthRx {
 
 Virgil token received from Cloud Code functions need to be stored locally. Let's update `Preferences` class in `../virgilsecurity/virgilback4app/util/`:
 
-- Define a constant (before `class Preferences private constructor(context: Context)`):
+- Define a constant:
 
 ```kotlin
 private const val KEY_VIRGIL_TOKEN = "KEY_VIRGIL_TOKEN"
