@@ -630,7 +630,6 @@ override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int
 To see the result of running the demo, you'll need to:
 1. Sign up 2 users;
 2. Start a conversation between them and send a couple of messages;
-<img width="300px" src="img/chat_screenshot.png" alt="Chat screenshot">
 3. Open Back4App “Dashboard” -> “Core” -> “Database Browser” -> "Message".
 
 
