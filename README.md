@@ -135,7 +135,7 @@ After these steps you will be able to hit the Run button in Android Studio and g
 
 ### Step 3: Run the clean demo
 
-To see the result of running the demo, you'll need to:
+To see the result of running the clean version of the demo, you'll need to:
 1. Sign up 2 users;
 2. Start a conversation between them and send a couple of messages;
 <img width="300px" src="img/chat_screenshot.png" alt="Chat screenshot">
@@ -237,7 +237,7 @@ object AuthRx {
 
 ### Step 3: Store Virgil JWT locally
 
-Virgil token received from Cloud Code functions need to be stored locally. Let's update `Preferences` class in `../virgilsecurity/virgilback4app/util/`:
+Virgil token received from Cloud Code functions needs to be stored locally. Let's update `Preferences` class in `../virgilsecurity/virgilback4app/util/`:
 
 - Define a constant:
 
@@ -288,7 +288,7 @@ private fun initDrawer() {
 
 ### Step 4: Modify user registering
 
-E3Kit takes care about your private and public keys:
+E3Kit takes care about your private and public keys. To generate them during the registering process, we'll need to do the following:
 
 - In `../virgilsecurity/virgilback4app/util/` create `RxEthree` class:
 
@@ -322,7 +322,7 @@ fun initEthree(identity: String, verifyPrivateKey: Boolean = false): Single<EThr
 ```
 
 - Add `registerEthree` function that registers a new user to `RxEthree` class. 
-E3Kit generates a key pair during a sign up. Generated private key stored in local storage, public key published to Virgil Services as a Virgil Card.
+E3Kit generates a key pair during a sign up. The generated private key then is stored in local storage, and public key is published to Virgil Services as a Virgil Card.
 
 ```kotlin
 import com.android.virgilsecurity.virgilback4app.AppVirgil
@@ -385,7 +385,7 @@ fun requestSignUp(identity: String, onSuccess: () -> Unit, onError: (Throwable) 
 
 ### Step 3: Modify sign in functions
 
-Let’s make changes to `requestSignIn` method of `LogInPresenter` class (in `../virgilsecurity/virgilback4app/auth/`):
+Now, let’s make changes to `requestSignIn` method of `LogInPresenter` class (in `../virgilsecurity/virgilback4app/auth/`):
 ```kotlin
 fun requestSignIn(identity: String,
                   onSuccess: () -> Unit,
@@ -422,7 +422,7 @@ fun requestSignIn(identity: String,
 
 ### Step 4: Get the list of existing chat
 
-Now, add functions that handle E3Kit initialization into `ThreadsListFragment` class (in `../virgilsecurity/virgilback4app/chat/contactsList/`):
+Next, add functions that handle E3Kit initialization into `ThreadsListFragment` class (in `../virgilsecurity/virgilback4app/chat/contactsList/`):
 ```kotlin
 private fun onInitEthreeSuccess() {
     presenter.requestThreads(ParseUser.getCurrentUser(),
@@ -442,7 +442,7 @@ private fun onInitEthreeError(throwable: Throwable) {
 }
 ```
 
-Update `postCreateInit` function to initialize E3Kit if needed:
+Update `postCreateInit` function to initialize E3Kit:
 ```kotlin
 override fun postCreateInit() {
     ...
@@ -464,7 +464,7 @@ override fun postCreateInit() {
 }
 ```
 
-Add the corresponding code into `ThreadsListFragmentPresenter` class in `virgilsecurity.virgilback4app.chat.contactsList/`:
+And add the following code into `ThreadsListFragmentPresenter` class in `virgilsecurity.virgilback4app.chat.contactsList/`:
 
 - Add field
 ```kotlin
@@ -558,14 +558,14 @@ private fun onGetCardError(t: Throwable) {
 
 Now let's change `ChatThreadPresenter`:
 
-- Add fields
+- Add fields:
 ```kotlin
 private val eThree = AppVirgil.eThree
 private lateinit var userCard: Card
 private val rxEthree = RxEthree(context)
 ```
 
-- Add function that obtains a Virgil Card of the recipient
+- Add a function that obtains a Virgil Card of the recipient:
 ```kotlin
 fun requestCard(identity: String,
                 onSuccess: (Card) -> Unit,
@@ -627,10 +627,13 @@ override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int
 
 ### Step 6: Run the complete end-to-end encrypted demo
 
-To see the result of running the demo, you'll need to:
-1. Sign up 2 users;
-2. Start a conversation between them and send a couple of messages;
-3. Open Back4App “Dashboard” -> “Core” -> “Database Browser” -> "Message".
+Now to see the result of our fully end-to-end encrypted demo, go through these steps again:
+1. Log out the previous user
+2. Sign up 2 new users;
+3. Start a conversation between them and send a couple of messages;
+4. Open Back4App “Dashboard” -> “Core” -> “Database Browser” -> "Message".
+
+> Important! You have to Log Out the current user and register two new users, after that you can start E2EE chat with those two new users. The reason is that your first two users have no Virgil Card’s, so you can not use encrypt\decrypt for them.
 
 
 
