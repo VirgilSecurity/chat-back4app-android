@@ -635,7 +635,7 @@ Now to see the result of our fully end-to-end encrypted demo, go through these s
 
 > Important! You have to Log Out the current user and register two new users, after that you can start E2EE chat with those two new users. The reason is that your first two users have no Virgil Card’s, so you can not use encrypt\decrypt for them.
 
-
+Done! Now you can see that users' messages are encrypted and can only be accessed in app by users themselves.
 
 ## HIPAA & GDPR compliance:
 
