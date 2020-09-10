@@ -279,14 +279,14 @@ private fun initDrawer() {
             showBaseLoading(true)
             // New code >>
             Preferences.instance(this).clearVirgilToken()
-            // >> New code
+            // << New code
             ...
         }
     }
 }
 ```
 
-### Step 4: Modify user registering
+### Step 4: Modify user registration
 
 E3Kit takes care about your private and public keys. To generate them during the registering process, we'll need to do the following:
 
