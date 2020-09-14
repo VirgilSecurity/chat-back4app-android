@@ -47,12 +47,12 @@ This is the simplest possible implementation of E2EE chat and it works perfectly
 
 ### Step 1: Set up your App Server
 
-#### 1) Set up Back4App cloud code functions
+Let's start with deploying the cloud function. For this, you will need to:
 
 - Find `main.js` and `package.json` in `scripts` directory;
 - Open `main.js` with your favorite editor.
 
-##### 1.1) Get Back4App credentials
+#### 1.1) Get Back4App credentials
 
 If you don't have an account yet, [sign up for one](https://back4app.com).
 
@@ -65,7 +65,7 @@ const PARSE_APP_ID = "YOUR_PARSE_APP_ID";
 const PARSE_REST_API_KEY = "YOUR_PARSE_REST_API_KEY";
 ```
 
-##### 1.2) Get Virgil credentials
+#### 1.2) Get Virgil credentials
 
 If you don't have an account yet, [sign up for one](https://dashboard.virgilsecurity.com/signup).
 
@@ -83,7 +83,7 @@ const APP_KEY = "YOUR_VIRGIL_APP_KEY";
 const APP_KEY_ID = "YOUR_VIRGIL_APP_ID";
 ```
 
-##### 1.3) Deploy cloud code function
+#### 1.3) Deploy cloud code function
 
 - Open Back4App “Dashboard” of your app -> “Core” -> Cloud code functions;
 ![Deploy cloud function](img/cloud_func.png)
@@ -146,10 +146,6 @@ If it all worked out, you should see the chat messenger app popping up. Register
 ![Not encrypted chat messages](img/back4app_messages_no_encrypt.png)
 
 Next: Close your chat interface and move on to the next step – adding E2EE encryption.
-
-
-
-
 
 ## Add end-to-end encryption to E3Kit Back4App Kotlin Demo
 
