@@ -90,7 +90,7 @@ const APP_KEY_ID = "YOUR_VIRGIL_APP_ID";
 - Click `+ADD` and select your `main.js` and `package.json` (from `scripts` directory), after that move both of them to the `cloud` folder;
 - Click `DEPLOY`;
 
-### 2) Start clean Back4app Kotlin Demo app
+### Step 2: Start clean Back4app Kotlin Demo app
 
 Don't forget to setup [Back4App cloud code function](#1-set-up-back4app-cloud-code-functions) first. It is a mandatory part of this demo. After this, go through the following steps:
 
