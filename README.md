@@ -162,6 +162,11 @@ How do we get there? Obviously, we need to implement end-to-end encryption, whic
 
 For this, we will need to add E3Kit to our clean demo application and some more code to implement all that was described above.
 
+But before we begin, let’s clear two important terms for you: what’s a Virgil Card and a private key?
+
+  * **Virgil Card** – Virgil Сards carry the users' private keys. Virgil Cards are published to Virgil’s Cards Service (imagine this service is like a telephone book) for other users to retrieve them: Alice needs to retrieve Bob’s public key in order to encrypt a message for Bob using that key.
+  * **Private key** – a private part of the encryption key. Remember, private keys can decrypt data that was encrypted using the matching public key.
+
 
 ### Step 1: Add E3Kit to the clean E3Kit Back4App Kotlin Demo
 
