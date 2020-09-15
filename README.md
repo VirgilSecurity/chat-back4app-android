@@ -668,7 +668,7 @@ Don’t forget to subscribe to our [Youtube channel][_youtube].  There you will 
 [_virgil_dashboard]: https://developer.virgilsecurity.com/account/dashboard?utm_source=back4app&utm_medium=blog&utm_campaign=e2eechat
 [_main_js_package_json]: https://gist.github.com/vadimavdeev/0df867740156ca787908a4f2b62997b8/archive/80a7f913fdb81fa8e05f23cec30ac992aff70ee3.zip
 [_youtube]: https://www.youtube.com/channel/UCU8BhA1nVzKKRiU5P4N3D6A/featured
-[_final_project]: https://github.com/VirgilSecurity/chat-back4app-android/tree/e2ee
+[_final_project]: https://github.com/VirgilSecurity/chat-back4app-android/
 [_data_integrity]: https://developer.virgilsecurity.com/docs/java/get-started/data-integrity?utm_source=back4app&utm_medium=blog&utm_campaign=e2eechat
 [_virgil_www]: https://virgilsecurity.com?utm_source=back4app&utm_medium=blog&utm_campaign=e2eechat
 [_virgil_docs]: https://developer.virgilsecurity.com/docs/e3kit
